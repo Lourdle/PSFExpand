@@ -1,0 +1,2 @@
+﻿#define PSFEXTRACTIONHANDLER_API __declspec(dllexport)
+#define PSFEXTRACTIONHANDLER_API __declspec(dllimport)

@@ -1,0 +1,16 @@
+#include "pch.h"
+#include "PSFExtHandlerFrame.h"
+
+DWORD
+PSFEXTRACTIONHANDLER_API
+PSFExtHandler_GetVersion()
+{
+	return PSFEXTHANDLER_MAJOR_VERSION << 22 | PSFEXTHANDLER_MINOR_VERSION << 12 || PSFEXTHANDLER_PATCH_VERSION << 2;
+}
+
+PCWSTR
+PSFEXTRACTIONHANDLER_API
+PSFExtHandler_GetVersionString()
+{
+	return L"1.0.1";
+}

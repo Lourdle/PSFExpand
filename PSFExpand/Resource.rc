@@ -1,0 +1,214 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_NEUTRAL
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    Program                 "PSF 文件扩展实用工具"
+    Version                 "版本"
+    Invalid_Cmdline         "不识别的命令行选项“%ls”.\n"
+    Unknown_Option          "选项“%ls”未知.\n"
+    Tip                     "若要获取更多信息，带操作命令运行程序并附加 /? 来参考帮助。\n"
+    No_Operation_Command    "必须先指定操作命令。\n"
+    Missing_Option          "命令行缺少 /%ls 选项。\n"
+END
+
+STRINGTABLE
+BEGIN
+    Invalid_Help_Option     "帮助选项必须紧跟在操作命令之后，并且不能在其后添加其它选项。\n"
+    Option_Needs_an_Arg     "“%ls”操作缺少必需的参数。\n"
+    Example                 "示例："
+    Examples                "示例："
+    Operation_Commands      "操作命令："
+    Program_Description     "从指定的 PSF 和 XML 文件中列出、提取、扩展 PSF 中包含的文件。"
+    List_Description        "列出来自指定 XML 文件的 PSF 中的文件信息。\n"
+    Extract_Description     "提取 PSF 文件中的指定文件。\n"
+    Expand_Description      "将 PSF 扩展到文件系统上的指定目录。\n"
+    XmlFile_Option          "指定与 PSF 文件对应的 XML 文件。"
+    PsfFile_Option          "指定要操作的 PSF 文件。"
+    Screen_Option           "筛选出符合指定条件的文件（文件名或带有通配符[*,?]）。\n\t\t\t要使用此选项，必须将其放在其它所有选项之后，因为\n\t\t\t此选项之后的选项会成为筛选器。"
+    DisplayDetail_Option    "显示每个文件的详细信息（包括文件大小、类型）。"
+    File_Option             "指定 PSF 中要提取的文件（支持文件通配符 [*,?]）。"
+    StorageDirectory_Option "指定存储文件的目录。"
+    Verify_Option           "验证文件数据是否完整。"
+END
+
+STRINGTABLE
+BEGIN
+    Verbose_Option          "显示每个提取的文件。"
+    NoProgressDisplay_Option "文件扩展期间不显示进度。"
+    SingleThread_Option     "仅使用单个线程来扩展文件。"
+    File_Count              "PSF 文件包含 %lu 个文件。\n\n"
+    File_Size               "文件大小："
+    File_Type               "文件类型："
+    Satified_File_Count     "有 %lu 个文件满足筛选器要求。\n"
+    Extracted_File_Count    "已提取 %lu 个文件。\n"
+    Extracting              "正在提取文件……\n\n"
+    Done                    "完成。\n"
+END
+
+#endif    // 中文(简体) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 非特定语言(默认值) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(936)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,1,0
+ PRODUCTVERSION 1,0,1,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40000L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+END
+
+#endif    // 非特定语言(默认值) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(936)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// 英语(中性) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    Program                 "PSF File Expansion Utility"
+    Version                 "Version"
+    Invalid_Cmdline         "Doesn't recognize the command-line option ""%ls"".\n"
+    Unknown_Option          "The ""%ls"" option is unknown.\n"
+    Tip                     "For more information, refer to the help by running the program with an operation command and appending /?.\n"
+    No_Operation_Command    "You must specify the operation command first.\n"
+    Missing_Option          "The command-line is missing the /%ls option.\n"
+END
+
+STRINGTABLE
+BEGIN
+    Invalid_Help_Option     "The help option must immediately follow the operation command and no other options can be added after it.\n"
+    Option_Needs_an_Arg     "The ""%ls"" operation is missing a required argument.\n"
+    Example                 "Example: "
+    Examples                "Examples: "
+    Operation_Commands      "OPERATION COMMANDS: "
+    Program_Description     "Lists, extracts, expands files contained in PSF from specified PSF and XML files."
+    List_Description        "Lists file information in the PSF from the specified XML file.\n"
+    Extract_Description     "Extracts specified file(s) in the PSF file.\n"
+    Expand_Description      "Expands PSF to a specified directory on filesystem.\n"
+    XmlFile_Option          "Specifies the XML file corresponding to the PSF file."
+    PsfFile_Option          "Specifies the PSF file to operate on."
+    Screen_Option           "Screen out files that meet specified criteria (file name or with\n\t\t\twildcards [*,?]). To use this option,it must be placed after all\n\t\t\tother options, because options after this option become screeners."
+    DisplayDetail_Option    "Displays the detail (included file size, type) of each files."
+    File_Option             "Specifies the file(s) in the PSF to extract (file wildcards [*,?] are supported)."
+    StorageDirectory_Option "Specifies the directory in which to store files."
+    Verify_Option           "Verifies that the file data is intact."
+END
+
+STRINGTABLE
+BEGIN
+    Verbose_Option          "Displays each extracted file."
+    NoProgressDisplay_Option "No progress is shown during file expansion."
+    SingleThread_Option     "Only uses a single thread to expand the files."
+    File_Count              "The PSF file contains %lu files.\n\n"
+    File_Size               "File size: "
+    File_Type               "File type: "
+    Satified_File_Count     "There is/are %lu file(s) that satisfy the screener(s).\n"
+    Extracted_File_Count    "There was/were %lu file(s) extracted.\n"
+    Extracting              "Extracting file(s)...\n\n"
+    Done                    "Done.\n"
+END
+
+#endif    // 英语(中性) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
