@@ -5,7 +5,7 @@
 
 1. Fix the problem that the filter fails to process '?'.
 2. Added display language active selection feature.
-3. Added CAB file expansion and automatic selection of PSF files and XML files.
+3. Added CAB file expansion and automatic selection of PSF file and XML file.
 4. Other unlisted detail fixes.
 
 
