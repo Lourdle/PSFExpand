@@ -5,10 +5,10 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 BOOL
 PSFExtHandler_ExtractFileByIndex(
-	_In_		HPSF hPSF,
-	_In_		DWORD dwIndex,
-	_In_opt_	PCWSTR pOutFile,
-	_In_		WORD ExtractionFlags
+    _In_        HPSF hPSF,
+    _In_        DWORD dwIndex,
+    _In_opt_    PCWSTR pOutFile,
+    _In_        WORD ExtractionFlags
 );
 ````
 ### 参数

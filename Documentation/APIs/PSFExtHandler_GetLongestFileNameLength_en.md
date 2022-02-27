@@ -4,7 +4,7 @@ Get the longest filename length.
 PSFEXTRACTIONHANDLER_API
 DWORD
 PSFExtHandler_GetLongestFileNameLength(
-	_In_		HPSF hPSF
+    _In_        HPSF hPSF
 );
 ````
 ### Parameters

@@ -5,12 +5,12 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 BOOL
 PSFExtHandler_GetFileInfo(
-	_In_		HPSF hPSF,
-	_In_		DWORD dwIndex,
-	_Out_writes_bytes_to_opt_(*pcbData, *pcbData) PWSTR pszFileName,
-	_When_(pszFileName == NULL, _Out_opt_) _When_(pszFileName != NULL, _Inout_opt_) PDWORD pcbData,
-	_Out_opt_	PDWORD pdwFileSize,
-	_Out_opt_	PSFEXTHANDLER_FILE_TYPE* Type
+    _In_        HPSF hPSF,
+    _In_        DWORD dwIndex,
+    _Out_writes_bytes_to_opt_(*pcbData, *pcbData) PWSTR pszFileName,
+    _When_(pszFileName == NULL, _Out_opt_) _When_(pszFileName != NULL, _Inout_opt_) PDWORD pcbData,
+    _Out_opt_   PDWORD pdwFileSize,
+    _Out_opt_   PSFEXTHANDLER_FILE_TYPE* Type
 );
 ````
 ### 参数

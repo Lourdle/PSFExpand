@@ -1,12 +1,26 @@
 # PSF File Expansion Utility
-Portions of the English readme and documentation may be machine translated.  
-- English(Current)
+Some contents of English readme files and documentation may be machine translated.
+- English (Current)
 - [简体中文](README_zh-Hans.md)
 
 Lists, extracts, expands Windows PSF updates.
 ### Instructions
-The use of PSF files is inseparable from the XML that describes the information of the PSF files, generally express.psf.cix.xml in the corresponding CAB file. You can use Expand.exe to first expand the CAB file corresponding to the PSF. Then use PSFExpand.exe to expand the PSF.
-### PSFExpand provides operation commands
+The use of PSF files is inseparable from the XML that describes the information of the PSF files, generally express.psf.cix.xml in the corresponding CAB file.  
+The CAB file can be expanded manually and then the PSF file can be expanded using this tool.  
+It is recommended to use this tool to expand CAB files and PSF files, because running Expand.exe outputs too much file name information in the console, which seriously affects the speed, this tool will avoid this problem.
+### PSFExpand language
+The application is available in Simplified Chinese and English, and the appropriate language will be selected at runtime under normal circumstances. The language can be specified explicitly using the `/Lang` option.  
+Specify the /Lang option to select the display language. To use it, add '/Lang:<Language>' to the command line immediately following the application name.
+
+Supported languages:
+- en         English
+- zh-Hans    简体中文
+
+Example:
+- Use Simplified Chinese as the display language and print help.
+>PSFExpand.exe /Lang:zh-Hans /?
+
+If an unsupported language is specified, the program will use English as the display language.### PSFExpand provides operation commands
 - [List](Documentation/List_en.md)
 - [Extract](Documentation/Extract_en.md)
 - [Expand](Documentation/Expand_en.md)

@@ -4,7 +4,7 @@ Get the number of files.
 PSFEXTRACTIONHANDLER_API
 DWORD
 PSFExtHandler_GetFileCount(
-	_In_		HPSF hPSF
+    _In_        HPSF hPSF
 );
 ````
 ### Parameters

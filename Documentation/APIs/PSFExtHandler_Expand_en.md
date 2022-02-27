@@ -5,11 +5,11 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 BOOL
 PSFExtHandler_ExpandPSF(
-	_In_		HPSF hPSF,
-	_In_opt_	PCWSTR pOutDir,
-	_In_		WORD ExtractionFlags,
-	_In_opt_	PSFEXTHANDLER_PROGRESS_PROC pfProgress,
-	_In_opt_	PVOID pvUserData
+    _In_        HPSF hPSF,
+    _In_opt_    PCWSTR pOutDir,
+    _In_        WORD ExtractionFlags,
+    _In_opt_    PSFEXTHANDLER_PROGRESS_PROC pfProgress,
+    _In_opt_    PVOID pvUserData
 );
 ````
 ### Parameters

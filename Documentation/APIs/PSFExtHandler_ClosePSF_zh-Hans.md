@@ -4,7 +4,7 @@
 PSFEXTRACTIONHANDLER_API
 VOID
 PSFExtHandler_ClosePSF(
-	_In_		HPSF hPSF
+    _In_        HPSF hPSF
 );
 ````
 ### 参数

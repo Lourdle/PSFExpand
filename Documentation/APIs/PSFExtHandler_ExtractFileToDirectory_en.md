@@ -5,11 +5,11 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 BOOL
 PSFExtHandler_ExtractFileToDirectory(
-	_In_		HPSF hPSF,
-	_In_		PCWSTR pTargetFileName,
-	_In_opt_	PCWSTR pOutDir,
-	_In_opt_	PCWSTR pOutFileName,
-	_In_		WORD ExtractionFlags
+    _In_        HPSF hPSF,
+    _In_        PCWSTR pTargetFileName,
+    _In_opt_    PCWSTR pOutDir,
+    _In_opt_    PCWSTR pOutFileName,
+    _In_        WORD ExtractionFlags
 );
 ````
 ### Parameters

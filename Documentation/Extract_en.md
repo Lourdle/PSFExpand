@@ -1,8 +1,8 @@
 ## PSFExpand.exe /Extract operation command
 Extract the file specified in the PSF
 ### Options
-- XmlFile specifies the path of the XML file on the file system
-- PsfFile specifies the path of the PSF file on the file system
+- XmlFile specifies the path of the XML file on the filesystem
+- PsfFile specifies the path of the PSF file on the filesystem
 - File specifies the extracted filename
 - StorageDirectory specifies the directory where the extracted files are stored
 - Verify to verify that the file data is intact

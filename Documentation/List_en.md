@@ -1,7 +1,7 @@
 ## PSFExpand.exe /List Operation Command
 Lists file information in the PSF from the specified XML file.
 ### Options
-- XmlFile specifies the path of the XML file on the file system
+- XmlFile specifies the path of the XML file on the filesystem
 - DisplayDetail shows the details of each file, including size (in bytes) and file type in PSF (PA30, PA19, raw file)
 - Screen {condition} filters out files that meet specified criteria, either full filenames or filenames with file wildcards (\*, ?)
 ##### XmlFile Options

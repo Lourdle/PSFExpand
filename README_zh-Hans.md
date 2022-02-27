@@ -4,7 +4,22 @@
 
 列出、提取、扩展 Windows PSF 更新。
 ### 使用
-PSF 文件的使用离不开描述 PSF 包含文件信息的 XML，一般是对应 CAB 文件中的 express.psf.cix.xml。可以使用 Expand.exe 先展开 PSF 对应的 CAB 文件。然后使用 PSFExpand.exe 展开 PSF。
+PSF 文件的使用离不开描述 PSF 包含文件信息的 XML，一般是对应 CAB 文件中的 express.psf.cix.xml。  
+可手动展开 CAB 文件，然后使用此工具扩展 PSF 文件。
+建议使用此工具展开 CAB 文件和 PSF 文件，因为运行 Expand.exe 在控制台输出了过多的文件名信息严重影响速度，此工具会避免此问题。
+### PSFExpand 语言
+应用提供简体中文和英语，正常情况会在运行时选择合适的语言。可使用`/Lang`选项显式指定语言。  
+指定 /Lang 选项可选择显示语言。使用方法为在命令行中紧跟应用名加入'/Lang:<语言>'。
+
+支持的语言：
+- en         English
+- zh-Hans    简体中文
+
+示例：
+- 使用英语作为显示语言并打印帮助
+>PSFExpand.exe /Lang:en /?
+
+若指定了不支持的语言，程序将使用英语作为显示语言。
 ### PSFExpand 提供操作命令
 - [List](Documentation/List_zh-Hans.md)
 - [Extract](Documentation/Extract_zh-Hans.md)

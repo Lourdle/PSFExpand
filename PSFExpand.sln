@@ -10,6 +10,61 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PSFExpand", "PSFExpand\PSFE
 		{76DBB376-5AD6-4624-A52A-9477FC3A19EE} = {76DBB376-5AD6-4624-A52A-9477FC3A19EE}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{ADF16D45-7A0E-431B-8845-5FAEC8302187}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\APIs_en.md = Documentation\APIs_en.md
+		Documentation\APIs_zh-Hans.md = Documentation\APIs_zh-Hans.md
+		Documentation\Expand_en.md = Documentation\Expand_en.md
+		Documentation\Expand_zh-Hans.md = Documentation\Expand_zh-Hans.md
+		Documentation\Extract_en.md = Documentation\Extract_en.md
+		Documentation\Extract_zh-Hans.md = Documentation\Extract_zh-Hans.md
+		Documentation\List_en.md = Documentation\List_en.md
+		Documentation\List_zh-Hans.md = Documentation\List_zh-Hans.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "APIs", "APIs", "{D5DF60FA-D2B0-409C-A5D1-33A5CA67757E}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\APIs\PSFExtHandler_ClosePSF_en.md = Documentation\APIs\PSFExtHandler_ClosePSF_en.md
+		Documentation\APIs\PSFExtHandler_ClosePSF_zh-Hans.md = Documentation\APIs\PSFExtHandler_ClosePSF_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_Expand_en.md = Documentation\APIs\PSFExtHandler_Expand_en.md
+		Documentation\APIs\PSFEXTHANDLER_EXPAND_INFO_en.md = Documentation\APIs\PSFEXTHANDLER_EXPAND_INFO_en.md
+		Documentation\APIs\PSFEXTHANDLER_EXPAND_INFO_zh-Hans.md = Documentation\APIs\PSFEXTHANDLER_EXPAND_INFO_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_Expand_zh-Hans.md = Documentation\APIs\PSFExtHandler_Expand_zh-Hans.md
+		Documentation\APIs\PSFEXTHANDLER_EXTRACT_FLAG_en.md = Documentation\APIs\PSFEXTHANDLER_EXTRACT_FLAG_en.md
+		Documentation\APIs\PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md = Documentation\APIs\PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_ExtractFile_en.md = Documentation\APIs\PSFExtHandler_ExtractFile_en.md
+		Documentation\APIs\PSFExtHandler_ExtractFile_zh-Hans.md = Documentation\APIs\PSFExtHandler_ExtractFile_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_ExtractFileByIndex_en.md = Documentation\APIs\PSFExtHandler_ExtractFileByIndex_en.md
+		Documentation\APIs\PSFExtHandler_ExtractFileByIndex_zh-Hans.md = Documentation\APIs\PSFExtHandler_ExtractFileByIndex_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_ExtractFileToDirectory_en.md = Documentation\APIs\PSFExtHandler_ExtractFileToDirectory_en.md
+		Documentation\APIs\PSFExtHandler_ExtractFileToDirectory_zh-Hans.md = Documentation\APIs\PSFExtHandler_ExtractFileToDirectory_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_ExtractFileToDirectoryByIndex_en.md = Documentation\APIs\PSFExtHandler_ExtractFileToDirectoryByIndex_en.md
+		Documentation\APIs\PSFExtHandler_ExtractFileToDirectoryByIndex_zh-Hans.md = Documentation\APIs\PSFExtHandler_ExtractFileToDirectoryByIndex_zh-Hans.md
+		Documentation\APIs\PSFEXTHANDLER_FILE_TYPE_en.md = Documentation\APIs\PSFEXTHANDLER_FILE_TYPE_en.md
+		Documentation\APIs\PSFEXTHANDLER_FILE_TYPE_zh-Hans.md = Documentation\APIs\PSFEXTHANDLER_FILE_TYPE_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_GetFileCount_en.md = Documentation\APIs\PSFExtHandler_GetFileCount_en.md
+		Documentation\APIs\PSFExtHandler_GetFileCount_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetFileCount_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_GetFileInfo_en.md = Documentation\APIs\PSFExtHandler_GetFileInfo_en.md
+		Documentation\APIs\PSFExtHandler_GetFileInfo_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetFileInfo_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_GetLongestFileNameLength_en.md = Documentation\APIs\PSFExtHandler_GetLongestFileNameLength_en.md
+		Documentation\APIs\PSFExtHandler_GetLongestFileNameLength_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetLongestFileNameLength_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_GetVersion_en.md = Documentation\APIs\PSFExtHandler_GetVersion_en.md
+		Documentation\APIs\PSFExtHandler_GetVersion_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetVersion_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_GetVersionString_en.md = Documentation\APIs\PSFExtHandler_GetVersionString_en.md
+		Documentation\APIs\PSFExtHandler_GetVersionString_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetVersionString_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_OpenFile_en.md = Documentation\APIs\PSFExtHandler_OpenFile_en.md
+		Documentation\APIs\PSFExtHandler_OpenFile_zh-Hans.md = Documentation\APIs\PSFExtHandler_OpenFile_zh-Hans.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C2F28D0A-1B4E-4369-9119-8C4BEAEEEBF6}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		README_zh-Hans.md = README_zh-Hans.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -57,6 +112,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D5DF60FA-D2B0-409C-A5D1-33A5CA67757E} = {ADF16D45-7A0E-431B-8845-5FAEC8302187}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D96C55C-C386-4770-AE40-6B89A228F267}

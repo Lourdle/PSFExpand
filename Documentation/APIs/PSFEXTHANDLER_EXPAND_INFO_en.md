@@ -3,13 +3,13 @@ The file expansion progress function provides file information.
 ````c
 typedef struct _PSFEXTHANDLER_EXPAND_INFO
 {
-	DWORD		dwIndex;
-	PCWSTR		pFileName;
-	DWORD		dwCurrentFileSize;
-	DWORD		dwCompletedBytes;
-	DWORD		dwTotalBytes;
-	DWORD		dwCompletedFileCount;
-	DWORD		dwTotalFileCount;
+    DWORD       dwIndex;
+    PCWSTR      pFileName;
+    DWORD       dwCurrentFileSize;
+    DWORD       dwCompletedBytes;
+    DWORD       dwTotalBytes;
+    DWORD       dwCompletedFileCount;
+    DWORD       dwTotalFileCount;
 }PSFEXTHANDLER_EXPAND_INFO;
 ````
 ### Members

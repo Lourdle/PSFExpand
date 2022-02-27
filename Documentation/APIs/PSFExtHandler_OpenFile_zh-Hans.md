@@ -5,8 +5,8 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 HPSF
 PSFExtHandler_OpenFile(
-	_In_opt_	PCWSTR pPSFFile,
-	_In_		PCWSTR pXmlFile
+    _In_opt_    PCWSTR pPSFFile,
+    _In_        PCWSTR pXmlFile
 );
 ````
 ### 参数
