@@ -1,5 +1,5 @@
 # PSF File Expansion Utility
-Some contents of English readme files and documentation may be machine translated.
+Some contents of English readme file, documentation and changelog may be machine translated.
 - English (Current)
 - [简体中文](README_zh-Hans.md)
 
@@ -13,14 +13,14 @@ The application is available in Simplified Chinese and English, and the appropri
 Specify the /Lang option to select the display language. To use it, add '/Lang:<Language>' to the command line immediately following the application name.
 
 Supported languages:
-- en         English
-- zh-Hans    简体中文
+- en English
+- zh-Hans 简体中文
 
 Example:
 - Use Simplified Chinese as the display language and print help.
 >PSFExpand.exe /Lang:zh-Hans /?
 
-If an unsupported language is specified, the program will use English as the display language.### PSFExpand provides operation commands
+If an unsupported language is specified, the program will use English as the display language.### PSFExpand provides operation commands.
 - [List](Documentation/List_en.md)
 - [Extract](Documentation/Extract_en.md)
 - [Expand](Documentation/Expand_en.md)
@@ -31,3 +31,5 @@ The operating system must be Windows Vista or later. Because the file extraction
 ### Building
 The platform toolset for both projects is v143, which means Visual Studio 2022 or newer is required. The platform toolset version can also be manually modified to support earlier versions of Visual Studio.  
 The Windows SDK needs to be installed, not necessarily the latest version.
+### Changelog
+See [CHANGELOG.md](CHANGELOG.md)
