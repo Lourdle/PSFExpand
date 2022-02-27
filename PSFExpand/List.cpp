@@ -37,19 +37,19 @@ bool Screen(wstring String, PCWSTR pScreener)
 		}
 	vStrings.push_back(Screener.substr(last, Screener.size()));
 
-	size_t lastpos = 0;
+	size_t searchpos = 0;
 	for (size_t i = 0; i != vStrings.size(); ++i)
 	{
-		auto pos = String.find(vStrings[i], lastpos);
+		auto pos = String.find(vStrings[i], searchpos);
 		if (pos == wstring::npos
 			|| i == 0 && pos != 0
-			|| i != 0 && v[i - 1] == true && lastpos + vStrings[i].size() != pos)
+			|| i != 0 && v[i - 1] == true && searchpos != pos)
 			return false;
 
-		lastpos = pos;
+		searchpos = pos + vStrings[i].size();
 		if (i != vStrings.size() - 1)
-			lastpos += v[i] ? 1 : 0;
-		else if (lastpos + vStrings[i].size() != String.size() && vStrings[i].size())
+			searchpos += v[i];
+		else if (searchpos != String.size() && vStrings[i].size())
 			return false;
 	}
 
@@ -118,7 +118,10 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 	SetLastError(Err);
 
 	if (Screeners && Ret)
+	{
+		cout << '\n';
 		wprintf(GetString(Satified_File_Count).get(), n);
+	}
 
 	return Ret;
 }

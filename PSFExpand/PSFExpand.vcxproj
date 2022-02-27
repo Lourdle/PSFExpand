@@ -298,6 +298,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Bootstrap.cpp" />
+    <ClCompile Include="Expand.cpp" />
     <ClCompile Include="Extract.cpp" />
     <ClCompile Include="List.cpp" />
     <ClCompile Include="String.cpp" />
