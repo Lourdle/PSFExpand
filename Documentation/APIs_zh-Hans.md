@@ -10,7 +10,7 @@
 
 如果不想让程序依赖于一个 DLL 可以选择把 PSFExtractionHandler 编译成静态库，或者直接把源文件添加到项目中。  
 ### PSF Extraction Handler 基本处理概念
-- PSF 的信息是封装在不透明的 PSF 类中，程序使用'PSF 句柄（hPSF）'（其实就是 PSF 类的指针）进行操作。有关 PSF 类的定义，请参阅 PSFExtractionHandler 项目中的 PSFExtHandlerFrame.h。
+- PSF 的信息是封装在不透明的 PSF 类中，程序使用`PSF 句柄（hPSF）`（其实就是 PSF 类的指针）进行操作。有关 PSF 类的定义，请参阅 PSFExtractionHandler 项目中的 PSFExtHandlerFrame.h。
 - 字符串应使用`宽字符串（wchat_t*）`。因为 Windows 中多字节串具有一些局限性（如不支持 NTFS 最多支持的 32, 767 宽字符的名称长度，详情参阅[最大路径长度限制](https://docs.microsoft.com/zh-cn/windows/win32/fileio/maximum-file-path-limitation)）。PSF Extraction Handler 内部的文件操作都是先将其转换为`\\?\`前缀的绝对路径，然后再打开文件，以支持 32, 767 宽字符的长文件名。
 - 所有发生的错误都可以通过 GetLastError 获得，其值与 Windows 的错误值相同，有关错误码的信息，参阅[调试系统错误代码](https://docs.microsoft.com/zh-cn/windows/win32/debug/system-error-codes)。
 ### PSF Extraction Handler 参考
