@@ -117,9 +117,14 @@ bool PrintFileInfo(PCWSTR pCab, PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFil
 
 	wcout << L"XML" << ' ' << GetString(FilePath) << '\n';
 	if (!pXmlFile)
-		wcout << pOutDir << L"\\express.psf.cix.xml" << '\n' << '\n';
+		wcout << pOutDir << L"\\express.psf.cix.xml" << '\n';
 	else
-		wcout << pXmlFile << '\n' << '\n';
+	{
+		wcout << pXmlFile << '\n';
+		if (!AccessFile(pXmlFile))
+			return false;
+	}
+	cout << '\n';
 
 	return true;
 }
