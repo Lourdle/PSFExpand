@@ -39,6 +39,7 @@
 #define Extracting                      1035
 #define Expanding_Cab                   1036
 #define Done                            1037
+#define FilePath                        1038
 
 // Next default values for new objects
 // 

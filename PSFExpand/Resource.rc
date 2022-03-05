@@ -69,8 +69,9 @@ BEGIN
     Satified_File_Count     "有 %lu 个文件满足筛选器要求。\n"
     Extracted_File_Count    "已提取 %lu 个文件。\n"
     Extracting              "正在提取文件……\n\n"
-    Done                    "完成。\n"
     Expanding_Cab           "正在展开 CAB 文件……\n"
+    Done                    "完成。\n"
+    FilePath                "文件路径："
 END
 
 #endif    // 中文(简体) resources
@@ -90,7 +91,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,1,1
+ FILEVERSION 1,0,1,2
  PRODUCTVERSION 1,0,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -201,8 +202,9 @@ BEGIN
     Satified_File_Count     "There is/are %lu file(s) that satisfy the screener(s).\n"
     Extracted_File_Count    "There was/were %lu file(s) extracted.\n"
     Extracting              "Extracting file(s)...\n\n"
-    Done                    "Done.\n"
     Expanding_Cab           "Expanding CAB file...\n"
+    Done                    "Done.\n"
+    FilePath                "FilePath:"
 END
 
 #endif    // 英语(中性) resources

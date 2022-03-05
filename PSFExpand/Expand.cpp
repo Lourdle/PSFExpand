@@ -9,7 +9,45 @@
 
 using namespace std;
 
-static inline wstring MakePsfPathString(PCWSTR pCab, PCWSTR pCabFile)
+inline
+static bool AccessFile(PCWSTR pFile)
+{
+	HANDLE hFile = CreateFileW(pFile,
+		GENERIC_READ,
+		FILE_SHARE_READ | FILE_SHARE_DELETE | FILE_SHARE_WRITE,
+		nullptr,
+		OPEN_EXISTING,
+		0,
+		nullptr);
+
+	if (hFile != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hFile);
+		return true;
+	}
+	else
+		return false;
+}
+
+inline
+static bool IsAnEmptyDirectory(wstring Dir)
+{
+	Dir += L"\\*.*";
+
+	WIN32_FIND_DATAW wfd;
+	HANDLE hFindFile = FindFirstFileW(Dir.c_str(), &wfd);
+
+	if (!hFindFile)
+		return false;
+
+	FindNextFileW(hFindFile, &wfd);
+	BOOL ret = FindNextFileW(hFindFile, &wfd);
+	FindClose(hFindFile);
+
+	return !ret;
+}
+
+static wstring MakePsfPathString(PCWSTR pCab, PCWSTR pCabFile)
 {
 	wstring Psf;
 	Psf = pCabFile;
@@ -37,8 +75,11 @@ static inline wstring MakePsfPathString(PCWSTR pCab, PCWSTR pCabFile)
 	}
 	else
 	{
+		if (_wcsicmp(Psf.c_str() + Psf.size() - 4, L".cab"))
+			SetLastError(ERROR_BAD_FORMAT);
+
 		for (int i = 0; i < 3; ++i)
-			Psf.rbegin()[i] = L"psf"[i];
+			Psf.begin()[i + Psf.size() - 3] = L"psf"[i];
 
 		WIN32_FIND_DATAW wfd;
 		HANDLE hFindFile = FindFirstFileW(Psf.c_str(), &wfd);
@@ -54,11 +95,40 @@ static inline wstring MakePsfPathString(PCWSTR pCab, PCWSTR pCabFile)
 	return Psf;
 }
 
+inline
+bool PrintFileInfo(PCWSTR pCab, PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOutDir)
+{
+	if (pCabFile)
+	{
+		wcout << L"CAB" << ' ' << GetString(FilePath) << '\n' << pCabFile << '\n';
+		if (!AccessFile(pCabFile))
+			return false;
+	}
+
+	wstring Psf;
+	if (!pPsfFile)
+	{
+		Psf = MakePsfPathString(pCab, pCabFile);
+		pPsfFile = Psf.c_str();
+	}
+	wcout << L"PSF" << ' ' << GetString(FilePath) << '\n' << pPsfFile << '\n';
+	if (!AccessFile(pPsfFile))
+		return false;
+
+	wcout << L"XML" << ' ' << GetString(FilePath) << '\n';
+	if (!pXmlFile)
+		wcout << pOutDir << L"\\express.psf.cix.xml" << '\n' << '\n';
+	else
+		wcout << pXmlFile << '\n' << '\n';
+
+	return true;
+}
+
 bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE Flags)
 {
 	PWSTR pCab = nullptr;
 	unique_ptr<WCHAR[]> CabFile;
-	if(pCabFile)
+	if (pCabFile)
 	{
 		DWORD Length = GetFullPathNameW(pCabFile, 0, nullptr, nullptr);
 		if (!Length)
@@ -77,10 +147,13 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		OutDir.erase(OutDir.cbegin() + OutDir.size() - 4, OutDir.cend());
 
 		pOut = OutDir.c_str();
-
-		if(!CreateDirectoryW(pOut,nullptr))
-			return false;
 	}
+	if (pCabFile && !CreateDirectoryW(pOut, nullptr))
+		if (GetLastError() != ERROR_ALREADY_EXISTS || !IsAnEmptyDirectory(OutDir))
+			return false;
+
+	if (!PrintFileInfo(pCab, CabFile.get(), pPsfFile, pXmlFile, pOut))
+		return false;
 
 	if (pCabFile)
 	{
@@ -100,12 +173,13 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 		wstring CmdLine(L"Expand.exe ");
 		CmdLine += pCabFile;
-		CmdLine+=L" -f:* ";
+		CmdLine += L" -f:* ";
 		CmdLine += '\"';
 		CmdLine += pOut;
 		CmdLine += '\"';
 		PROCESS_INFORMATION pi;
-		if (!CreateProcessW(nullptr,
+		if (!CreateProcessW(
+			nullptr,
 			const_cast<LPWSTR>(CmdLine.c_str()),
 			nullptr,
 			nullptr,
@@ -134,6 +208,8 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 			SetLastError(ExitCode);
 			return false;
 		}
+		else
+			wcout << GetString(Done);
 
 		cout << '\n';
 	}
