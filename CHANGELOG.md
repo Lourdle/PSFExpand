@@ -1,10 +1,13 @@
 # PSFExpand & PSFExtractionHandler Changelog
 
 ## PSFExpand
-- 1.0.1.2
+- 1.0.2.0
 
 1. Fix the problem of wrong file name when selecting PSF file.
 2. Added the function of displaying related files before file expansion.
+3. Optimize the file processing mechanism and support long file names.
+4. Upgrade the default API version to 1.0.2.
+5. Other unlisted detail fixes.
 
 - 1.0.1.1
 
@@ -20,6 +23,12 @@ First release.
 
 
 ## PSFExtractionHandler
+- 1.0.2
+
+1. Optimize the file processing mechanism and support long file names.
+2. Added the feature of PSF file format validity check.
+3. Other unlisted detail fixes.
+
 - 1.0.1
 
 First release.
