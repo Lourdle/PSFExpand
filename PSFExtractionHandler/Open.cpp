@@ -298,7 +298,7 @@ BYTE chex2num(char c)
 }
 
 static
-void ReadXml(HPSF hPSF,PCWSTR pXml,BOOL &Ret)
+void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 {
 	CoInitialize(nullptr);
 
@@ -499,6 +499,8 @@ PSFExtHandler_OpenFile(
 					return nullptr;
 			}
 		}
+		else
+			Xml = xml;
 		CloseHandle(hXml);
 	}
 
