@@ -32,4 +32,4 @@ PSF 文件的使用离不开描述 PSF 包含文件信息的 XML，一般是对�
 两个项目的平台工具集为 v143，这意味着需要 Visual Studio 2022 或更新的版本。也可以手动修改平台工具集版本以支持早期版本的 Visual Studio。  
 需要安装 Windows SDK，不一定必须使用最新的版本。
 ### 更新日志
-参阅 [CHANGELOG_zh-Hans.md](CHANGELOG_zh-Hans.md)
+参阅 [CHANGELOG_zh-Hans.md](CHANGELOG_zh-Hans.md)。

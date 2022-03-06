@@ -10,15 +10,15 @@
 - SingleThread 仅使用单线程扩展文件
 - NoProgressDisplay 整个文件扩展期间不显示进度
 ##### CabFile 选项
-可选选项。使用方法为在命令行加入`/CabFile:<文件路径>`。可以不区分大小写，不支持使用 UNC 路径规范，因此不支持路径长度过长的文件。使用此选项将隐式指定 XML 文件为存储目录下的 express.psf.cix.xml，若 CAB 文件名为 路径\Windows*.*-KB???????-*_*.cab 则 PSF 文件名为路径\Windows*.*-KB???????-*_*.psf，否则将 CAB 文件的文件扩展名改为“psf”并作为 PSF 文件名；存储目录为去除扩展名的 CAB 文件名。可显式指定 PSF、XML 文件名和存储文件夹。  
+可选选项。使用方法为在命令行加入`/CabFile:<文件路径>`。可以不区分大小写，因此不支持路径长度过长的文件。使用此选项将隐式指定 XML 文件为存储目录下的 express.psf.cix.xml，若 CAB 文件名为 路径\Windows*.*-KB???????-*_*.cab 则 PSF 文件名为路径\Windows*.*-KB???????-*_*.psf，否则将 CAB 文件的文件扩展名改为“psf”并作为 PSF 文件名；存储目录为去除扩展名的 CAB 文件名。可显式指定 PSF、XML 文件名和存储文件夹。  
 如果使用此选项，存储提取文件的文件夹必须为空。  
 例如：在 D: 下存在 Windows10.0-KB0000000-x64_00000000.cab 文件和 Windows10.0-KB0000000-x64_ffffffff.psf 文件。运行 PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab，程序会搜索 D:\Windows10.0-KB0000000-x64_*.psf 文件，最终选择 D:\Windows10.0-KB0000000-x64_ffffffff.psf.如果无误就自动将 CAB 文件展开到 D:\Windows10.0-KB0000000-amd64_00000000 目录下。选择包含文件信息的 XML 文件为 D:\Windows10.0-KB0000000-x64_00000000\express.psf.cix.xml 然后展开 PSF 文件到 D:\Windows10.0-KB0000000-x64_00000000。
 ##### XmlFile 选项
-若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/XmlFile:<文件路径>`。可以不区分大小写，不支持使用 UNC 路径规范，因此不支持路径长度过长的文件。
+若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/XmlFile:<文件路径>`。可以不区分大小写。
 ##### PsfFile 选项
 若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/PsfFile:<文件路径>`。可以不区分大小写。
 ##### StorageDirectory 选项
-若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/StorageDirectory:<文件夹路径>`。可以不区分大小写，因此不支持路径长度过长的文件。
+若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/StorageDirectory:<文件夹路径>`。可以不区分大小写。
 ##### Verify 选项
 若未指定 /CabFile 则为必须选项。加入`/Verify`选项程序在数据将要写入文件前进行哈希校验，若文件数据损坏会给出`数据无效`的错误消息。
 ##### SingleThread 选项
@@ -26,7 +26,7 @@
 ##### NoProgressDisplay
 若未指定 /CabFile 则为必须选项。加入`/NoProgressDisplay`选项程序将不显示进度。对展开文件速度的影响效果不明显。
 ### 备注
-程序会首先显示相关的文件信息，若出错则紧跟文件名后一行显示错误信息。  
+程序会首先显示相关的文件信息，若出错则显示错误信息。  
 若指定的 /CabFile 选项又不指定 /XmlFile 选项，程序在完成 CAB 文件扩展之前不会进行初次检查 XML 文件。
 ### 例如
 - 展开保存文件信息的 XML 为 D:\Windows10.0-KB0000000-x64\express.psf.cix.xml 的 D:\Windows10.0-KB0000000-x64.psf 文件，将文件展开到 D:\Windows10.0-KB0000000-x64，校验文件哈希。

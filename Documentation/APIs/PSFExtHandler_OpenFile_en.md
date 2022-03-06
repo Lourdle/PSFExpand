@@ -18,5 +18,4 @@ A string for the XML filename.
 ### Return Value
 Returns the PSF handle on success, NULL on failure.
 ### Remarks
-Since XML files are parsed using COM MSXML, beginning with L"\\\\?\\" is not supported.  
 If an error occurs, you can query LastError.
