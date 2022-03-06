@@ -5,7 +5,7 @@ Lists file information in the PSF from the specified XML file.
 - DisplayDetail shows the details of each file, including size (in bytes) and file type in PSF (PA30, PA19, raw file)
 - Screen {condition} filters out files that meet specified criteria, either full filenames or filenames with file wildcards (\*, ?)
 ##### XmlFile Options
-Required option. The usage method is to add `/XmlFile:<file path>` to the command line. Can be case-insensitive, does not support files with long path lengths.
+Required option. The usage method is to add `/XmlFile:<file path>` to the command line. Can be case insensitive.
 ##### DisplayDetail Options
 Optional option. Add `/DisplayDetail` to the command line to enable.
 ##### Screen Options

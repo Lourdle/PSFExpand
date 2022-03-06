@@ -8,13 +8,13 @@ Extract the file specified in the PSF
 - Verify to verify that the file data is intact
 - Verbose verbose mode, prints the filename in the console window every time a file is extracted
 ##### XmlFile Options
-Required option. The usage method is to add `/XmlFile:<file path>` to the command line. Can be case-insensitive and does not support the use of UNC path specifications, so files with excessively long path lengths are not supported.
+Required option. The usage method is to add `/XmlFile:<file path>` to the command line. Can be case insensitive.
 ##### PsfFile Options
 Required option. The usage method is to add `/PsfFile:<file path>` to the command line. Can be case insensitive.
 ##### File Options
 Required option. To use it, add `/File:<filename>` to the command line. Can be case insensitive and can use file names with file wildcards (\*,?).
 ##### StorageDirectory Options
-Required option. To use it, add `/StorageDirectory:<folder path>` to the command line. Can be case-insensitive, so files with long path lengths are not supported.
+Required option. To use it, add `/StorageDirectory:<folder path>` to the command line. Can be case insensitive.
 ##### Verify Options
 Optional option. Adding the `/Verify` option to the program to perform a hash check before the data is written to the file. If the file data is corrupted, it will give a `data invalid` error message.
 ##### Verbose Options
