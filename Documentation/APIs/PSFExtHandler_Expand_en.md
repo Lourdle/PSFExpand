@@ -1,5 +1,5 @@
 # PSFExtHandler_Expand
-All files that extend PSF.
+Expands all files in PSF.
 ````c
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
