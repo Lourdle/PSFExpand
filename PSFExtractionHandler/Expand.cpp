@@ -144,7 +144,7 @@ PSFExtHandler_ExpandPSF(
 	PHANDLE hPSFFile = new HANDLE[n]();
 	for (int i = 0; i != n; ++i)
 	{
-		hPSFFile[i] = CreateFileW(hPSF->PSF.get(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+		hPSFFile[i] = CreateFileW(hPSF->PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hPSFFile[i] == INVALID_HANDLE_VALUE)
 		{
 			DWORD Err = GetLastError();
@@ -199,7 +199,7 @@ PSFExtHandler_ExpandPSF(
 
 			for (DWORD i = 0; i != range && !cancel; ++i)
 			{
-				DWORD ret = PSFExtHandler_ExtractFileToDirectoryByIndex(&psf, i, outdir, nullptr, flags & !PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD);
+				DWORD ret = PSFExtHandler_ExtractFileToDirectoryByIndex(&psf - 1, i, outdir, nullptr, flags & !PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD);
 
 				Mutex.lock();
 				Ret &= ret;

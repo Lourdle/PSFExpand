@@ -7,7 +7,7 @@
 struct FileInfo
 {
 	std::wstring name;
-	DWORD time;
+	//DWORD time;
 	struct Source
 	{
 		DELTA_FLAG_TYPE type;
@@ -26,7 +26,7 @@ using FileList = std::unique_ptr<FileInfo[]>;
 struct PSF
 {
 	HANDLE hPSF = nullptr;
-	std::unique_ptr<WCHAR[]> PSF;
+	std::wstring PSF;
 
 	DWORD FileCount;
 	FileList Files;
@@ -39,7 +39,9 @@ if (hObject == nullptr\
 {\
 	SetLastError(ERROR_INVALID_HANDLE);\
 	Expression;\
-}
+}\
+else\
+	++hObject;
 
 
 bool Extract(

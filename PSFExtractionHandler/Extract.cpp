@@ -22,7 +22,7 @@ BOOL PSFExtHandler_ExtractFile(
 
 	for (DWORD i = 0; i != hPSF->FileCount; ++i)
 		if (!_wcsicmp(target, hPSF->Files[i].name.c_str()))
-			return PSFExtHandler_ExtractFileByIndex(hPSF, i, out, flags);
+			return PSFExtHandler_ExtractFileByIndex(hPSF - 1, i, out, flags);
 
 	SetLastError(ERROR_FILE_NOT_FOUND);
 	return FALSE;
@@ -197,7 +197,7 @@ BOOL PSFExtHandler_ExtractFileToDirectory(
 
 	for (DWORD i = 0; i != hPSF->FileCount; ++i)
 		if (!_wcsicmp(target, hPSF->Files[i].name.c_str()))
-			return PSFExtHandler_ExtractFileToDirectoryByIndex(hPSF, i, outdir, out, flags);
+			return PSFExtHandler_ExtractFileToDirectoryByIndex(hPSF - 1, i, outdir, out, flags);
 
 	SetLastError(ERROR_FILE_NOT_FOUND);
 	return FALSE;
@@ -235,5 +235,5 @@ PSFExtHandler_ExtractFileToDirectoryByIndex(
 	}
 	file += out ? out : hPSF->Files[index].name;
 
-	return PSFExtHandler_ExtractFileByIndex(hPSF, index, file.c_str(), flags);
+	return PSFExtHandler_ExtractFileByIndex(hPSF - 1, index, file.c_str(), flags);
 }

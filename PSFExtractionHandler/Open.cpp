@@ -368,10 +368,10 @@ void ReadXml(HPSF hPSF,PCWSTR pXml,BOOL &Ret)
 					for (LONG i = static_cast<LONG> (strlen(str)); i >= 0; --i)
 						fi.name[i] = str[i];
 					delete[] str;
-
+					/*
 					str = node.GetAttribute("time");
 					fi.time = atol(str);
-					delete[] str;
+					delete[] str;*/
 
 					XmlNode Source = node.SelectNode("Delta").SelectNode("Source");
 
@@ -429,6 +429,10 @@ void ReadXml(HPSF hPSF,PCWSTR pXml,BOOL &Ret)
 	CoUninitialize();
 }
 
+
+const BYTE Head[] =
+{ 'P','S','T','R','E','A','M',0x00,0x02,0x00,0x02,0x00,0x00,0x00,0x00,0x00 };
+
 PSFEXTRACTIONHANDLER_API
 HPSF
 PSFExtHandler_OpenFile(
@@ -439,16 +443,42 @@ PSFExtHandler_OpenFile(
 		[](HPSF hPSF)
 		{
 			DWORD Err = GetLastError();
-			PSFExtHandler_ClosePSF(hPSF);
+			PSFExtHandler_ClosePSF(hPSF - 1);
 			SetLastError(Err);
 		}
 	);
 
 	if (psf)
 	{
-		hPSF->hPSF = CreateFileW(psf, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+		DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
+		if (length == 0)
+			return FALSE;
+		hPSF->PSF.resize(length - 1);
+		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(hPSF->PSF.c_str()), nullptr) == 0)
+			return FALSE;
+		if (wcsncmp(hPSF->PSF.c_str(), L"\\\\?\\", 4))
+		{
+			wstring tmp = L"\\\\?\\";
+			if (hPSF->PSF[0] == '\\')
+				tmp += L"UNC\\";
+
+			tmp += hPSF->PSF;
+			hPSF->PSF = move(tmp);
+		}
+
+		hPSF->hPSF = CreateFileW(hPSF->PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
 			return nullptr;
+
+		BYTE HOF[16];
+		if (!ReadFile(hPSF->hPSF, HOF, 16, nullptr, nullptr))
+			return FALSE;
+
+		if (memcmp(HOF, Head, 16))
+		{
+			SetLastError(ERROR_BAD_FORMAT);
+			return FALSE;
+		}
 	}
 
 	HANDLE hXml = CreateFileW(xml, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
@@ -456,22 +486,31 @@ PSFExtHandler_OpenFile(
 		return nullptr;
 	CloseHandle(hXml);
 
-	if (psf)
+	wstring Xml;
+	auto Length = GetFullPathNameW(xml, 0, nullptr, nullptr);
+	if (!Length)
+		return FALSE;
+	Xml.resize(Length - 1);
+	GetFullPathNameW(xml, Length, const_cast<LPWSTR>(Xml.c_str()), nullptr);
+	Length = GetShortPathNameW(Xml.c_str(), nullptr, 0);
+	if (!Length)
+		return FALSE;
+	else
 	{
-		DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
-		if (length == 0)
-			return FALSE;
-		hPSF->PSF.reset(new WCHAR[length]);
-		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(hPSF->PSF.get()), nullptr) == 0)
-			return FALSE;
+		wstring tmp;
+		tmp.resize(Length - 1);
+		GetShortPathNameW(Xml.c_str(), const_cast<LPWSTR>(tmp.c_str()), Length);
+		tmp.swap(Xml);
 	}
+	Xml.shrink_to_fit();
+
 
 	BOOL ret;
-	thread XmlReadingThread(ReadXml, hPSF.get(), xml, ref(ret));
+	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret));
 	XmlReadingThread.join();
 
 	if (ret)
-		return hPSF.release();
+		return hPSF.release() - 1;
 	else
 		return nullptr;
 }
