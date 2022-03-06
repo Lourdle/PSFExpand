@@ -83,7 +83,7 @@ static wstring ShortPathName(PCWSTR pPathName)
 	wstring Name = L"\\\\?\\";
 	DWORD Length;
 	PCWSTR pLongName;
-	bool unc = false;;
+	bool unc = false;
 
 	if (wcsncmp(pPathName, L"\\\\?\\", 4))
 	{
@@ -230,6 +230,9 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 	wstring CabFile;
 	if (pCabFile)
 	{
+		if (!AccessFile(pCabFile))
+			return false;
+
 		if (_wcsicmp(pCabFile + wcslen(pCabFile) - 4, L".cab"))
 		{
 			SetLastError(ERROR_BAD_FORMAT);
@@ -335,7 +338,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 	wstring XmlFile;
 	if (!pXmlFile)
 	{
-		XmlFile = ShortPathName(pOut);
+		XmlFile = LongPathName(pOut);
 		if (XmlFile == L"")
 			return false;
 		XmlFile += L"\\express.psf.cix.xml";

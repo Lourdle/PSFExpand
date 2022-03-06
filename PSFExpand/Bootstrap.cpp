@@ -377,7 +377,7 @@ int wmain(int argc, wchar_t** argv)
 		Start = 2;
 
 		PCWSTR pLang = GetSubstringFromArgString(argv[1], 5);
-		if (!pLang)
+		if (!pLang || pLang == reinterpret_cast<PCWSTR>(-1))
 			pLang = L"en";
 
 		switch (CompareStrings(pLang, { L"zh-Hans",L"en" }, {}))
