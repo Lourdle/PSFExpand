@@ -456,15 +456,35 @@ PSFExtHandler_OpenFile(
 		hPSF->PSF.resize(length - 1);
 		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(hPSF->PSF.c_str()), nullptr) == 0)
 			return FALSE;
-		if (wcsncmp(hPSF->PSF.c_str(), L"\\\\?\\", 4))
-		{
-			wstring tmp = L"\\\\?\\";
-			if (hPSF->PSF[1] == '\\' && hPSF->PSF[0] == '\\')
-				tmp += L"UNC\\";
 
-			tmp += hPSF->PSF;
-			hPSF->PSF = move(tmp);
+		wstring Psf;
+		length = GetLongPathNameW(hPSF->PSF.c_str(), nullptr, 0);
+		if (length == 0)
+		{
+			Psf = L"\\\\?\\";
+			Psf += hPSF->PSF;
+			length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
+			if (length == 0)
+			{
+				Psf = L"\\\\?\\";
+				Psf += L"UNC\\";
+				Psf += hPSF->PSF;
+				length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
+				if (length == 0)
+					return FALSE;
+
+				psf = Psf.c_str();
+			}
+			else
+				psf = Psf.c_str();
 		}
+		hPSF->PSF.resize(length - 1);
+
+		wstring tmp;
+		tmp.resize(length - 1);
+		if (!GetLongPathNameW(hPSF->PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
+			return FALSE;
+		hPSF->PSF = move(tmp);
 
 		hPSF->hPSF = CreateFileW(hPSF->PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
@@ -514,9 +534,12 @@ PSFExtHandler_OpenFile(
 		GetShortPathNameW(Xml.c_str(), const_cast<LPWSTR>(tmp.c_str()), Length);
 		tmp.swap(Xml);
 	}
-	Xml.erase(Xml.cbegin(), Xml.cbegin() + 4);
-	if (!wcsncmp(Xml.c_str(), L"UNC\\", 4))
-		Xml.erase(Xml.cbegin(), Xml.cbegin() + 4);
+	if (!wcsncmp(Xml.c_str(), L"\\\\?\\", 4))
+		if (!wcsncmp(Xml.c_str() + 4, L"UNC\\", 4))
+			Xml.erase(Xml.cbegin(), Xml.cbegin() + 4);
+		else
+			Xml.erase(Xml.cbegin(), Xml.cbegin() + 8);
+
 	Xml.shrink_to_fit();
 
 
