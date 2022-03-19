@@ -12,7 +12,7 @@
 ##### CabFile 选项
 可选选项。使用方法为在命令行加入`/CabFile:<文件路径>`。可以不区分大小写，因此不支持路径长度过长的文件。使用此选项将隐式指定 XML 文件为存储目录下的 express.psf.cix.xml，若 CAB 文件名为 路径\Windows*.*-KB???????-*_*.cab 则 PSF 文件名为路径\Windows*.*-KB???????-*_*.psf，否则将 CAB 文件的文件扩展名改为“psf”并作为 PSF 文件名；存储目录为去除扩展名的 CAB 文件名。可显式指定 PSF、XML 文件名和存储文件夹。  
 如果使用此选项，存储提取文件的文件夹必须为空。  
-例如：在 D: 下存在 Windows10.0-KB0000000-x64_00000000.cab 文件和 Windows10.0-KB0000000-x64_ffffffff.psf 文件。运行 PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab，程序会搜索 D:\Windows10.0-KB0000000-x64_*.psf 文件，最终选择 D:\Windows10.0-KB0000000-x64_ffffffff.psf.如果无误就自动将 CAB 文件展开到 D:\Windows10.0-KB0000000-amd64_00000000 目录下。选择包含文件信息的 XML 文件为 D:\Windows10.0-KB0000000-x64_00000000\express.psf.cix.xml 然后展开 PSF 文件到 D:\Windows10.0-KB0000000-x64_00000000。
+例如：在"D:"下存在 Windows10.0-KB0000000-x64_00000000.cab 文件和 Windows10.0-KB0000000-x64_ffffffff.psf 文件。运行 PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab，程序会搜索 D:\Windows10.0-KB0000000-x64_*.psf 文件，最终选择 D:\Windows10.0-KB0000000-x64_ffffffff.psf.如果无误就自动将 CAB 文件展开到 D:\Windows10.0-KB0000000-amd64_00000000 目录下。选择包含文件信息的 XML 文件为 D:\Windows10.0-KB0000000-x64_00000000\express.psf.cix.xml 然后展开 PSF 文件到 D:\Windows10.0-KB0000000-x64_00000000。
 ##### XmlFile 选项
 若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/XmlFile:<文件路径>`。可以不区分大小写。
 ##### PsfFile 选项
