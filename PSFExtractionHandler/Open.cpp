@@ -8,8 +8,6 @@
 #include <mutex>
 #include <thread>
 
-#include <omp.h>
-
 #include "PSFExtHandlerFrame.h"
 
 using namespace std;
@@ -303,6 +301,7 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 	CoInitialize(nullptr);
 
 	Ret = TRUE;
+
 	try
 	{
 		XmlDocument doc(pXml);
@@ -331,13 +330,11 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 #pragma omp parallel
 		{
 			int thread = omp_get_thread_num();
-			DWORD range = hPSF->FileCount / n;
-			FileInfo* pFileInfo = hPSF->Files.get() + range * thread;
-			if (thread == n - 1)
-				range = hPSF->FileCount - range * (n - 1);
+			DWORD range;
+			FileInfo* pFileInfo = hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, range);
 
 			Mutex.lock();
-			XmlNode node = list[hPSF->FileCount / n * thread];
+			XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files.get())];
 			Mutex.unlock();
 
 			try

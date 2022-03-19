@@ -27,7 +27,8 @@ First release.
 
 1. Optimized the file processing mechanism and support long file names.
 2. Added the feature of PSF file format validity check.
-3. Other unlisted detail fixes.
+3. Optimize parallel multi-thread scheduling.
+4. Other unlisted detail fixes.
 
 - 1.0.1
 

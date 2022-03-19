@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "framework.h"
 
-#include <omp.h>
-
 #include <functional>
 #include <utility>
 #include <deque>
@@ -188,16 +186,11 @@ PSFExtHandler_ExpandPSF(
 				goto END;
 
 		{
-			DWORD range = hPSF->FileCount / n;
-			if (thread == n - 1)
-				range = hPSF->FileCount - range * (n - 1);
-
 			PSF psf;
-			psf.FileCount = range + 1;
-			psf.Files.reset(hPSF->Files.get() + hPSF->FileCount / n * thread);
+			psf.Files.reset(hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, psf.FileCount));
 			psf.hPSF = hPSFFile[thread];
 
-			for (DWORD i = 0; i != range && !cancel; ++i)
+			for (DWORD i = 0; i != psf.FileCount && !cancel; ++i)
 			{
 				DWORD ret = PSFExtHandler_ExtractFileToDirectoryByIndex(&psf - 1, i, outdir, nullptr, flags & !PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD);
 
@@ -228,7 +221,7 @@ PSFExtHandler_ExpandPSF(
 					Mutex.unlock();
 
 					PSFEXTHANDLER_EXPAND_INFO ei;
-					ei.dwIndex = range * thread + i;
+					ei.dwIndex = static_cast<DWORD>(psf.Files.get() - hPSF->Files.get()) + i;
 					ei.pFileName = psf.Files[i].name.c_str();
 					ei.dwCompletedBytes = completed;
 					ei.dwCompletedFileCount = completedfiles;

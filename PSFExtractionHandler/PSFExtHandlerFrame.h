@@ -52,7 +52,29 @@ bool Extract(
 	DWORD& Error
 );
 
+
+#include <omp.h>
+
+inline
+DWORD AssignThreadTask(DWORD dwTaskCount, DWORD dwCurrentThread, DWORD& dwRange)
+{
+	int n = omp_get_num_procs();
+
+	dwRange = dwTaskCount / n;
+	DWORD remainder = dwTaskCount % n;
+	DWORD start = dwRange * dwCurrentThread;
+
+	if (remainder > dwCurrentThread)
+		++dwRange;
+
+	if (remainder != 0)
+		start += remainder > dwCurrentThread ? dwCurrentThread : remainder;
+
+	return start;
+}
+
 #define dllimport dllexport
 #include "PSFExtractionHandler.h"
+
 
 #endif // !PSFEXTHANDLERFRAM_H
