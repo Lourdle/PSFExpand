@@ -10,7 +10,7 @@ The CAB file can be expanded manually and then the PSF file can be expanded usin
 It is recommended to use this tool to expand CAB files and PSF files, because running Expand.exe outputs too much file name information in the console, which seriously affects the speed, this tool will avoid this problem.
 ### PSFExpand Languages
 The application is available in Simplified Chinese and English, and the appropriate language will be selected at runtime under normal circumstances. The language can be specified explicitly using the `/Lang` option.  
-Specify the /Lang option to select the display language. To use it, add "/Lang:<Language>" to the command line immediately following the application name.
+Specify the /Lang option to select the display language. To use it, add "/Lang:\<Language>" to the command line immediately following the application name.
 
 Supported languages:
 - en English
