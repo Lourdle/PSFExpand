@@ -154,7 +154,7 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 			0,
 			nullptr,
 			FileCreationDisposition,
-			FILE_FLAG_WRITE_THROUGH,
+			0,
 			nullptr);
 
 		if (hFile == INVALID_HANDLE_VALUE)
