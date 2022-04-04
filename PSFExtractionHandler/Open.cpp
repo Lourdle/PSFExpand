@@ -296,7 +296,7 @@ BYTE chex2num(char c)
 }
 
 static
-void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
+void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret, bool st)
 {
 	CoInitialize(nullptr);
 
@@ -326,16 +326,18 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 		mutex Mutex;
 		bool except = false;
 
-		omp_set_num_threads(n);
+		omp_set_num_threads(st ? 1 : n);
 #pragma omp parallel
 		{
 			int thread = omp_get_thread_num();
-			DWORD range;
-			FileInfo* pFileInfo = hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, range);
+			DWORD range = hPSF->FileCount;
+			FileInfo* pFileInfo = hPSF->Files.get() + (st ? 0 : AssignThreadTask(hPSF->FileCount, thread, range));
 
-			Mutex.lock();
+			if (!st)
+				Mutex.lock();
 			XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files.get())];
-			Mutex.unlock();
+			if (!st)
+				Mutex.unlock();
 
 			try
 			{
@@ -346,17 +348,22 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 
 					if (i)
 					{
-						Mutex.lock();
-						try
-						{
+						if (st)
 							++node;
-						}
-						catch (...)
+						else
 						{
+							Mutex.lock();
+							try
+							{
+								++node;
+							}
+							catch (...)
+							{
+								Mutex.unlock();
+								throw;
+							}
 							Mutex.unlock();
-							throw;
 						}
-						Mutex.unlock();
 					}
 
 					FileInfo& fi = pFileInfo[i];
@@ -435,6 +442,17 @@ HPSF
 PSFExtHandler_OpenFile(
 	PCWSTR psf,
 	PCWSTR xml)
+{
+	return PSFExtHandler_OpenFileEx(psf, xml, nullptr, 0);
+}
+
+PSFEXTRACTIONHANDLER_API
+HPSF
+PSFExtHandler_OpenFileEx(
+	PCWSTR psf,
+	PCWSTR xml,
+	PDWORD,
+	WORD flags)
 {
 	unique_ptr<PSF, void(*)(HPSF)> hPSF(new PSF,
 		[](HPSF hPSF)
@@ -541,7 +559,7 @@ PSFExtHandler_OpenFile(
 
 
 	BOOL ret;
-	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret));
+	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret), flags & PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD);
 	XmlReadingThread.join();
 
 	if (ret)
