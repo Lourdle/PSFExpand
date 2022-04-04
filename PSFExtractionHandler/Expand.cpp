@@ -187,7 +187,13 @@ PSFExtHandler_ExpandPSF(
 
 		{
 			PSF psf;
-			psf.Files.reset(hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, psf.FileCount));
+			if (flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD)
+			{
+				psf.Files.reset(hPSF->Files.get());
+				psf.FileCount = hPSF->FileCount;
+			}
+			else
+				psf.Files.reset(hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, psf.FileCount));
 			psf.hPSF = hPSFFile[thread];
 
 			for (DWORD i = 0; i != psf.FileCount && !cancel; ++i)
