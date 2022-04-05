@@ -14,25 +14,25 @@ PSFExtHandler_GetFileInfo(
 );
 ````
 ### Parameters
-hPSF\[in\]  
+`[in] hPSF`  
 A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md).
 
-dwIndex\[in\]  
+`[in] dwIndex`  
 The target file index. The order of the file indexes is the same as the order of the files within the XML file. The index starts with `0` and has a maximum of `number of files -1`. To get the number of files, see [PSFExtHandler_GetFileCount](PSFExtHandler_GetFileCount_en.md).
 
-pszFileName\[out, optional\]  
+`[out, optional] pszFileName`  
 Optional. Pointer to buffer to receive filename.
 
-pcbData\[in, out, optional\]  
+`[in, out, optional] pcbData`  
 Optional. This parameter can be NULL only if pszFileName is NULL.  
 The parameter receives the size of the file name including null characters, in bytes.  
 When the filename buffer is not large enough, it will return FALSE and set LastError to ERROR_MORE_DATA.  
 If pszFileName is NULL and pcbData is not NULL, return TRUE after receiving the data size, and set LastError to ERROR_SUCCESS.
 
-pdwFileSize\[out, optional\]  
+`[out, optional] pdwFileSize`  
 Optional. The size of the received file, in bytes.
 
-Type\[out, optional\]  
+`[out, optional] Type`  
 Optional, the type of the file to receive. For information on types, see [PSFEXTHANDLER_FILE_TYPE](PSFEXTHANDLER_FILE_TYPE_en.md).  
 ### Return Value
 Returns TRUE on success, FALSE on failure.

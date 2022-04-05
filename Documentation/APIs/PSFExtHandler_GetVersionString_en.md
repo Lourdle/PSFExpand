@@ -8,4 +8,4 @@ PSFExtHandler_GetVersionString();
 ### Parameters
 None.
 ### Return Value
-Returns the version string, eg: L"1.0.1".
+Returns the version string, eg: L"1.1.1".

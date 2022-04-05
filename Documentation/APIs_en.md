@@ -27,10 +27,12 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFExtHandler_GetVersion](APIs/PSFExtHandler_GetVersion_en.md)
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_en.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_en.md)
+- [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
 ##### PSF Extraction Handler Enumeration
 - [PSFEXTHANDLER_FILE_TYPE](APIs/PSFEXTHANDLER_FILE_TYPE_en.md)
 ##### PSF Extraction Handler Structure
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_en.md)
 ##### PSF Extraction Handler Constants
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_en.md)
+- [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_en.md)
 - [PSFEXTHANDLER_VERSION](APIs/PSFEXTHANDLER_VERSION_en.md)

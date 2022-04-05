@@ -8,8 +8,8 @@ PSFExtHandler_ClosePSF(
 );
 ````
 ### 参数
-hPSF\[in\]  
-一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)的返回值。关闭一个已经关闭的或其他对象的句柄，是未定义的行为。
+`[in] hPSF`  
+一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)的返回值。关闭一个已经关闭的或其他对象的句柄，是未定义的行为。
 ### 返回值
 此函数没有返回值。
 ### 备注

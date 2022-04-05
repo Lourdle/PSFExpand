@@ -8,4 +8,4 @@ PSFExtHandler_GetVersionString();
 ### 参数
 无。
 ### 返回值
-返回版本字符串，如：L"1.0.1"。
+返回版本字符串，如：L"1.1.1"。

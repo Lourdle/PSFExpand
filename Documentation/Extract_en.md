@@ -8,17 +8,19 @@ Extract the file specified in the PSF
 - Verify to verify that the file data is intact
 - Verbose verbose mode, prints the filename in the console window every time a file is extracted
 ##### XmlFile Options
-Required option. The usage method is to add `/XmlFile:<file path>` to the command line. Can be case insensitive.
+Required option. The usage method is to append `/XmlFile:<file path>` to the command line. Can be case insensitive.
 ##### PsfFile Options
-Required option. The usage method is to add `/PsfFile:<file path>` to the command line. Can be case insensitive.
+Required option. The usage method is to append `/PsfFile:<file path>` to the command line. Can be case insensitive.
 ##### File Options
-Required option. To use it, add `/File:<filename>` to the command line. Can be case insensitive and can use file names with file wildcards (\*,?).
+Required option. To use it, append `/File:<filename>` to the command line. Can be case insensitive and can use file names with file wildcards (\*,?).
 ##### StorageDirectory Options
-Required option. To use it, add `/StorageDirectory:<folder path>` to the command line. Can be case insensitive.
+Required option. To use it, append `/StorageDirectory:<folder path>` to the command line. Can be case insensitive.
 ##### Verify Options
-Optional option. Adding the `/Verify` option to the program to perform a hash check before the data is written to the file. If the file data is corrupted, it will give a `data invalid` error message.
+Optional option. Appending the `/Verify` option to the program to perform a hash check before the data is written to the file. If the file data is corrupted, it will give a `data invalid` error message.
 ##### Verbose Options
-Optional option. Adding the `/Verbose` option to the program will output the filename to the console after successfully writing a file.
+Optional option. Appending the `/Verbose` option to the program will output the filename to the console after successfully writing a file.
+##### SafeRead Option
+Optional option. Appending the `/SafeRead` option, program will use a single thread when reading XML files to avoid program failure due to exceptions caused by a small probability of conflict.
 ### Examples:
 - Extract and verify the historycix.cab file in D:\Windows10.0-KB0000000-x64.psf from D:\Windows10.0-KB0000000-x64\express.psf.cix.xml that saves the file information and verify it Errors are stored in D:\Windows10.0-KB0000000-x64.
 >PSFExpand.exe /Extract /PsfFile:D:\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /StorageDirectory:D:\Windows10.0-KB0000000-x64

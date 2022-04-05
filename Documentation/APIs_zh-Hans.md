@@ -27,10 +27,12 @@
 - [PSFExtHandler_GetVersion](APIs/PSFExtHandler_GetVersion_zh-Hans.md)
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_zh-Hans.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_zh-Hans.md)
+- [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_zh-Hans.md)
 ##### PSF Extraction Handler 枚举
 - [PSFEXTHANDLER_FILE_TYPE](APIs/PSFEXTHANDLER_FILE_TYPE_zh-Hans.md)
 ##### PSF Extraction Handler 结构
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_zh-Hans.md)
 ##### PSF Extraction Handler 常量
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md)
+- [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md)
 - [PSFEXTHANDLER_VERSION](APIs/PSFEXTHANDLER_VERSION_zh-Hans.md)
