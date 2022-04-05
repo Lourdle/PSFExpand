@@ -52,12 +52,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "APIs", "APIs", "{D5DF60FA-D
 		Documentation\APIs\PSFExtHandler_GetVersion_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetVersion_zh-Hans.md
 		Documentation\APIs\PSFExtHandler_GetVersionString_en.md = Documentation\APIs\PSFExtHandler_GetVersionString_en.md
 		Documentation\APIs\PSFExtHandler_GetVersionString_zh-Hans.md = Documentation\APIs\PSFExtHandler_GetVersionString_zh-Hans.md
-		PSFEXTHANDLER_OPEN_FLAG_en.md = PSFEXTHANDLER_OPEN_FLAG_en.md
-		PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md = PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md
+		Documentation\APIs\PSFEXTHANDLER_OPEN_FLAG_en.md = Documentation\APIs\PSFEXTHANDLER_OPEN_FLAG_en.md
+		Documentation\APIs\PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md = Documentation\APIs\PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md
 		Documentation\APIs\PSFExtHandler_OpenFile_en.md = Documentation\APIs\PSFExtHandler_OpenFile_en.md
 		Documentation\APIs\PSFExtHandler_OpenFile_zh-Hans.md = Documentation\APIs\PSFExtHandler_OpenFile_zh-Hans.md
-		PSFExtHandler_OpenFileEx_en.md = PSFExtHandler_OpenFileEx_en.md
-		PSFExtHandler_OpenFileEx_zh-Hans.md = PSFExtHandler_OpenFileEx_zh-Hans.md
+		Documentation\APIs\PSFExtHandler_OpenFileEx_en.md = Documentation\APIs\PSFExtHandler_OpenFileEx_en.md
+		Documentation\APIs\PSFExtHandler_OpenFileEx_zh-Hans.md = Documentation\APIs\PSFExtHandler_OpenFileEx_zh-Hans.md
 		Documentation\APIs\PSFEXTHANDLER_VERSION_en.md = Documentation\APIs\PSFEXTHANDLER_VERSION_en.md
 		Documentation\APIs\PSFEXTHANDLER_VERSION_zh-Hans.md = Documentation\APIs\PSFEXTHANDLER_VERSION_zh-Hans.md
 	EndProjectSection
