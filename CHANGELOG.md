@@ -1,8 +1,13 @@
 # PSFExpand & PSFExtractionHandler Changelog
 
 ## PSFExpand
-- 1.0.2.0
+- 1.1.1.0
+1. Upgraded the default API version to 1.0.2.
+2. Added "SafeRead" option.
+3. Fixed several documentation errors.
+4. Other unlisted detail fixes.
 
+- 1.0.2.0
 1. Fixed the problem of wrong file name when selecting PSF file.
 2. Added the function of displaying related files before file expansion.
 3. Optimized the file processing mechanism and support long file names.
@@ -10,7 +15,6 @@
 5. Other unlisted detail fixes.
 
 - 1.0.1.1
-
 1. Fixed the problem that the filter fails to process '?'.
 2. Added display language active selection feature.
 3. Added CAB file expansion and automatic selection of PSF file and XML file.
@@ -18,18 +22,21 @@
 
 
 - 1.0.1.0
-
 First release.
 
 
 ## PSFExtractionHandler
-- 1.0.2
+- 1.1.1
+1. Canceled file write-through to improve file writing speed.
+2. Fixed the problem that single thread does not expand the entire file.
+3. Supports reading XML files with a single thread to avoid program failures caused by small probability conflict exceptions.
+4. Other unlisted detail fixes.
 
+- 1.0.2
 1. Optimized the file processing mechanism and support long file names.
 2. Added the feature of PSF file format validity check.
 3. Optimize parallel multi-thread scheduling.
 4. Other unlisted detail fixes.
 
 - 1.0.1
-
 First release.
