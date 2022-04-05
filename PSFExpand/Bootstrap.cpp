@@ -14,6 +14,7 @@ static PCWSTR	g_pPsfFile;
 static PCWSTR	g_pXmlFile;
 static BYTE		g_Flags;
 
+bool SafeRead = false;
 
 struct Error
 {
@@ -80,9 +81,9 @@ struct PrintHelp
 	static void ListHelp()
 	{
 		wcout << L"/List /XmlFile:<path_to_xml_file> [/DisplayDetail] [/Screen {criterias}]\n\n";
-		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /DisplayDetail\t%ls\t\t\n  /Screen {criterias}\t%ls\n\n%ls\n\n",
+		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /DisplayDetail\t%ls\t\t\n  /SafeRead\t\t%ls  /Screen {criterias}\t%ls\n%ls\n\n",
 			GetString(List_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(),
-			GetString(DisplayDetail_Option).get(), GetString(Screen_Option).get(), GetString(Examples).get());
+			GetString(DisplayDetail_Option).get(), GetString(SafeRead_Option).get(), GetString(Screen_Option).get(), GetString(Examples).get());
 		wcout << L"  PSFExpand.exe /List /DisplayDetail /XmlFile:D:\\express.psf.cix.xml\n\n  PSFExpand.exe /List /XmlFile:D:\\express.psf.cix.xml /Screen *.dll\n";
 		ExitProcess(0);
 	}
@@ -90,9 +91,9 @@ struct PrintHelp
 	static void ExtractHelp()
 	{
 		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file> /File:<file_name>\n  /StorageDirectory:<path_to_storage_dir> [/Verify] [/Verbose]\n\n";
-		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /File\t\t\t%ls\n  /StorageDirectory\t%ls\n  /Verify\t\t%ls\n  /Verbose\t\t%ls\n\n%ls\n\n",
+		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /File\t\t\t%ls\n  /StorageDirectory\t%ls\n  /Verify\t\t%ls\n  /Verbose  \t\t%ls\n  /SafeRead\t\t%ls\n%ls\n\n",
 			GetString(Extract_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(), GetString(PsfFile_Option).get(),
-			GetString(File_Option).get(), GetString(StorageDirectory_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(Examples).get());
+			GetString(File_Option).get(), GetString(StorageDirectory_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(SafeRead_Option).get(), GetString(Examples).get());
 		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /StorageDirectory:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /File:*.dll\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /StorageDirectory:D:\\Windows10.0-KB0000000-x64\\dlls\n";
 		ExitProcess(0);
 	}
@@ -100,9 +101,9 @@ struct PrintHelp
 	static void ExpandHelp()
 	{
 		wcout << L"/Expand {file_info_options} [/Verify]\n  [/SingleThread] [/NoProgressDisplay]\n\n";
-		wprintf(L"%ls\n%ls\n\n  /CabFile\t\t%ls\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /StorageDirectory\t%ls\n\n%ls\n\n  /Verify\t\t%ls\n  /SingleThread\t\t%ls\n  /NoProgressDisplay\t%ls\n\n%ls\n\n",
+		wprintf(L"%ls\n%ls\n\n  /CabFile\t\t%ls\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /StorageDirectory\t%ls\n\n%ls\n\n  /Verify\t\t%ls\n  /SingleThread\t\t%ls\n  /NoProgressDisplay\t%ls\n  /SafeRead\t\t%ls\n%ls\n\n",
 			GetString(Expand_Description).get(), GetString(File_Info_Options).get(), GetString(CabFile_Option).get(), GetString(XmlFile_Option).get(), GetString(StorageDirectory_Option).get(), GetString(PsfFile_Option).get(), GetString(Options).get(),
-			GetString(Verify_Option).get(), GetString(SingleThread_Option).get(), GetString(NoProgressDisplay_Option).get(), GetString(Examples).get());
+			GetString(Verify_Option).get(), GetString(SingleThread_Option).get(), GetString(NoProgressDisplay_Option).get(), GetString(SafeRead_Option).get(), GetString(Examples).get());
 		wcout << L"  PSFExpand.exe /Expand /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /Verify\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /StorageDirectory:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Expand /CabFile:D:\\Windows10.0-KB0000000-x64_00000000.cab /Verify\n";
 		ExitProcess(0);
 	}
@@ -174,7 +175,8 @@ static int ListArg(int argc, wchar_t** argv)
 				L"Screen",
 				L"Help",
 				L"H",
-				L"?"
+				L"?",
+				L"SafeRead"
 			},
 			{ }))
 		{
@@ -194,6 +196,9 @@ static int ListArg(int argc, wchar_t** argv)
 				PrintHelp::ListHelp();
 			else
 				Error::InvalidHelpArg();
+			break;
+		case 5:
+			SafeRead = true;
 			break;
 		default:
 			if (ret
@@ -238,7 +243,8 @@ static int ExtractArg(int argc, wchar_t** argv)
 				L"File",
 				L"StorageDirectory",
 				L"Verify",
-				L"Verbose"
+				L"Verbose",
+				L"SafeRead"
 			},
 			{ 3,4 }))
 		{
@@ -266,6 +272,9 @@ static int ExtractArg(int argc, wchar_t** argv)
 			break;
 		case 6:
 			g_Flags |= FLAG_ARG_EXTRACT_VERBOSE;
+			break;
+		case 7:
+			SafeRead = true;
 			break;
 		default:
 			Error::InvalidArg(argv[i] + 1);
@@ -310,7 +319,8 @@ int ExpandArg(int argc, wchar_t** argv)
 				L"Verify",
 				L"SingleThread",
 				L"NoProgressDisplay",
-				L"CabFile"
+				L"CabFile",
+				L"SafeRead"
 			},
 			{ 3,7 }))
 		{
@@ -349,6 +359,9 @@ int ExpandArg(int argc, wchar_t** argv)
 			pCabFile = pCab;
 		}
 		break;
+		case 8:
+			SafeRead = true;
+			break;
 		default:
 			Error::InvalidArg(argv[i] + 1);
 		}
@@ -383,10 +396,10 @@ int wmain(int argc, wchar_t** argv)
 		switch (CompareStrings(pLang, { L"zh-Hans",L"en" }, {}))
 		{
 		case 0:
-			SetThreadUILanguage(LANG_CHINESE_SIMPLIFIED);
+			SetThreadUILanguage(MAKELANGID(LANG_CHINESE_SIMPLIFIED, SUBLANG_NEUTRAL));
 			break;
 		default:
-			SetThreadUILanguage(LANG_ENGLISH);
+			SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
 			break;
 		}
 	}

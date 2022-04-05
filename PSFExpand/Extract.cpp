@@ -13,7 +13,7 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Ve
 {
 	PreProcessScreeners(&pFile, 1);
 
-	unique_ptr<PSF, void(*)(HPSF)> hPSF(PSFExtHandler_OpenFile(wcsncmp(pPsf, L"\\\\", 2) == 0 ? pPsf : (wstring(L"\\\\?\\") + pPsf).c_str(), pXml),
+	unique_ptr<PSF, void(*)(HPSF)> hPSF(PSFExtHandler_OpenFileEx(wcsncmp(pPsf, L"\\\\", 2) == 0 ? pPsf : (wstring(L"\\\\?\\") + pPsf).c_str(), pXml, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0),
 		[](HPSF hPSF)
 		{
 			DWORD Err = GetLastError();

@@ -350,10 +350,10 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		if (Psf == L"")
 			return false;
 
-		hPSF = PSFExtHandler_OpenFile(Psf.c_str(), pXmlFile);
+		hPSF = PSFExtHandler_OpenFileEx(Psf.c_str(), pXmlFile, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
 	}
 	else
-		hPSF = PSFExtHandler_OpenFile(pPsfFile, pXmlFile);
+		hPSF = PSFExtHandler_OpenFileEx(pPsfFile, pXmlFile, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
 
 	if (!hPSF)
 		return false;
@@ -372,7 +372,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? reinterpret_cast<PSFEXTHANDLER_PROGRESS_PROC>(NULL) :
 		[](const PSFEXTHANDLER_EXPAND_INFO* iep, PVOID pProgress)
 		{
-			BYTE Progress = static_cast<BYTE>(iep->dwCompletedBytes / (iep->dwTotalBytes / 100));
+			BYTE Progress = static_cast<BYTE>(static_cast<ULONGLONG>(iep->dwCompletedBytes) * 100 / iep->dwTotalBytes);
 
 			if (Progress != *reinterpret_cast<PBYTE>(pProgress))
 			{

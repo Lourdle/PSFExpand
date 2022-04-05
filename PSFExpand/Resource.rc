@@ -72,6 +72,7 @@ BEGIN
     Expanding_Cab           "正在展开 CAB 文件……\n"
     Done                    "完成。\n"
     FilePath                "文件路径："
+    SafeRead_Option         "使用单线程读取 XML 文件以避免因冲突而引发的异常。\n"
 END
 
 #endif    // 中文(简体) resources
@@ -91,8 +92,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,2,0
- PRODUCTVERSION 1,0,2,0
+ FILEVERSION 1,1,1,1
+ PRODUCTVERSION 1,1,1,1
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -205,6 +206,7 @@ BEGIN
     Expanding_Cab           "Expanding CAB file...\n"
     Done                    "Done.\n"
     FilePath                "FilePath:"
+    SafeRead_Option         "Uses a single thread to read the XML file to avoid the exception due to conflicts.\n"
 END
 
 #endif    // 英语(中性) resources

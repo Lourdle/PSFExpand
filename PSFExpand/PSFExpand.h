@@ -16,6 +16,7 @@ constexpr BYTE FLAG_ARG_EXPAND_VERIFY = 0x0001;
 constexpr BYTE FLAG_ARG_EXPAND_SINGLETHREAD = 0x0002;
 constexpr BYTE FLAG_ARG_EXPAND_NOPROGRESSDISPLAY = 0x0004;
 
+extern bool SafeRead;
 
 std::unique_ptr<WCHAR[]> GetString(UINT);
 

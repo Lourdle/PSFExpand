@@ -60,7 +60,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 {
 	PreProcessScreeners(Screeners, nScreenerCount);
 
-	HPSF hPSF = PSFExtHandler_OpenFile(nullptr, pXml);
+	HPSF hPSF = PSFExtHandler_OpenFileEx(nullptr, pXml, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
 	if (!hPSF)
 		return false;
 
