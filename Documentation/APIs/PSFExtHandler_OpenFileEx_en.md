@@ -18,7 +18,7 @@ Optional. A PSF filename string. If NULL, the returned PSF handle can only be us
 `[in] pXmlFile`  
 A string for the XML filename.
 
-`Reserved` 
+`Reserved`  
 This parameter is reserved, generally NULL.
 
 `[in] wFlags`  
