@@ -9,8 +9,8 @@ extern "C" {
 
 typedef struct PSF PSF, * HPSF;
 
-#define PSFEXTHANDLER_MAJOR_VERSION									((DWORD)1)
-#define PSFEXTHANDLER_MINOR_VERSION									((DWORD)1)
+#define PSFEXTHANDLER_MAJOR_VERSION									((DWORD)2)
+#define PSFEXTHANDLER_MINOR_VERSION									((DWORD)0)
 #define PSFEXTHANDLER_PATCH_VERSION									((DWORD)1)
 
 #define PSFEXTHANDLER_CURRENT_VERSION								(PSFEXTHANDLER_MAJOR_VERSION << 22\
@@ -18,15 +18,18 @@ typedef struct PSF PSF, * HPSF;
 																	| PSFEXTHANDLER_PATCH_VERSION << 2)
 
 PSFEXTRACTIONHANDLER_API
+_Must_inspect_result_
 DWORD
 PSFExtHandler_GetVersion();
 
 PSFEXTRACTIONHANDLER_API
+_Must_inspect_result_
 PCWSTR
 PSFExtHandler_GetVersionString();
 
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
+_Ret_maybenull_
 HPSF
 PSFExtHandler_OpenFile(
 	_In_opt_	PCWSTR pPSFFile,
@@ -37,6 +40,7 @@ PSFExtHandler_OpenFile(
 
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
+_Ret_maybenull_
 HPSF
 PSFExtHandler_OpenFileEx(
 	_In_opt_	PCWSTR pPSFFile,
@@ -46,12 +50,14 @@ PSFExtHandler_OpenFileEx(
 );
 
 PSFEXTRACTIONHANDLER_API
+_Must_inspect_result_
 DWORD
 PSFExtHandler_GetLongestFileNameLength(
 	_In_		HPSF hPSF
 );
 
 PSFEXTRACTIONHANDLER_API
+_Must_inspect_result_
 DWORD
 PSFExtHandler_GetFileCount(
 	_In_		HPSF hPSF
@@ -66,7 +72,6 @@ typedef enum _PSFEXTHANDLER_FILE_TYPE
 }PSFEXTHANDLER_FILE_TYPE;
 
 PSFEXTRACTIONHANDLER_API
-_Must_inspect_result_
 BOOL
 PSFExtHandler_GetFileInfo(
 	_In_		HPSF hPSF,

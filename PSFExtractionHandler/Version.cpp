@@ -12,5 +12,5 @@ PCWSTR
 PSFEXTRACTIONHANDLER_API
 PSFExtHandler_GetVersionString()
 {
-	return L"1.1.1";
+	return L"2.0.1";
 }
