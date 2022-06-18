@@ -7,8 +7,8 @@ HPSF
 PSFExtHandler_OpenFile(
     _In_opt_    PCWSTR pPSFFile,
     _In_        PCWSTR pXmlFile,
-	_Reserved_  PDWORD Reserved,
-	_In_        WORD wFlags
+    _Reserved_  PDWORD Reserved,
+    _In_        WORD wFlags
 );
 ````
 ### Parameters
@@ -18,7 +18,7 @@ Optional. A PSF filename string. If NULL, the returned PSF handle can only be us
 `[in] pXmlFile`  
 A string for the XML filename.
 
-`Reserved` 
+`Reserved`  
 This parameter is reserved, generally NULL.
 
 `[in] wFlags`  
