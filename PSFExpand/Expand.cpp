@@ -288,6 +288,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		wprintf(GetString(File_Count).get(), L"CAB", n);
 		SetCurrentDirectoryW(OutDir.c_str());
 		PSFExtHandler_util_ExpandCabinet(hCab,
+			Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr :
 			[](PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, const PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS* info, PHANDLE, PVOID)
 			{
 				if (State == State_CloseFile)
@@ -333,7 +334,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		| PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY
 		| (Flags & FLAG_ARG_EXPAND_SINGLETHREAD ? PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD : 0)
 		| (Flags & FLAG_ARG_EXPAND_VERIFY ? PSFEXTHANDLER_EXTRACT_FLAG_VERIFY : 0),
-		Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? reinterpret_cast<PSFEXTHANDLER_PROGRESS_PROC>(NULL) :
+		Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr :
 		[](const PSFEXTHANDLER_EXPAND_INFO* iep, PVOID pProgress)
 		{
 			BYTE Progress = static_cast<BYTE>(static_cast<ULONGLONG>(iep->dwCompletedBytes) * 100 / iep->dwTotalBytes);
