@@ -16,13 +16,11 @@ constexpr BYTE FLAG_ARG_EXPAND_VERIFY = 0x0001;
 constexpr BYTE FLAG_ARG_EXPAND_SINGLETHREAD = 0x0002;
 constexpr BYTE FLAG_ARG_EXPAND_NOPROGRESSDISPLAY = 0x0004;
 
-extern bool SafeRead;
-
 std::unique_ptr<WCHAR[]> GetString(UINT);
 
 PWSTR GetSubstringFromArgString(PWSTR pString, UINT ArgLen);
 
-UINT CompareStrings(PCWSTR pString, std::initializer_list<PCWSTR> StringList, std::initializer_list<UINT> StringIndexForComparingHeadOnly);
+UINT CompareStrings(PCWSTR pString, std::initializer_list<PCWSTR> StringList, std::initializer_list<UINT> StringIndexForComparingHeadOnly = {});
 
 bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreenerCount);
 
@@ -34,7 +32,6 @@ void PreProcessScreeners(const PWSTR* Screeners, int nScreenerCount)
 			if (Screeners[i][j] == '/')
 				Screeners[i][j] = '\\';
 }
-bool Screen(std::wstring String, PCWSTR pScreener);
 
 bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Verify, bool Verbose);
 

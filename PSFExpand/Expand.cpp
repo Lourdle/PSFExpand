@@ -9,6 +9,8 @@
 
 using namespace std;
 
+#include <Shlwapi.h>
+
 inline
 static bool AccessFile(PCWSTR pFile)
 {
@@ -155,7 +157,7 @@ static wstring MakePsfPathString(PCWSTR pCabFile)
 			break;
 		}
 
-	if (Screen(pCab, L"Windows*.*-KB???????-*_*.cab"))
+	if (PathMatchSpecW(pCab, L"Windows*.*-KB???????-*_*.cab"))
 	{
 		Psf.erase(pCab - pCabFile + Psf.cbegin(), Psf.cend());
 
@@ -279,59 +281,20 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 	if (pCabFile)
 	{
-		wcout << GetString(Expanding_Cab);
+		wprintf(GetString(Expanding).get(), L"CAB");
 
-		HANDLE hNul = CreateFileW(L"NUL",
-			GENERIC_WRITE,
-			0,
-			nullptr,
-			OPEN_EXISTING,
-			FILE_FLAG_WRITE_THROUGH,
-			nullptr);
-
-		STARTUPINFOW si = { sizeof(si) };
-		si.hStdOutput = hNul;
-		si.dwFlags = STARTF_USESTDHANDLES;
-
-		wstring CmdLine(L"Expand.exe ");
-		CmdLine += pCabFile;
-		CmdLine += L" -f:* ";
-		CmdLine += ShortPathName(pOut).c_str();
-		PROCESS_INFORMATION pi;
-		if (!CreateProcessW(
-			nullptr,
-			const_cast<LPWSTR>(CmdLine.c_str()),
-			nullptr,
-			nullptr,
-			TRUE,
-			CREATE_NO_WINDOW,
-			nullptr,
-			nullptr,
-			&si,
-			&pi))
-		{
-			CloseHandle(hNul);
-			return false;
-		}
-
-		CloseHandle(pi.hThread);
-
-		WaitForSingleObject(pi.hProcess, INFINITE);
-		CloseHandle(hNul);
-
-		DWORD ExitCode;
-		GetExitCodeProcess(pi.hProcess, &ExitCode);
-		CloseHandle(pi.hProcess);
-
-		if (ExitCode != ERROR_SUCCESS)
-		{
-			SetLastError(ExitCode);
-			return false;
-		}
-		else
-			wcout << GetString(Done);
-
-		cout << '\n';
+		HANDLE hCab = PSFExtHandler_util_OpenCabinet(pCabFile);
+		WORD n = PSFExtHandler_util_CabinetGetFileCount(hCab);
+		wprintf(GetString(File_Count).get(), L"CAB", n);
+		SetCurrentDirectoryW(OutDir.c_str());
+		PSFExtHandler_util_ExpandCabinet(hCab,
+			[](PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, const PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS* info, PHANDLE, PVOID)
+			{
+				if (State == State_CloseFile)
+					cout << '\r' << static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles << '%';
+			}, nullptr);
+		PSFExtHandler_util_CloseCabinet(hCab);
+		cout << '\n' << endl;
 	}
 
 	HPSF hPSF;
@@ -350,17 +313,18 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		if (Psf == L"")
 			return false;
 
-		hPSF = PSFExtHandler_OpenFileEx(Psf.c_str(), pXmlFile, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
+		hPSF = PSFExtHandler_OpenFile(Psf.c_str(), pXmlFile);
 	}
 	else
-		hPSF = PSFExtHandler_OpenFileEx(pPsfFile, pXmlFile, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
+		hPSF = PSFExtHandler_OpenFile(pPsfFile, pXmlFile);
 
 	if (!hPSF)
 		return false;
 
 	DWORD n = PSFExtHandler_GetFileCount(hPSF);
 
-	wprintf(GetString(File_Count).get(), n);
+	wprintf(GetString(Expanding).get(), L"PSF");
+	wprintf(GetString(File_Count).get(), L"PSF", n);
 	BYTE Progress = 0;
 
 	BOOL ret = PSFExtHandler_ExpandPSF(hPSF, pOut,
@@ -377,7 +341,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 			if (Progress != *reinterpret_cast<PBYTE>(pProgress))
 			{
 				*reinterpret_cast<PBYTE>(pProgress) = Progress;
-				printf("\r%d%%", Progress);
+				cout << '\r' << static_cast<int>(Progress) << '%';
 			}
 
 			return TRUE;

@@ -9,11 +9,13 @@
 #include <string>
 using namespace std;
 
+#include <Shlwapi.h>
+
 bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Verify, bool Verbose)
 {
 	PreProcessScreeners(&pFile, 1);
 
-	unique_ptr<PSF, void(*)(HPSF)> hPSF(PSFExtHandler_OpenFileEx(wcsncmp(pPsf, L"\\\\", 2) == 0 ? pPsf : (wstring(L"\\\\?\\") + pPsf).c_str(), pXml, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0),
+	unique_ptr<PSF, void(*)(HPSF)> hPSF(PSFExtHandler_OpenFile(wcsncmp(pPsf, L"\\\\", 2) == 0 ? pPsf : (wstring(L"\\\\?\\") + pPsf).c_str(), pXml),
 		[](HPSF hPSF)
 		{
 			DWORD Err = GetLastError();
@@ -33,15 +35,15 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Ve
 	{
 		DWORD strSize;
 		PSFEXTHANDLER_FILE_TYPE type;
-		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, nullptr, &strSize, nullptr, &type))
+		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, nullptr, &strSize, nullptr, nullptr, &type))
 			break;
 
 		wstring File;
 		File.resize(strSize / 2 - 1);
-		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, const_cast<PWSTR>(File.c_str()), &strSize, nullptr, &type))
+		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, const_cast<PWSTR>(File.c_str()), &strSize, nullptr, nullptr, &type))
 			break;
 
-		if (Screen(File, pFile))
+		if (PathMatchSpecW(File.c_str(), pFile))
 			if (!PSFExtHandler_ExtractFileToDirectoryByIndex(hPSF.get(),
 				i,
 				pDestination, nullptr,

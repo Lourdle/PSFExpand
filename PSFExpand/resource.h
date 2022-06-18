@@ -25,7 +25,7 @@
 #define Screen_Option                   1021
 #define DisplayDetail_Option            1022
 #define File_Option                     1023
-#define StorageDirectory_Option         1024
+#define OutDir_Option                   1024
 #define Verify_Option                   1025
 #define Verbose_Option                  1026
 #define NoProgressDisplay_Option        1027
@@ -37,10 +37,9 @@
 #define Satified_File_Count             1033
 #define Extracted_File_Count            1034
 #define Extracting                      1035
-#define Expanding_Cab                   1036
+#define Expanding                       1036
 #define Done                            1037
 #define FilePath                        1038
-#define SafeRead_Option                 1039
 
 // Next default values for new objects
 // 

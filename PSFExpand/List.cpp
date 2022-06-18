@@ -9,58 +9,13 @@
 #include <iostream>
 using namespace std;
 
-bool Screen(wstring String, PCWSTR pScreener)
-{
-	wstring Screener = pScreener;
-	for (auto& i : Screener)
-		i = tolower(i);
-	for (auto& i : String)
-		i = tolower(i);
-
-	size_t last = 0;
-	vector<wstring> vStrings;
-	vector<bool> v;
-	for (size_t i = 0; i != Screener.size(); ++i)
-		if (Screener[i] == '*' || Screener[i] == '?')
-		{
-			vStrings.push_back(Screener.substr(last, i - last));
-			last = i + 1;
-			switch (Screener[i])
-			{
-			case '*':
-				v.push_back(false);
-				break;
-			case '?':
-				v.push_back(true);
-				break;
-			}
-		}
-	vStrings.push_back(Screener.substr(last, Screener.size()));
-
-	size_t searchpos = 0;
-	for (size_t i = 0; i != vStrings.size(); ++i)
-	{
-		auto pos = String.find(vStrings[i], searchpos);
-		if (pos == wstring::npos
-			|| i == 0 && pos != 0
-			|| i != 0 && v[i - 1] == true && searchpos != pos)
-			return false;
-
-		searchpos = pos + vStrings[i].size();
-		if (i != vStrings.size() - 1)
-			searchpos += v[i];
-		else if (searchpos != String.size() && vStrings[i].size())
-			return false;
-	}
-
-	return true;
-}
+#include <Shlwapi.h>
 
 bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreenerCount)
 {
 	PreProcessScreeners(Screeners, nScreenerCount);
 
-	HPSF hPSF = PSFExtHandler_OpenFileEx(nullptr, pXml, nullptr, SafeRead ? PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD : 0);
+	HPSF hPSF = PSFExtHandler_OpenFile(nullptr, pXml);
 	if (!hPSF)
 		return false;
 
@@ -77,13 +32,13 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 		DWORD FileSize;
 		PSFEXTHANDLER_FILE_TYPE type;
 
-		Ret = PSFExtHandler_GetFileInfo(hPSF, i, nullptr, &strSize, &FileSize, &type);
+		Ret = PSFExtHandler_GetFileInfo(hPSF, i, nullptr, &strSize, &FileSize, nullptr, &type);
 		if (!Ret)
 			break;
 
 		wstring File;
 		File.resize(strSize / 2 - 1);
-		Ret = PSFExtHandler_GetFileInfo(hPSF, i, const_cast<PWSTR>(File.c_str()), &strSize, &FileSize, &type);
+		Ret = PSFExtHandler_GetFileInfo(hPSF, i, const_cast<PWSTR>(File.c_str()), &strSize, &FileSize, nullptr, &type);
 		if (!Ret)
 			break;
 
@@ -91,7 +46,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 		{
 			bool ret = true;
 			for (int j = 0; j != nScreenerCount; ++j)
-				if (Screen(File, Screeners[j]))
+				if (PathMatchSpecW(File.c_str(), Screeners[j]))
 					ret = true;
 				else
 				{
