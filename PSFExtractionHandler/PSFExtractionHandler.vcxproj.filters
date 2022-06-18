@@ -59,6 +59,9 @@
     <ClCompile Include="Version.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Cabinet.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Resource.rc">
