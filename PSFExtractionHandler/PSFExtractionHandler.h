@@ -36,8 +36,6 @@ PSFExtHandler_OpenFile(
 	_In_		PCWSTR pXmlFile
 );
 
-#define PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD						((WORD)0x0001)
-
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 _Ret_maybenull_
@@ -45,7 +43,7 @@ HPSF
 PSFExtHandler_OpenFileEx(
 	_In_opt_	PCWSTR pPSFFile,
 	_In_		PCWSTR pXmlFile,
-	_Reserved_	PDWORD Reserved,
+	_Reserved_	PVOID Reserved,
 	_In_		WORD wFlags
 );
 
@@ -79,6 +77,7 @@ PSFExtHandler_GetFileInfo(
 	_Out_writes_bytes_to_opt_(*pcbData, *pcbData) PWSTR pszFileName,
 	_When_(pszFileName == NULL, _Out_opt_) _When_(pszFileName != NULL, _Inout_opt_) PDWORD pcbData,
 	_Out_opt_	PDWORD pdwFileSize,
+	_Out_opt_	PFILETIME pFileTime,
 	_Out_opt_	PSFEXTHANDLER_FILE_TYPE* Type
 );
 
@@ -94,6 +93,7 @@ PSFExtHandler_GetFileInfo(
 #define PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD\
 																		((WORD)0x0100)
 #define PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY		((WORD)0x0200)
+#define PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME					((WORD)0x0400)
 
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_

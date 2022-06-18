@@ -7,7 +7,7 @@
 struct FileInfo
 {
 	std::wstring name;
-	//DWORD time;
+	FILETIME time;
 	struct Source
 	{
 		DELTA_FLAG_TYPE type;
@@ -48,6 +48,7 @@ bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
 	const FileInfo::Source* src,
+	const FILETIME* pFileTime,
 	WORD flags,
 	DWORD& Error
 );

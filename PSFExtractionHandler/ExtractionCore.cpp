@@ -102,6 +102,7 @@ bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
 	const FileInfo::Source* src,
+	const FILETIME* time,
 	WORD flags,
 	DWORD& Err
 )
@@ -172,8 +173,11 @@ bool Extract(
 		Ret = WriteFile(hFile, Data.get(), fsize, nullptr, nullptr);
 		if (!Ret)
 			Err = GetLastError();
-		else
+		else if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME))
+		{
+			SetFileTime(hFile, time, time, time);
 			return true;
+		}
 	}
 	else
 		Err = GetLastError();

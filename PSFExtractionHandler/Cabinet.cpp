@@ -240,25 +240,20 @@ BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXP
 {
 	CHAR null = '\0';
 
-#if defined(_AMD64_) || defined(_ARM64_)
-	CHAR hFilesAddr[17];
+	CHAR hFilesAddr[sizeof(void*) * 2 + 1];
 	{
-		hFilesAddr[16] = '\0';
-		ULONGLONG ullptr = reinterpret_cast<ULONGLONG>(&hCabinet->hFile);
-		for (int i = 0; i != 16; hFilesAddr[i++] = '0');
-		for (int i = 0; ullptr; ullptr /= 16, ++i)
+		hFilesAddr[sizeof(void*) * 2] = '\0';
+		auto ulptr = reinterpret_cast<ULONG_PTR>(&hCabinet->hFile);
+		for (int i = 0; i != sizeof(void*) * 2; hFilesAddr[i++] = '0');
+		for (int i = 0; ulptr; ulptr /= 16, ++i)
 		{
-			CHAR r = static_cast<CHAR>(ullptr % 16);
+			CHAR r = static_cast<CHAR>(ulptr % 16);
 			if (r >= 0 && r <= 9)
-				hFilesAddr[15 - i] = '0' + r;
+				hFilesAddr[sizeof(void*) * 2 - 1 - i] = '0' + r;
 			else
-				hFilesAddr[15 - i] = 'a' + r - 10;
+				hFilesAddr[sizeof(void*) * 2 - 1 - i] = 'a' + r - 10;
 		}
 	}
-#elif defined(_X86_) || defined(_ARM_)
-	CHAR hFilesAddr[9] = {};
-	_ultoa_s(reinterpret_cast<ULONG>(Ptr), hFilesAddr, 16);
-#endif
 
 	ExpansionInfo info;
 	info.pfn = pfnProgressCallback;

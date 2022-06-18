@@ -5,7 +5,6 @@
 #include <comutil.h>
 
 #include <stdexcept>
-#include <mutex>
 #include <thread>
 
 #include "PSFExtHandlerFrame.h"
@@ -296,7 +295,7 @@ BYTE chex2num(char c)
 }
 
 static
-void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret, bool st)
+void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 {
 	CoInitialize(nullptr);
 
@@ -317,109 +316,75 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret, bool st)
 		}
 		hPSF->Files.reset(new FileInfo[hPSF->FileCount]);
 
-		int n = omp_get_num_procs();
-		if (hPSF->FileCount / n < 10)
-			for (; n != 1; --n)
-				if (hPSF->FileCount / n >= 10)
-					break;
-
-		mutex Mutex;
 		bool except = false;
 
-		omp_set_num_threads(st ? 1 : n);
-#pragma omp parallel
+		FileInfo* pFileInfo = hPSF->Files.get();
+
+		XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files.get())];
+
+		try
 		{
-			int thread = omp_get_thread_num();
-			DWORD range = hPSF->FileCount;
-			FileInfo* pFileInfo = hPSF->Files.get() + (st ? 0 : AssignThreadTask(hPSF->FileCount, thread, range));
-
-			if (!st)
-				Mutex.lock();
-			XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files.get())];
-			if (!st)
-				Mutex.unlock();
-
-			try
+			for (DWORD i = 0; i != hPSF->FileCount; ++i)
 			{
-				for (DWORD i = 0; i != range; ++i)
+				if (except)
+					break;
+
+				if (i)
+					++node;
+
+				FileInfo& fi = pFileInfo[i];
+				PSTR str = node.GetAttribute("name");
+				fi.name.resize(strlen(str));
+				for (LONG i = static_cast<LONG> (strlen(str)); i >= 0; --i)
+					fi.name[i] = str[i];
+				delete[] str;
+
+				str = node.GetAttribute("time");
+				*reinterpret_cast<unsigned long long*>(&fi.time) = strtoull(str, nullptr, 10);
+				delete[] str;
+
+				XmlNode Source = node.SelectNode("Delta").SelectNode("Source");
+
+				str = Source.GetAttribute("offset");
+				fi.deltaSource.offset = atol(str);
+				delete[] str;
+
+				str = Source.GetAttribute("length");
+				fi.deltaSource.length = atol(str);
+				delete[] str;
+
+				str = Source.GetAttribute("type");
+				if (!CheckString(str, "PA30", fi.deltaSource.type, DELTA_FLAG_NONE))
+					if (!CheckString(str, "PA19", fi.deltaSource.type, DELTA_APPLY_FLAG_ALLOW_PA19))
+						if (!CheckString<DELTA_FLAG_TYPE>(str, "RAW", fi.deltaSource.type, INVALID_FLAG - 1))
+							fi.deltaSource.type = INVALID_FLAG;
+				delete[] str;
+
+				XmlNode Hash = Source.SelectNode("Hash");
+
+				str = Hash.GetAttribute("alg");
+				if (CheckString<ALG_ID>(str, "SHA1", fi.deltaSource.Hash.alg, CALG_SHA1)
+					|| CheckString<ALG_ID>(str, "SHA256", fi.deltaSource.Hash.alg, CALG_SHA_256)
+					|| CheckString<ALG_ID>(str, "SHA512", fi.deltaSource.Hash.alg, CALG_SHA_512)
+					|| CheckString<ALG_ID>(str, "MD5", fi.deltaSource.Hash.alg, CALG_MD5))
 				{
-					if (except)
-						break;
-
-					if (i)
-					{
-						if (st)
-							++node;
-						else
-						{
-							Mutex.lock();
-							try
-							{
-								++node;
-							}
-							catch (...)
-							{
-								Mutex.unlock();
-								throw;
-							}
-							Mutex.unlock();
-						}
-					}
-
-					FileInfo& fi = pFileInfo[i];
-					PSTR str = node.GetAttribute("name");
-					fi.name.resize(strlen(str));
-					for (LONG i = static_cast<LONG> (strlen(str)); i >= 0; --i)
-						fi.name[i] = str[i];
 					delete[] str;
-					/*
-					str = node.GetAttribute("time");
-					fi.time = atol(str);
-					delete[] str;*/
+					str = Hash.GetAttribute("value");
 
-					XmlNode Source = node.SelectNode("Delta").SelectNode("Source");
+					DWORD HashSize = static_cast<DWORD>(strlen(str) / 2);
+					fi.deltaSource.Hash.value.reset(new BYTE[HashSize]);
 
-					str = Source.GetAttribute("offset");
-					fi.deltaSource.offset = atol(str);
-					delete[] str;
-
-					str = Source.GetAttribute("length");
-					fi.deltaSource.length = atol(str);
-					delete[] str;
-
-					str = Source.GetAttribute("type");
-					if (!CheckString(str, "PA30", fi.deltaSource.type, DELTA_FLAG_NONE))
-						if (!CheckString(str, "PA19", fi.deltaSource.type, DELTA_APPLY_FLAG_ALLOW_PA19))
-							if (!CheckString<DELTA_FLAG_TYPE>(str, "RAW", fi.deltaSource.type, INVALID_FLAG - 1))
-								fi.deltaSource.type = INVALID_FLAG;
-					delete[] str;
-
-					XmlNode Hash = Source.SelectNode("Hash");
-
-					str = Hash.GetAttribute("alg");
-					if (CheckString<ALG_ID>(str, "SHA1", fi.deltaSource.Hash.alg, CALG_SHA1)
-						|| CheckString<ALG_ID>(str, "SHA256", fi.deltaSource.Hash.alg, CALG_SHA_256)
-						|| CheckString<ALG_ID>(str, "SHA512", fi.deltaSource.Hash.alg, CALG_SHA_512)
-						|| CheckString<ALG_ID>(str, "MD5", fi.deltaSource.Hash.alg, CALG_MD5))
-					{
-						delete[] str;
-						str = Hash.GetAttribute("value");
-
-						DWORD HashSize = static_cast<DWORD>(strlen(str) / 2);
-						fi.deltaSource.Hash.value.reset(new BYTE[HashSize]);
-
-						for (DWORD i = 0; i != HashSize; ++i)
-							fi.deltaSource.Hash.value[i] = chex2num(str[i * 2]) * 16 + chex2num(str[i * 2 + 1]);
-					}
-					else
-						fi.deltaSource.Hash.alg = INVALID_FLAG;
-					delete[] str;
+					for (DWORD i = 0; i != HashSize; ++i)
+						fi.deltaSource.Hash.value[i] = chex2num(str[i * 2]) * 16 + chex2num(str[i * 2 + 1]);
 				}
+				else
+					fi.deltaSource.Hash.alg = INVALID_FLAG;
+				delete[] str;
 			}
-			catch (runtime_error&)
-			{
-				except = true;
-			}
+		}
+		catch (runtime_error&)
+		{
+			except = true;
 		}
 
 		if (except)
@@ -439,20 +404,20 @@ const BYTE Head[] =
 
 PSFEXTRACTIONHANDLER_API
 HPSF
-PSFExtHandler_OpenFile(
+PSFExtHandler_OpenFileEx(
 	PCWSTR psf,
-	PCWSTR xml)
+	PCWSTR xml,
+	PVOID,
+	WORD flags)
 {
-	return PSFExtHandler_OpenFileEx(psf, xml, nullptr, 0);
+	return PSFExtHandler_OpenFile(psf, xml);
 }
 
 PSFEXTRACTIONHANDLER_API
 HPSF
-PSFExtHandler_OpenFileEx(
+PSFExtHandler_OpenFile(
 	PCWSTR psf,
-	PCWSTR xml,
-	PDWORD,
-	WORD flags)
+	PCWSTR xml)
 {
 	unique_ptr<PSF, void(*)(HPSF)> hPSF(new PSF,
 		[](HPSF hPSF)
@@ -559,7 +524,7 @@ PSFExtHandler_OpenFileEx(
 
 
 	BOOL ret;
-	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret), flags & PSFEXTHANDLER_OPEN_FLAG_SINGLE_THREAD);
+	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret));
 	XmlReadingThread.join();
 
 	if (ret)

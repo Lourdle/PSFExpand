@@ -39,6 +39,7 @@ PSFExtHandler_GetFileInfo(
 	PWSTR name,
 	PDWORD size,
 	PDWORD fsize,
+	PFILETIME time,
 	PSFEXTHANDLER_FILE_TYPE* type
 )
 {
@@ -71,6 +72,9 @@ PSFExtHandler_GetFileInfo(
 
 	if (fsize)
 		*fsize = File.deltaSource.length;
+
+	if (time)
+		*time = File.time;
 
 	SetLastError(ERROR_SUCCESS);
 

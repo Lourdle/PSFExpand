@@ -167,7 +167,7 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 				return FALSE;
 	}
 
-	bool ret = Extract(hPSF->hPSF, hFile, &hPSF->Files[index].deltaSource, flags, BaseError);
+	bool ret = Extract(hPSF->hPSF, hFile, &hPSF->Files[index].deltaSource, &hPSF->Files[index].time, flags, BaseError);
 
 	if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE))
 		CloseHandle(hFile);
