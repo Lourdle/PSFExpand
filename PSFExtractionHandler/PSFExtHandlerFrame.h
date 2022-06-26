@@ -47,7 +47,7 @@ bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
 	const FileInfo& FileInfo,
-	WORD flags,
+	DWORD flags,
 	DWORD& Error
 );
 

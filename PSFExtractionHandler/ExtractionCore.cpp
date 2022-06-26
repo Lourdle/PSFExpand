@@ -102,7 +102,7 @@ bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
 	const FileInfo& info,
-	WORD flags,
+	DWORD flags,
 	DWORD& Err
 )
 {
