@@ -11,8 +11,8 @@ struct FileInfo
 	struct Source
 	{
 		DELTA_FLAG_TYPE type;
-		DWORD offset;
-		DWORD length;
+		ULONG offset;
+		ULONG length;
 		struct
 		{
 			ALG_ID alg;
@@ -26,7 +26,6 @@ using FileList = std::unique_ptr<FileInfo[]>;
 struct PSF
 {
 	HANDLE hPSF = nullptr;
-	std::wstring PSF;
 
 	DWORD FileCount;
 	FileList Files;
@@ -47,8 +46,7 @@ else\
 bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
-	const FileInfo::Source* src,
-	const FILETIME* pFileTime,
+	const FileInfo& FileInfo,
 	WORD flags,
 	DWORD& Error
 );

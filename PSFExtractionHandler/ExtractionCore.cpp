@@ -101,22 +101,21 @@ private:
 bool Extract(
 	HANDLE hPSF,
 	HANDLE hFile,
-	const FileInfo::Source* src,
-	const FILETIME* time,
+	const FileInfo& info,
 	WORD flags,
 	DWORD& Err
 )
 {
 	BOOL Ret;
-	MyUniquePtr<BYTE, void(void*)> Data(new BYTE[src->length], operator delete[]);
-	DWORD fsize = src->length;
+	DWORD fsize = info.deltaSource.length;
+	MyUniquePtr<BYTE, void(void*)> Data(new BYTE[fsize], operator delete[]);
 
-	SetFilePointer(hPSF, src->offset, nullptr, 0);
-	if (ReadFile(hPSF, Data.get(), src->length, nullptr, nullptr))
+	SetFilePointer(hPSF, info.deltaSource.offset, nullptr, 0);
+	if (ReadFile(hPSF, Data.get(), info.deltaSource.length, nullptr, nullptr))
 	{
 		if (flags & PSFEXTHANDLER_EXTRACT_FLAG_VERIFY)
 		{
-			if (src->Hash.alg == INVALID_FLAG)
+			if (info.deltaSource.Hash.alg == INVALID_FLAG)
 			{
 				Err = ERROR_NOT_SUPPORTED;
 				goto BeginWrite;
@@ -124,9 +123,9 @@ bool Extract(
 
 			bool good;
 			if (!VerifyData(Data.get(),
-				src->length,
-				src->Hash.alg,
-				src->Hash.value.get(),
+				info.deltaSource.length,
+				info.deltaSource.Hash.alg,
+				info.deltaSource.Hash.value.get(),
 				good))
 			{
 				if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS))
@@ -146,16 +145,16 @@ bool Extract(
 		}
 
 	BeginWrite:
-		if (src->type != INVALID_FLAG - 1
+		if (info.deltaSource.type != INVALID_FLAG - 1
 			&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT))
 		{
 			DELTA_INPUT ddi;
 			ddi.Editable = FALSE;
 			ddi.lpcStart = Data.get();
-			ddi.uSize = src->length;
+			ddi.uSize = info.deltaSource.length;
 
 			DELTA_OUTPUT DO;
-			Ret = ApplyDeltaB(src->type, {}, ddi, &DO);
+			Ret = ApplyDeltaB(info.deltaSource.type, {}, ddi, &DO);
 			if (!Ret)
 			{
 				Err = GetLastError();
@@ -175,7 +174,7 @@ bool Extract(
 			Err = GetLastError();
 		else if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME))
 		{
-			SetFileTime(hFile, time, time, time);
+			SetFileTime(hFile, &info.time, &info.time, &info.time);
 			return true;
 		}
 	}

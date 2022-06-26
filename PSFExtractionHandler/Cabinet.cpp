@@ -19,11 +19,6 @@ static FNALLOC(fnAlloc)
 	return new BYTE[cb];
 }
 
-static FNFREE(fnFree)
-{
-	delete[] pv;
-}
-
 static FNOPEN(fnOpen)
 {
 #if defined(_AMD64_) || defined(_ARM64_)
@@ -103,8 +98,8 @@ HANDLE PSFExtHandler_util_OpenCabinet(PCWSTR pCabFile)
 	HANDLE hCab = new Cab;
 
 	hCab->hFDI = FDICreate(
-		fnAlloc, fnFree
-		, fnOpen, fnRead, fnWrite, fnClose, fnSeek,
+		fnAlloc, operator delete[],
+		fnOpen, fnRead, fnWrite, fnClose, fnSeek,
 		cpuUNKNOWN, &hCab->erf);
 
 	FDICABINETINFO info;
@@ -123,7 +118,7 @@ HANDLE PSFExtHandler_util_OpenCabinet(PCWSTR pCabFile)
 	}
 
 	hCab->hFile.hEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
-	SharedFile File = { &hCab->hFile,0 };
+	SharedFile File = { &hCab->hFile, 0 };
 	if (!FDIIsCabinet(hCab->hFDI, reinterpret_cast<INT_PTR>(&File), &info))
 	{
 		FDIDestroy(hCab->hFDI);

@@ -432,52 +432,47 @@ PSFExtHandler_OpenFile(
 	{
 		DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
 		if (length == 0)
-			return FALSE;
-		hPSF->PSF.resize(length - 1);
-		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(hPSF->PSF.c_str()), nullptr) == 0)
-			return FALSE;
+			return nullptr;
+
+		wstring PSF;
+		PSF.resize(length - 1);
+		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(PSF.c_str()), nullptr) == 0)
+			return nullptr;
 
 		wstring Psf;
-		length = GetLongPathNameW(hPSF->PSF.c_str(), nullptr, 0);
+		length = GetLongPathNameW(PSF.c_str(), nullptr, 0);
 		if (length == 0)
 		{
 			Psf = L"\\\\?\\";
-			Psf += hPSF->PSF;
+			if (PSF[0] == '\\' && PSF[1] == '\\')
+				Psf += L"UNC\\";
+			Psf += PSF;
 			length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
 			if (length == 0)
-			{
-				Psf = L"\\\\?\\";
-				Psf += L"UNC\\";
-				Psf += hPSF->PSF;
-				length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
-				if (length == 0)
-					return FALSE;
-
-				psf = Psf.c_str();
-			}
+				return nullptr;
 			else
 				psf = Psf.c_str();
 		}
-		hPSF->PSF.resize(length - 1);
+		PSF.resize(length - 1);
 
 		wstring tmp;
 		tmp.resize(length - 1);
-		if (!GetLongPathNameW(hPSF->PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
-			return FALSE;
-		hPSF->PSF = move(tmp);
+		if (!GetLongPathNameW(PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
+			return nullptr;
+		PSF = move(tmp);
 
-		hPSF->hPSF = CreateFileW(hPSF->PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+		hPSF->hPSF = CreateFileW(PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
 			return nullptr;
 
 		BYTE HOF[16];
 		if (!ReadFile(hPSF->hPSF, HOF, 16, nullptr, nullptr))
-			return FALSE;
+			return nullptr;
 
 		if (memcmp(HOF, Head, 16))
 		{
 			SetLastError(ERROR_BAD_FORMAT);
-			return FALSE;
+			return nullptr;
 		}
 	}
 
@@ -487,17 +482,11 @@ PSFExtHandler_OpenFile(
 		if (hXml == INVALID_HANDLE_VALUE)
 		{
 			Xml += xml;
+			if (xml[0] == '\\' && xml[1] == '\\')
+				Xml += L"UNC\\";
 			hXml = CreateFileW(Xml.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 			if (hXml == INVALID_HANDLE_VALUE)
-			{
-				Xml.insert(Xml.cbegin() + 4, 4);
-				for (int i = 0; i != 4; ++i)
-					Xml[i + 4] = L"UNC\\"[i];
-
-				hXml = CreateFileW(Xml.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-				if (hXml == INVALID_HANDLE_VALUE)
-					return nullptr;
-			}
+				return nullptr;
 		}
 		else
 			Xml = xml;
