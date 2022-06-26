@@ -369,7 +369,8 @@ int wmain(int argc, wchar_t** argv)
 	setlocale(LC_ALL, "");
 	wcout.imbue(locale(""));
 
-	if (PSFExtHandler_GetVersion() >> 22 != 2)
+	if (PSFExtHandler_GetVersion() < PSFEXTHANDLER_CURRENT_VERSION
+		|| PSFExtHandler_GetVersion() >> 22 != PSFEXTHANDLER_MAJOR_VERSION)
 	{
 		SetLastError(ERROR_NOT_SUPPORTED);
 		ShowErrorMessage();
