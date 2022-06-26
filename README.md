@@ -20,7 +20,8 @@ Example:
 - Use Simplified Chinese as the display language and print help.
 >PSFExpand.exe /Lang:zh-Hans /?
 
-If an unsupported language is specified, the program will use English as the display language.### PSFExpand provides operation commands.
+If an unsupported language is specified, the program will use English as the display language.
+### PSFExpand provides operation commands.
 - [List](Documentation/List_en.md)
 - [Extract](Documentation/Extract_en.md)
 - [Expand](Documentation/Expand_en.md)
