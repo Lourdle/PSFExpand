@@ -84,7 +84,6 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 
 	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS
 		&& flags & PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS
-		|| flags >> 8
 		|| index >= hPSF->FileCount)
 	{
 		SetLastError(ERROR_INVALID_PARAMETER);
