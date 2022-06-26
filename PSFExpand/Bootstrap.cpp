@@ -369,6 +369,12 @@ int wmain(int argc, wchar_t** argv)
 	setlocale(LC_ALL, "");
 	wcout.imbue(locale(""));
 
+	if (PSFExtHandler_GetVersion() >> 22 != 2)
+	{
+		SetLastError(ERROR_NOT_SUPPORTED);
+		ShowErrorMessage();
+	}
+
 	int Start = 1;
 	if (argc > 1 && CompareStrings(argv[1], { L"/Lang" }, { 0 }) == 0)
 	{
