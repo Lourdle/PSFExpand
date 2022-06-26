@@ -43,6 +43,7 @@ First release.
 4. Added support for file time setting.
 5. Functions that accept unsupported flags are automatically ignored instead of failing.
 6. Other unlisted detail fixes.
+
 Note: Earlier API versions will no longer be supported starting with this release. The behavior of unadapted programs calling some functions of the API after this version is undefined.
 
 - 1.1.1
