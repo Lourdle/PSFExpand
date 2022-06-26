@@ -113,7 +113,7 @@ BOOL
 PSFExtHandler_ExpandPSF(
 	HPSF hPSF,
 	PCWSTR outdir,
-	WORD flags,
+	DWORD flags,
 	PSFEXTHANDLER_PROGRESS_PROC progress,
 	PVOID userdata
 )

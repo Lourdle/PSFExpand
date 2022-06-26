@@ -408,7 +408,7 @@ PSFExtHandler_OpenFileEx(
 	PCWSTR psf,
 	PCWSTR xml,
 	PVOID,
-	WORD flags)
+	DWORD flags)
 {
 	return PSFExtHandler_OpenFile(psf, xml);
 }

@@ -10,7 +10,7 @@ BOOL PSFExtHandler_ExtractFile(
 	HPSF hPSF,
 	PCWSTR target,
 	PCWSTR out,
-	WORD flags)
+	DWORD flags)
 {
 	CheckHandle(hPSF, return FALSE);
 
@@ -68,7 +68,7 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 	HPSF hPSF,
 	DWORD index,
 	PCWSTR out,
-	WORD flags
+	DWORD flags
 )
 {
 	CheckHandle(hPSF, return FALSE);
@@ -184,7 +184,7 @@ BOOL PSFExtHandler_ExtractFileToDirectory(
 	PCWSTR target,
 	PCWSTR outdir,
 	PCWSTR out,
-	WORD flags)
+	DWORD flags)
 {
 	CheckHandle(hPSF, return FALSE);
 
@@ -209,7 +209,7 @@ PSFExtHandler_ExtractFileToDirectoryByIndex(
 	DWORD index,
 	PCWSTR outdir,
 	PCWSTR out,
-	WORD flags
+	DWORD flags
 )
 {
 	CheckHandle(hPSF, return FALSE);

@@ -40,7 +40,8 @@ PSFExtHandler_GetFileInfo(
 	PDWORD size,
 	PDWORD fsize,
 	PFILETIME time,
-	PSFEXTHANDLER_FILE_TYPE* type
+	PSFEXTHANDLER_FILE_TYPE* type,
+	PVOID
 )
 {
 	CheckHandle(hpsf, return FALSE);

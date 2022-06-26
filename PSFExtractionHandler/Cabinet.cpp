@@ -183,7 +183,10 @@ static FNFDINOTIFY(fnFDINotify)
 			DosDateTimeToFileTime(pfdin->date, pfdin->time, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_WriteFile, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info, &hFile, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
 			if (hFile == INVALID_HANDLE_VALUE)
+			{
+				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
 				return -1;
+			}
 			else if (hFile)
 			{
 				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->defhfile = false;
