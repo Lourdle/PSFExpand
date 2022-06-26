@@ -3,12 +3,13 @@ Read the XML file and open the PSF.
 ````c
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
+_Ret_maybenull_
 HPSF
 PSFExtHandler_OpenFile(
     _In_opt_    PCWSTR pPSFFile,
     _In_        PCWSTR pXmlFile,
     _Reserved_  PDWORD Reserved,
-    _In_        WORD wFlags
+    _In_        DWORD dwFlags
 );
 ````
 ### Parameters
@@ -19,10 +20,10 @@ Optional. A PSF filename string. If NULL, the returned PSF handle can only be us
 A string for the XML filename.
 
 `Reserved`  
-This parameter is reserved, generally NULL.
+This parameter is reserved, must be NULL.
 
-`[in] wFlags`  
-File open flags, see [PSFEXTHANDLER_OPEN_FLAG](PSFEXTHANDLER_OPEN_FLAG_en.md).
+`[in] dwFlags`  
+File open flags, deprecated.
 ### Return Value
 Returns the PSF handle on success, NULL on failure.
 ### Remarks

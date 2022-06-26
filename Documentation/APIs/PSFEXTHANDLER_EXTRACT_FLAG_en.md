@@ -1,47 +1,51 @@
 # PSFEXTHANDLER_EXTRACT_FLAG
 Flags for file extraction or expansion. Apply multiple identity via bitwise `OR`(`|`).
 ````c
-#define PSFEXTHANDLER_EXTRACT_FLAG_VERIFY                               ((WORD)0x0001)
-#define PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS                          ((WORD)0x0002)
-#define PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS                       ((WORD)0x0004)
-#define PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD                        ((WORD)0x0008)
-#define PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA                       ((WORD)0x0010)
-#define PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS     ((WORD)0x0020)
-#define PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE                 ((WORD)0x0040)
-#define PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT                 ((WORD)0x0080)
+#define PSFEXTHANDLER_EXTRACT_FLAG_VERIFY                               ((DWORD)0x0001)
+#define PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS                          ((DWORD)0x0002)
+#define PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS                       ((DWORD)0x0004)
+#define PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD                        ((DWORD)0x0008)
+#define PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA                       ((DWORD)0x0010)
+#define PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS     ((DWORD)0x0020)
+#define PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE                 ((DWORD)0x0040)
+#define PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT                 ((DWORD)0x0080)
 #define PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD\
-                                                                        ((WORD)0x0100)
-#define PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY      ((WORD)0x0200)
+                                                                        ((DWORD)0x0100)
+#define PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY      ((DWORD)0x0200)
+#define PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME                 ((DWORD)0x0400)
 ````
->PSFEXTHANDLER_EXTRACT_FLAG_VERIFY
-> Verify that the data is intact before writing to the file.
+>PSFEXTHANDLER_EXTRACT_FLAG_VERIFY  
+>Verify that the data is intact before writing to the file.
 
->PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS
-> Skip if the file already exists when writing the file.
+>PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS  
+>Skip if the file already exists when writing the file.
 
->PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS
-> If the file exists when writing the file, the function fails.
+>PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS  
+>If the file exists when writing the file, the function fails.
 
->PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD
-> For the PSFExtHandler_Expand function, use a single thread when expanding the file. Other file extraction functions are themselves single-threaded extractions and ignore this flag.
+>PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD  
+>For the PSFExtHandler_Expand function, use a single thread when expanding the file. Other file extraction functions are themselves single-threaded extractions and ignore this flag.
 
->PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA
-> Incomplete verification file is required to write file.
+>PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA  
+>Incomplete verification file is required to write file.
 
->PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS
-> Continue function execution when some operation fails but the error is non-fatal.
+>PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS  
+>Continue function execution when some operation fails but the error is non-fatal.
 
->PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE
+>PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE  
 >Write the file to a provided handle instead of the specified file.
 
->PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT
+>PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT  
 >Keep writing files in PSF file format.
 
->PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD
-> For the PSFExtHandler_Expand function, it is allowed not to call the main thread (the thread that called PSFExtHandler_Expand) when calling the progress reporting function during file expansion. Other extraction functions do not accept this flag.
+>PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD  
+>For the PSFExtHandler_Expand function, it is allowed not to call the main thread (the thread that called PSFExtHandler_Expand) when calling the progress reporting function during file expansion. Other extraction functions do not accept this flag.
 
->PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY
-> For the PSFExtHandler_Expand function, the progress reporting function is called synchronously during file expansion. Other functions do not accept this flag.
+>PSFEXTHANDLER_EXTRACT_FLAG_DISPATCH_MESSAGES_SYNCHRONOUSLY  
+>For the PSFExtHandler_Expand function, the progress reporting function is called synchronously during file expansion. Other functions do not accept this flag.
+
+>PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME  
+>Do not set file time after writing to file.
 
 ### Remarks
 1. >PSF Extraction Handler All extraction functions that write files and find files with the same name will overwrite the files by default unless the corresponding identifier is specified. PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS and PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS flag conflict, do not accept both.

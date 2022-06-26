@@ -3,12 +3,13 @@
 ````c
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
+_Ret_maybenull_
 HPSF
 PSFExtHandler_OpenFileEx(
 	_In_opt_    PCWSTR pPSFFile,
 	_In_        PCWSTR pXmlFile,
 	_Reserved_  PDWORD Reserved,
-	_In_        WORD wFlags
+	_In_        DWORD dwFlags
 );
 ````
 ### 参数
@@ -19,10 +20,10 @@ PSFExtHandler_OpenFileEx(
 XML 文件名的字符串。
 
 `Reserved`  
-保留，一般为 NULL。
+保留，必须为 NULL。
 
-`[in] wFlags`  
-文件打开标识，参阅[PSFEXTHANDLER_OPEN_FLAG](PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md)。
+`[in] dwFlags`  
+文件打开标识，已弃用。
 ### 返回值
 成功返回 PSF 句柄，失败返回 NULL。
 ### 备注

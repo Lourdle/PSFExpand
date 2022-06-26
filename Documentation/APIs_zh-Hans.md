@@ -1,5 +1,5 @@
 # PSF Extraction Handler API 中文文档
-这是 PSF Extraction Handler API 的中文文档。如果有开发人员想做 PSF 文件扩展的应用程序又不想自己做 PSF 提取函数，那么可以考虑使用 PSF Extraction Handler，尽管这些 APIs 的实现不算特别复杂，还会有开发者吐槽 PSF Extraction Handler 的代码写的不好。毕竟作者不是专业的 C++ 程序员，而且编程习惯比较随便（如不喜欢写注释、变量名不按一般的规范等），有不足的地方还请见谅。
+这是 PSF Extraction Handler API 的中文文档。如果有开发人员想做 PSF 文件扩展的应用程序又不想自己做 PSF 提取函数，那么可以考虑使用 PSF Extraction Handler，尽管这些 APIs 的实现不算特别复杂，还会有开发者吐槽 PSF Extraction Handler 的代码写的不好。毕竟作者不是专业的 C++ 程序员，而且编程习惯比较随便。
 ### 使用 PSF Extraction Handler API
 - 直接使用 SDK 而不编译代码。可以在 [Releases 页面](https://github.com/Lourdle/PSFExpand/releases) 直接下载 SDK。
 - 编译源代码。克隆或下载 PSFExpand 源代码，由于 PSFExpand 与 PSFExtractionHandler 在同一解决方案，可以提出 PSFExtractionHandler 项目单独生成或添加到所需解决方案中。
@@ -28,10 +28,15 @@
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_zh-Hans.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_zh-Hans.md)
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_zh-Hans.md)
+- [PSFExtHandler_util_CloseCabinet](APIs/PSFExtHandler_util_CloseCabinet_zh-Hans.md)
+- [PSFExtHandler_util_ExpandCabinet](APIs/PSFExtHandler_util_ExpandCabinet_zh-Hans.md)
+- [PSFExtHandler_util_OpenCabinet](APIs/PSFExtHandler_util_OpenCabinet_zh-Hans.md)
 ##### PSF Extraction Handler 枚举
 - [PSFEXTHANDLER_FILE_TYPE](APIs/PSFEXTHANDLER_FILE_TYPE_zh-Hans.md)
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_zh-Hans.md)
 ##### PSF Extraction Handler 结构
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_zh-Hans.md)
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS_zh-Hans.md)
 ##### PSF Extraction Handler 常量
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md)

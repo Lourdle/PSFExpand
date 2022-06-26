@@ -7,7 +7,7 @@ Lists, extracts, expands Windows PSF updates.
 ### Instructions
 The use of PSF files is inseparable from the XML that describes the information of the PSF files, generally express.psf.cix.xml in the corresponding CAB file.  
 The CAB file can be expanded manually and then the PSF file can be expanded using this tool.  
-It is recommended to use this tool to expand CAB files and PSF files, because running Expand.exe outputs too much file name information in the console, which seriously affects the speed, this tool will avoid this problem.
+It is recommended to use this tool to expand CAB files and PSF files, because running Expand.exe outputs too much file name information in the console, which seriously affects the speed. This tool will call the Cabinet API to expand the CAB file, which greatly improves the speed.
 ### PSFExpand Languages
 The application is available in Simplified Chinese and English, and the appropriate language will be selected at runtime under normal circumstances. The language can be specified explicitly using the `/Lang` option.  
 Specify the /Lang option to select the display language. To use it, add "/Lang:\<Language>" to the command line immediately following the application name.

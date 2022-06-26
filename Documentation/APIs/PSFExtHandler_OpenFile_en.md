@@ -3,6 +3,7 @@ Read the XML file and open the PSF.
 ````c
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
+_Ret_maybenull_
 HPSF
 PSFExtHandler_OpenFile(
     _In_opt_    PCWSTR pPSFFile,

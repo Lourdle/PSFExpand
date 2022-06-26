@@ -25,8 +25,6 @@ Optional option. Appending the `/Verify` option to the program to perform a hash
 Optional option. Appending the `/SingleThread` option the program will only use single-threaded extension files. For those who do not want the default multi-threaded expansion to take up too many resources, it will reduce the speed. In fact, the speed of multi-threading is generally not much faster than that of single-threading, because the main limitation of the expansion speed of PSF files is the speed of reading and writing of the hard disk rather than the single-thread speed of the CPU.
 ##### NoProgressDisplay
 Optional option. Appending the `/NoProgressDisplay` option program will not show progress. The effect on the speed of expanding the file is not obvious.
-##### SafeRead Option
-Optional option. Appending the `/SafeRead` option, program will use a single thread when reading XML files to avoid program failure due to exceptions caused by a small probability of conflict.
 ### Remarks
 The program will first display the relevant file information, and if there is an error, the error message will be displayed.  
 If the /CabFile option is specified and the /XmlFile option is not specified, the program will not perform an initial check of the XML file before completing the CAB file expansion.

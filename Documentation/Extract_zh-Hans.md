@@ -19,8 +19,6 @@
 可选选项。加入`/Verify`选项程序在数据将要写入文件前进行哈希校验，若文件数据损坏会给出`数据无效`的错误消息。
 ##### Verbose 选项
 可选选项。加入`/Verbose`选项程序会在成功写一个文件后输出文件名在控制台。
-##### SafeRead 选项
-可选选项。加入`/SafeRead`选项程序将在读取 XML 文件时使用单线程，以避免因冲突小概率引发的异常导致程序失败。
 ### 例如：
 - 提取保存文件信息的 XML 为 D:\Windows10.0-KB0000000-x64\express.psf.cix.xml 的 D:\Windows10.0-KB0000000-x64.psf 中 historycix.cab 文件并校验，若没有错误则存放到 D:\Windows10.0-KB0000000-x64。
 >PSFExpand.exe /Extract /PsfFile:D:\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /StorageDirectory:D:\Windows10.0-KB0000000-x64

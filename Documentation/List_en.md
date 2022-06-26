@@ -8,8 +8,6 @@ Lists file information in the PSF from the specified XML file.
 Required option. The usage method is to append `/XmlFile:<file path>` to the command line. Can be case insensitive.
 ##### DisplayDetail Options
 Optional option. Append `/DisplayDetail` to the command line to enable.
-##### SafeRead Option
-Optional option. Appending the `/SafeRead` option, program will use a single thread when reading XML files to avoid program failure due to exceptions caused by a small probability of conflict.
 ##### Screen Options
 Optional option. Append `/Screen` and append the criteria for the files you want to list in the latter parameter. After completion, the number of matching files will be displayed. If this option is used, it must be placed after all options, as all command line arguments after /Screen become filters. A screener is a string containing conditions that need to list files. Do not add a slash at the beginning of the string. It is not case sensitive. Use forward slashes `/` or backslashes `\\` for slashes in the path. is legal. For example, "/Screen \*.dll" means all files with dll extension; "/Screen historycix.cab" specifically refers to the historycix.cab file; if you add other options after "/Screen", such as "/Screen \*. dll /DisplayDetail" means the file whose full name is /DisplayDetail and whose extension is dll, obviously does not exist.
 ### Examples:

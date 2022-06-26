@@ -10,7 +10,9 @@ PSFExtHandler_GetFileInfo(
     _Out_writes_bytes_to_opt_(*pcbData, *pcbData) PWSTR pszFileName,
     _When_(pszFileName == NULL, _Out_opt_) _When_(pszFileName != NULL, _Inout_opt_) PDWORD pcbData,
     _Out_opt_   PDWORD pdwFileSize,
-    _Out_opt_   PSFEXTHANDLER_FILE_TYPE* Type
+    _Out_opt_   PFILETIME pFileTime,
+    _Out_opt_   PSFEXTHANDLER_FILE_TYPE* Type,
+    _Reserved_  PVOID Reserved
 );
 ````
 ### Parameters
@@ -30,10 +32,16 @@ When the filename buffer is not large enough, it will return FALSE and set LastE
 If pszFileName is NULL and pcbData is not NULL, return TRUE after receiving the data size, and set LastError to ERROR_SUCCESS.
 
 `[out, optional] pdwFileSize`  
-Optional. The size of the received file, in bytes.
+Optional. Receive the size of this file, in bytes.
+
+`[out, optional] pFileTime`
+Optional. Receive the file time of this file.
 
 `[out, optional] Type`  
-Optional, the type of the file to receive. For information on types, see [PSFEXTHANDLER_FILE_TYPE](PSFEXTHANDLER_FILE_TYPE_en.md).  
+Optional. The type of the file to receive. For information on types, see [PSFEXTHANDLER_FILE_TYPE](PSFEXTHANDLER_FILE_TYPE_en.md).  
+
+`Reserved`  
+This parameter is reserved, must be NULL.
 ### Return Value
 Returns TRUE on success, FALSE on failure.
 ### Remark

@@ -10,7 +10,9 @@ PSFExtHandler_GetFileInfo(
     _Out_writes_bytes_to_opt_(*pcbData, *pcbData) PWSTR pszFileName,
     _When_(pszFileName == NULL, _Out_opt_) _When_(pszFileName != NULL, _Inout_opt_) PDWORD pcbData,
     _Out_opt_   PDWORD pdwFileSize,
-    _Out_opt_   PSFEXTHANDLER_FILE_TYPE* Type
+    _Out_opt_   PFILETIME pFileTime,
+    _Out_opt_   PSFEXTHANDLER_FILE_TYPE* Type,
+    _Reserved_  PVOID Reserved
 );
 ````
 ### 参数
@@ -30,10 +32,16 @@ PSFExtHandler_GetFileInfo(
 若 pszFileName 为 NULL，pcbData 不为 NULL，在接收数据大小后返回 TRUE，设置 LastError 为 ERROR_SUCCESS。
 
 `[out, optional] pdwFileSize`  
-可选。接收文件的大小，单位字节。
+可选。接收此文件的大小，单位字节。
+
+`[out, optional] pFileTime`
+可选。接收此文件的时间。
 
 `[out, optional] Type`  
-可选，接收该文件的类型。有关类型的信息，参阅[PSFEXTHANDLER_FILE_TYPE](PSFEXTHANDLER_FILE_TYPE_zh-Hans.md)。  
+可选。接收该文件的类型。有关类型的信息，参阅[PSFEXTHANDLER_FILE_TYPE](PSFEXTHANDLER_FILE_TYPE_zh-Hans.md)。  
+
+`Reserved`  
+保留，必须为 NULL。
 ### 返回值
 成功返回 TRUE，失败返回 FALSE。
 ### 备注

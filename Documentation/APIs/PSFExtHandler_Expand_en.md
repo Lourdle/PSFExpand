@@ -7,7 +7,7 @@ BOOL
 PSFExtHandler_ExpandPSF(
     _In_        HPSF hPSF,
     _In_opt_    PCWSTR pOutDir,
-    _In_        WORD wExtractionFlags,
+    _In_        DWORD dwExtractionFlags,
     _In_opt_    PSFEXTHANDLER_PROGRESS_PROC pfProgress,
     _In_opt_    PVOID pvUserData
 );
@@ -19,7 +19,7 @@ A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFi
 `[in, optional] pOutDir`  
 Optional. Relative or absolute path to the folder where the output files are stored. If it is NULL, the expansion file will be stored in the current processing directory of the program.
 
-`[in] wExtractionFlags`  
+`[in] dwExtractionFlags`  
 For information on extraction flags, see [PSFEXTHANDLER_EXTRACT_FLAG](PSFEXTHANDLER_EXTRACT_FLAG_en.md).
 
 `[in, optional] pfProgress`  
@@ -32,5 +32,5 @@ Optional. User-defined custom data provided to progress reporting functions.
 ### Return Value
 Returns TRUE on success, FALSE on failure.
 ### Remarks
-When wExtractionFlags provides the PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS flag, when one of the file extraction operations fails, the extension will continue, and will return FALSE after completion.  
+When dwExtractionFlags provides the PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS flag, when one of the file extraction operations fails, the extension will continue, and will return FALSE after completion.  
 Depending on the extraction flags provided, the function returns TRUE but LastError may not be ERROR_SUCCESS, see [PSFEXTHANDLER_EXTRACT_FLAG](PSFEXTHANDLER_EXTRACT_FLAG_en.md) for details.

@@ -19,8 +19,6 @@ Required option. To use it, append `/StorageDirectory:<folder path>` to the comm
 Optional option. Appending the `/Verify` option to the program to perform a hash check before the data is written to the file. If the file data is corrupted, it will give a `data invalid` error message.
 ##### Verbose Options
 Optional option. Appending the `/Verbose` option to the program will output the filename to the console after successfully writing a file.
-##### SafeRead Option
-Optional option. Appending the `/SafeRead` option, program will use a single thread when reading XML files to avoid program failure due to exceptions caused by a small probability of conflict.
 ### Examples:
 - Extract and verify the historycix.cab file in D:\Windows10.0-KB0000000-x64.psf from D:\Windows10.0-KB0000000-x64\express.psf.cix.xml that saves the file information and verify it Errors are stored in D:\Windows10.0-KB0000000-x64.
 >PSFExpand.exe /Extract /PsfFile:D:\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /StorageDirectory:D:\Windows10.0-KB0000000-x64

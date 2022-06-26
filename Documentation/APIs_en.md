@@ -1,5 +1,5 @@
 # PSF Extraction Handler API
-This is the documentation for the PSF Extraction Handler API. If there is an application that developers want to do PSF file extension and do not want to do the PSF extraction function themselves, then they can consider using PSF Extraction Handler, although the implementation of these APIs is not particularly complicated, there will also be developers complaining about PSF Extraction Handler code writing bad. After all, the author is not a professional C++ programmer, and the programming habits are relatively casual (for example, do not like to write comments, variable names do not follow the general specifications, etc.), please forgive me for any shortcomings.
+This is the documentation for the PSF Extraction Handler API. If there is an application that developers want to do PSF file extension and do not want to do the PSF extraction function themselves, then they can consider using PSF Extraction Handler, although the implementation of these APIs is not particularly complicated, there will also be developers complaining about PSF Extraction Handler code writing bad. After all, the author is not a professional C++ programmer, and the programming habits are relatively casual.
 ### Using the PSF Extraction Handler API
 - Use the SDK directly without compiling the code. You can download the SDK directly from the [Releases page](https://github.com/Lourdle/PSFExpand/releases).
 - Compile the source code. Clone or download the source code of PSFExpand, since PSFExpand and PSFExtractionHandler are in the same solution, you can propose that the PSFExtractionHandler project be generated separately or add to the desired solution.
@@ -28,10 +28,16 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_en.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_en.md)
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
+- [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
+- [PSFExtHandler_util_CloseCabinet](APIs/PSFExtHandler_util_CloseCabinet_en.md)
+- [PSFExtHandler_util_ExpandCabinet](APIs/PSFExtHandler_util_ExpandCabinet_en.md)
+- [PSFExtHandler_util_OpenCabinet](APIs/PSFExtHandler_util_OpenCabinet_en.md)
 ##### PSF Extraction Handler Enumeration
 - [PSFEXTHANDLER_FILE_TYPE](APIs/PSFEXTHANDLER_FILE_TYPE_en.md)
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_en.md)
 ##### PSF Extraction Handler Structure
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_en.md)
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS_en.md)
 ##### PSF Extraction Handler Constants
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_en.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_en.md)

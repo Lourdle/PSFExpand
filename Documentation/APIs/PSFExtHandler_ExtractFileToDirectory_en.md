@@ -9,7 +9,7 @@ PSFExtHandler_ExtractFileToDirectory(
     _In_        PCWSTR pTargetFileName,
     _In_opt_    PCWSTR pOutDir,
     _In_opt_    PCWSTR pOutFileName,
-    _In_        WORD wExtractionFlags
+    _In_        DWORD dwExtractionFlags
 );
 ````
 ### Parameters
@@ -25,7 +25,7 @@ Optional. Relative or absolute path to the folder where the output files are sto
 `[in, optional] pOutFile`  
 Optional. The output file names are stored in the folder. If NULL, save the file to the storage folder with the original name.
 
-`[in] wExtractionFlags`  
+`[in] dwExtractionFlags`  
 For information on extraction flags, see [PSFEXTHANDLER_EXTRACT_FLAG](PSFEXTHANDLER_EXTRACT_FLAG_en.md).
 ### Return Value
 Returns TRUE on success, FALSE on failure.
@@ -33,6 +33,6 @@ Returns TRUE on success, FALSE on failure.
 ### Remarks
 This function cannot use PSFEXTHANDLER_EXTRACT_WRITE_DATA_TO_HANDLE.
 
-When wExtractionFlags provides the flag PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS | PSFEXTHANDLER_EXTRACT_FLAG_VERIFY, the file verification operation fails (that is, the hash of the extracted file is not successfully obtained). If PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS is provided and the PSFEXTHANDLER_EXTRACT_FLAG_VERIFY flag is not provided, then PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS is ignored. If PSFEXTHANDLER_EXTRACT_FLAG_VERIFY is provided without PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS, it means that if the verification operation fails, FALSE will be returned and LastError will be set.
+When dwExtractionFlags provides the flag PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS | PSFEXTHANDLER_EXTRACT_FLAG_VERIFY, the file verification operation fails (that is, the hash of the extracted file is not successfully obtained). If PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS is provided and the PSFEXTHANDLER_EXTRACT_FLAG_VERIFY flag is not provided, then PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS is ignored. If PSFEXTHANDLER_EXTRACT_FLAG_VERIFY is provided without PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS, it means that if the verification operation fails, FALSE will be returned and LastError will be set.
 
 Depending on the extraction flags provided, the function returns TRUE but LastError may not be ERROR_SUCCESS, see [PSFEXTHANDLER_EXTRACT_FLAG](PSFEXTHANDLER_EXTRACT_FLAG_en.md) for details.
