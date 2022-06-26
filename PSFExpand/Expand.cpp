@@ -227,6 +227,24 @@ static bool PrintFileInfo(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCW
 	return true;
 }
 
+
+struct ReportStruct
+{
+	int Progress;
+	HANDLE hEvent;
+	bool Exit;
+};
+
+DWORD ReportThread(ReportStruct* Data)
+{
+	while (!Data->Exit)
+	{
+		WaitForSingleObject(Data->hEvent, INFINITE);
+		printf("\r%d%%", Data->Progress);
+	}
+	return 0UL;
+}
+
 bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE Flags)
 {
 	wstring CabFile;
@@ -268,16 +286,25 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		auto Out = wstring(L"\\\\?\\") + (IsUNCName(pOut) ? L"UNC\\" : L"");
 		Out += pOut;
 
-		if (!CreateDirectoryW(
-			Out.c_str(),
-			nullptr))
-			if (GetLastError() != ERROR_ALREADY_EXISTS
-				|| !IsAnEmptyDirectory(Out.c_str()))
-				return false;
+		if (!SetCurrentDirectoryW(Out.c_str()))
+			if (!CreateDirectoryW(
+				Out.c_str(),
+				nullptr))
+				if (GetLastError() != ERROR_ALREADY_EXISTS
+					|| !IsAnEmptyDirectory(Out.c_str()))
+					return false;
 	}
 
 	if (!PrintFileInfo(pCabFile, pPsfFile, pXmlFile, pOut))
 		return false;
+
+
+	ReportStruct ProcData;
+	ProcData.Progress = 0;
+	ProcData.Exit = false;
+	ProcData.hEvent = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateEventW(nullptr, FALSE, FALSE, nullptr);
+
+	HANDLE hThread;
 
 	if (pCabFile)
 	{
@@ -287,15 +314,34 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		WORD n = PSFExtHandler_util_CabinetGetFileCount(hCab);
 		wprintf(GetString(File_Count).get(), L"CAB", n);
 		SetCurrentDirectoryW(OutDir.c_str());
-		PSFExtHandler_util_ExpandCabinet(hCab,
+		hThread = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateThread(nullptr, 0,
+			reinterpret_cast<LPTHREAD_START_ROUTINE>(ReportThread), &ProcData, 0, nullptr);
+		if (!PSFExtHandler_util_ExpandCabinet(hCab,
 			Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr :
-			[](PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, const PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS* info, PHANDLE, PVOID)
+			[](PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, const PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS* info, PHANDLE, PVOID Data)
 			{
-				if (State == State_CloseFile)
-					cout << '\r' << static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles << '%';
-			}, nullptr);
+				if (State == State_CloseFile
+					&& reinterpret_cast<ReportStruct*>(Data)->Progress != static_cast<int>(static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles))
+				{
+					reinterpret_cast<ReportStruct*>(Data)->Progress = static_cast<int>(static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles);
+					SetEvent(reinterpret_cast<ReportStruct*>(Data)->hEvent);
+				}
+			}, &ProcData))
+		{
+			DWORD Err = GetLastError();
+			CloseHandle(hCab);
+			SetLastError(Err);
+			return false;
+		}
 		PSFExtHandler_util_CloseCabinet(hCab);
-		cout << '\n' << endl;
+		if (!(Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY))
+		{
+			ProcData.Exit = true;
+			SetEvent(ProcData.hEvent);
+			WaitForSingleObject(hThread, INFINITE);
+			CloseHandle(hThread);
+			cout << '\n' << endl;
+		}
 	}
 
 	HPSF hPSF;
@@ -326,8 +372,11 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 	wprintf(GetString(Expanding).get(), L"PSF");
 	wprintf(GetString(File_Count).get(), L"PSF", n);
-	BYTE Progress = 0;
 
+	ProcData.Exit = false;
+	ProcData.Progress = 0;
+	hThread = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateThread(nullptr, 0,
+		reinterpret_cast<LPTHREAD_START_ROUTINE>(ReportThread), &ProcData, 0, nullptr);
 	BOOL ret = PSFExtHandler_ExpandPSF(hPSF, pOut,
 		PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS
 		| PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD
@@ -335,20 +384,26 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		| (Flags & FLAG_ARG_EXPAND_SINGLETHREAD ? PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD : 0)
 		| (Flags & FLAG_ARG_EXPAND_VERIFY ? PSFEXTHANDLER_EXTRACT_FLAG_VERIFY : 0),
 		Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr :
-		[](const PSFEXTHANDLER_EXPAND_INFO* iep, PVOID pProgress)
+		[](const PSFEXTHANDLER_EXPAND_INFO* iep, PVOID Data)
 		{
-			BYTE Progress = static_cast<BYTE>(static_cast<ULONGLONG>(iep->dwCompletedBytes) * 100 / iep->dwTotalBytes);
-
-			if (Progress != *reinterpret_cast<PBYTE>(pProgress))
+			if (reinterpret_cast<ReportStruct*>(Data)->Progress != static_cast<int>(static_cast<ULONGLONG>(iep->dwCompletedBytes) * 100 / iep->dwTotalBytes))
 			{
-				*reinterpret_cast<PBYTE>(pProgress) = Progress;
-				cout << '\r' << static_cast<int>(Progress) << '%';
+				reinterpret_cast<ReportStruct*>(Data)->Progress = static_cast<int>(static_cast<ULONGLONG>(iep->dwCompletedBytes) * 100 / iep->dwTotalBytes);
+				SetEvent(reinterpret_cast<ReportStruct*>(Data)->hEvent);
 			}
 
 			return TRUE;
 		}
-	, &Progress);
-	cout << '\n';
+	, &ProcData);
+	if (!(Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY))
+	{
+		ProcData.Exit = true;
+		SetEvent(ProcData.hEvent);
+		WaitForSingleObject(hThread, INFINITE);
+		CloseHandle(hThread);
+		CloseHandle(ProcData.hEvent);
+		cout << '\n';
+	}
 
 	PSFExtHandler_ClosePSF(hPSF);
 
