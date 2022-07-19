@@ -128,6 +128,7 @@ PSFExtHandler_ExpandPSF(
 		return FALSE;
 	}
 
+	WaitForSingleObject(hPSF->hEvent, INFINITE);
 	bool cancel = false;
 	int n = omp_get_num_procs();
 	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD)
@@ -137,8 +138,6 @@ PSFExtHandler_ExpandPSF(
 		for (; n != 1; --n)
 			if (hPSF->FileCount / n >= 10)
 				break;
-
-	HANDLE hEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
 
 	mutex Mutex;
 	mutex* msgMutex = nullptr;
@@ -173,27 +172,43 @@ PSFExtHandler_ExpandPSF(
 				goto END;
 
 		{
-			PSF psf;
-			if (flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD)
-			{
-				psf.Files.reset(hPSF->Files.get());
-				psf.FileCount = hPSF->FileCount;
-			}
-			else
-				psf.Files.reset(hPSF->Files.get() + AssignThreadTask(hPSF->FileCount, thread, psf.FileCount));
-			psf.hPSF = hPSF->hPSF;
+			FileInfo* Files = hPSF->Files;
+			auto FileCount = hPSF->FileCount;
+			if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD))
+				Files = hPSF->Files + AssignThreadTask(hPSF->FileCount, thread, FileCount);
 
-			for (DWORD i = 0; i != psf.FileCount && !cancel; ++i)
+			for (DWORD i = 0; i != FileCount && !cancel; ++i)
 			{
-				WaitForSingleObject(hEvent, INFINITE);
-				DWORD ret = PSFExtHandler_ExtractFileToDirectoryByIndex(&psf - 1, i, outdir, nullptr, flags & !PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD);
-				SetEvent(hEvent);
+				HANDLE hFile = AutoCreateFile(Files[i].name.c_str(), nullptr, flags);
+				if (!hFile)
+				{
+					cancel = true;
+					break;
+				}
 
+				PVOID Buffer = new BYTE[Files[i].deltaSource.length];
+				DWORD err, size;
+				WaitForSingleObject(hPSF->hFileEvent, INFINITE);
+				BOOL ret = Read(hPSF->hPSF, Buffer, Files[i], err);
+				SetEvent(hPSF->hFileEvent);
+				if (!ret)
+				{
+					delete[] Buffer;
+					goto AfterWriting;
+				}
+
+				size = Write(Buffer, hFile, Files[i], flags, err);
+				delete[] Buffer;
+				CloseHandle(hFile);
+				if (size == 0)
+					ret = FALSE;
+
+			AfterWriting:
 				Mutex.lock();
 				Ret &= ret;
 				Mutex.unlock();
 
-				DWORD err = GetLastError();
+				err = GetLastError();
 				if (err != ERROR_SUCCESS)
 				{
 					Mutex.lock();
@@ -212,15 +227,16 @@ PSFExtHandler_ExpandPSF(
 				{
 					Mutex.lock();
 					++completedfiles;
-					completed += psf.Files[i].deltaSource.length;
+					completed += size;
+					totalbytes = totalbytes + size - Files[i].deltaSource.length;
 					Mutex.unlock();
 
 					PSFEXTHANDLER_EXPAND_INFO ei;
-					ei.dwIndex = static_cast<DWORD>(psf.Files.get() - hPSF->Files.get()) + i;
-					ei.pFileName = psf.Files[i].name.c_str();
+					ei.dwIndex = static_cast<DWORD>(Files - hPSF->Files) + i;
+					ei.pFileName = Files[i].name.c_str();
 					ei.dwCompletedBytes = completed;
 					ei.dwCompletedFileCount = completedfiles;
-					ei.dwCurrentFileSize = psf.Files[i].deltaSource.length;
+					ei.dwCurrentFileSize = Files[i].deltaSource.length;
 					ei.dwTotalBytes = totalbytes;
 					ei.dwTotalFileCount = hPSF->FileCount;
 
@@ -247,8 +263,6 @@ PSFExtHandler_ExpandPSF(
 					}
 				}
 			}
-
-			psf.Files.release();
 		}
 		if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD)
 			&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD))
@@ -278,10 +292,10 @@ PSFExtHandler_ExpandPSF(
 	}
 
 
-	CloseHandle(hEvent);
 	delete msgMutex;
 	delete queue;
 
+	SetEvent(hPSF->hEvent);
 	SetLastError(Err);
 	return Ret & !cancel;
 }

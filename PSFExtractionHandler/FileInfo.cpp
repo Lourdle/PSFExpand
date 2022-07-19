@@ -14,7 +14,7 @@ PSFExtHandler_GetLongestFileNameLength(HPSF hpsf)
 	DWORD Length = 0;
 	for (LONG i = 0; i != hpsf->FileCount; ++i)
 	{
-		DWORD len = static_cast<DWORD>(hpsf->Files.get()[i].name.size());
+		DWORD len = static_cast<DWORD>(hpsf->Files[i].name.size());
 		if (len > Length)
 			Length = len;
 	}
@@ -53,7 +53,7 @@ PSFExtHandler_GetFileInfo(
 		return FALSE;
 	}
 
-	const auto& File = hpsf->Files.get()[i];
+	const auto& File = hpsf->Files[i];
 	if (type)
 		switch (File.deltaSource.type)
 		{

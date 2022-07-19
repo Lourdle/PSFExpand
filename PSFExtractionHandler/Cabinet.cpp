@@ -1,7 +1,8 @@
 #include "pch.h"
 #include "framework.h"
 
-struct File {
+struct File
+{
 	HANDLE hEvent;
 	HANDLE hFile;
 };
@@ -53,11 +54,18 @@ static FNCLOSE(fnClose)
 	return 0;
 }
 
+struct OutFile
+{
+	HANDLE hFile;
+	bool UserHandle;
+	FILETIME FileTime;
+};
+
 static FNWRITE(fnWrite)
 {
 	DWORD dwBytesWritten;
 
-	if (!WriteFile(reinterpret_cast<HANDLE>(hf), pv, cb, &dwBytesWritten, nullptr))
+	if (!WriteFile(reinterpret_cast<OutFile*>(hf)->hFile, pv, cb, &dwBytesWritten, nullptr))
 		dwBytesWritten = -1;
 
 	return dwBytesWritten;
@@ -80,17 +88,32 @@ static FNSEEK(fnSeek)
 	return before;
 }
 
-struct Cab
-{
-	HFDI hFDI;
-	File hFile;
-	ERF erf;
-	WORD wTotal;
-};
 
+struct Cab;
 #define HANDLE Cab*
 #define dllimport dllexport
 #include "PSFExtractionHandler.h"
+#undef HANDLE
+#include "PSFExtHandlerFrame.h"
+struct Cab : RefCountMT
+{
+	Cab() = default;
+	Cab(const Cab& ref) : RefCountMT(ref),
+		hGlobalEvent(ref.hGlobalEvent), hEvent(CreateEventW(nullptr, FALSE, TRUE, nullptr)), hFile(ref.hFile), wTotal(ref.wTotal),
+		hFDI(FDICreate(
+			fnAlloc, operator delete[],
+			fnOpen, fnRead, fnWrite, fnClose, fnSeek,
+			cpuUNKNOWN, &erf))
+	{}
+
+	HANDLE hGlobalEvent;
+	HANDLE hEvent;
+	HFDI hFDI;
+	File hFile;
+	WORD wTotal;
+	ERF erf;
+};
+#define HANDLE Cab*
 
 PSFEXTRACTIONHANDLER_API
 HANDLE PSFExtHandler_util_OpenCabinet(PCWSTR pCabFile)
@@ -129,6 +152,8 @@ HANDLE PSFExtHandler_util_OpenCabinet(PCWSTR pCabFile)
 		return nullptr;
 	}
 	hCab->wTotal = info.cFiles;
+	hCab->hGlobalEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
+	hCab->hEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
 
 	return hCab;
 }
@@ -166,8 +191,8 @@ struct ExpansionInfo
 	PVOID pv;
 	PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS info;
 	DWORD err = ERROR_SUCCESS;
-	bool defhfile;
 };
+
 
 static FNFDINOTIFY(fnFDINotify)
 {
@@ -175,25 +200,29 @@ static FNFDINOTIFY(fnFDINotify)
 	{
 	case fdintCOPY_FILE:
 	{
-		void* hFile = nullptr;
+		OutFile* hFile = new OutFile();
 		if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn)
 		{
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.pCurrentFile = pfdin->psz1;
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.wCurrentFileWrittenSize = 0;
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.wSize = static_cast<WORD>(pfdin->cb);
+
 			DosDateTimeToFileTime(pfdin->date, pfdin->time, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_WriteFile, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info, &hFile, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
-			if (hFile == INVALID_HANDLE_VALUE)
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = nullptr;
+			if (&hFile->hFile)
+				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_WriteFile, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+			if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile == INVALID_HANDLE_VALUE)
 			{
+				delete hFile;
 				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
-				return -1;
+				return 0;
 			}
-			else if (hFile)
+			else if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile)
 			{
-				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->defhfile = false;
+				hFile->hFile = reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile;
+				hFile->UserHandle = true;
 				return reinterpret_cast<INT_PTR>(hFile);
 			}
 		}
-		reinterpret_cast<ExpansionInfo*>(pfdin->pv)->defhfile = true;
 		for (size_t i = 0; pfdin->psz1[i] != '\0'; ++i)
 			if (pfdin->psz1[i] == '\\')
 			{
@@ -206,8 +235,8 @@ static FNFDINOTIFY(fnFDINotify)
 				}
 				pfdin->psz1[i] = '\\';
 			}
-		hFile = CreateFileA(pfdin->psz1, GENERIC_WRITE | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-		if (hFile == INVALID_HANDLE_VALUE)
+		hFile->hFile = CreateFileA(pfdin->psz1, GENERIC_WRITE | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+		if (hFile->hFile == INVALID_HANDLE_VALUE)
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = GetLastError();
 		return reinterpret_cast<INT_PTR>(hFile);
 	}
@@ -216,18 +245,17 @@ static FNFDINOTIFY(fnFDINotify)
 		{
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.pCurrentFile = pfdin->psz1;
 			++reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.wComplitedFiles;
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_CloseFile, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->defhfile ? nullptr : reinterpret_cast<PHANDLE>(&pfdin->hf), reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
-			if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->defhfile)
-				goto def;
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle ? reinterpret_cast<HANDLE>(reinterpret_cast<OutFile*>(pfdin->hf)->hFile) : nullptr;
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_CloseFile, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+			if (reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle)
+			{
+				delete reinterpret_cast<OutFile*>(pfdin->hf);
+				return TRUE;
+			}
 		}
-		else
-		{
-		def:
-			FILETIME time;
-			DosDateTimeToFileTime(pfdin->date, pfdin->time, &time);
-			SetFileTime(reinterpret_cast<void*>(pfdin->hf), &time, &time, &time);
-			CloseHandle(reinterpret_cast<void*>(pfdin->hf));
-		}
+		SetFileTime(reinterpret_cast<OutFile*>(pfdin->hf)->hFile, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
+		CloseHandle(reinterpret_cast<OutFile*>(pfdin->hf)->hFile);
+		delete reinterpret_cast<OutFile*>(pfdin->hf);
 		return TRUE;
 	}
 	return 0;
@@ -237,6 +265,7 @@ PSFEXTRACTIONHANDLER_API
 BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK pfnProgressCallback, PVOID pvUserData)
 {
 	CHAR null = '\0';
+	WaitForSingleObject(hCabinet->hEvent,INFINITE);
 
 	CHAR hFilesAddr[sizeof(void*) * 2 + 1];
 	{
@@ -262,6 +291,7 @@ BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXP
 	if (info.err == ERROR_SUCCESS)
 		info.err = FDIErrToWindowsError(hCabinet);
 
+	SetEvent(hCabinet->hEvent);
 	SetLastError(info.err);
 	return ret;
 }
@@ -269,8 +299,27 @@ BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXP
 PSFEXTRACTIONHANDLER_API
 VOID PSFExtHandler_util_CloseCabinet(HANDLE hCabinet)
 {
+	WaitForMultipleObjects(2, &hCabinet->hGlobalEvent, TRUE, INFINITE);
+
+	if (hCabinet->GetRefCount() == 1)
+	{
+		CloseHandle(hCabinet->hFile.hFile);
+		CloseHandle(hCabinet->hFile.hEvent);
+		CloseHandle(hCabinet->hGlobalEvent);
+	}
+	else
+		SetEvent(hCabinet->hGlobalEvent);
+
 	FDIDestroy(hCabinet->hFDI);
-	CloseHandle(hCabinet->hFile.hFile);
-	CloseHandle(hCabinet->hFile.hEvent);
+	CloseHandle(hCabinet->hEvent);
 	delete hCabinet;
+}
+
+PSFEXTRACTIONHANDLER_API
+HANDLE PSFExtHandler_util_CabinetCopyHandle(HANDLE hCabinet)
+{
+	WaitForSingleObject(hCabinet->hGlobalEvent, INFINITE);
+	HANDLE hNew = new Cab(*hCabinet);
+	SetEvent(hCabinet->hGlobalEvent);
+	return hNew;
 }

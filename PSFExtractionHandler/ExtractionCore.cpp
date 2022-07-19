@@ -16,9 +16,8 @@ bool memcmp(size_t size,
 	return true;
 }
 
-static
-bool
-VerifyData(
+inline
+static bool VerifyData(
 	PBYTE pData,
 	DWORD cbData,
 	ALG_ID algHashType,
@@ -68,38 +67,121 @@ EndCalc:
 	return true;
 }
 
-
-template<typename T,typename D>
-class MyUniquePtr
+inline
+static bool CreateDirectoryWhereTheFileLocated(wstring file)
 {
-public:
-	MyUniquePtr(T* ptr, D* deleter) :p(ptr), d(deleter) {}
-	MyUniquePtr(const MyUniquePtr&) = delete;
-	MyUniquePtr(MyUniquePtr&&) = delete;
+	for (auto& i : file)
+		if (i == '/')
+			i = '\\';
 
-	T* get()const
+	if (file.find('\\') == wstring::npos)
+		return true;
+
+	size_t StartingPos = file.find(L"\\\\") == 0 ? 2 : 0;
+	if (StartingPos == 2)
 	{
-		return p;
+		StartingPos = file.find('\\', 2);
+		StartingPos = file.find('\\', 4);
+		if (StartingPos == wstring::npos)
+		{
+			SetLastError(ERROR_INVALID_PARAMETER);
+			return false;
+		}
 	}
-	void Reset(T* ptr, D* deleter)
+	for (auto pos = file.find('\\', StartingPos); pos != wstring::npos; pos = file.find('\\', pos + 1))
 	{
-		d(p);
+		if (pos == 0 || file[pos - 1] == ':')
+			continue;
 
-		p = ptr;
-		d = deleter;
+		file[pos] = 0;
+		if (!CreateDirectoryW(file.c_str(), nullptr))
+			if (GetLastError() != ERROR_ALREADY_EXISTS)
+				return false;
+
+		file[pos] = '\\';
 	}
+	return true;
+}
 
-	~MyUniquePtr()
+HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
+{
+	HANDLE hFile;
+	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE)
+		hFile = const_cast<PWSTR>(out);
+	else
 	{
-		d(p);
-	}
-private:
-	T* p;
-	D* d;
-};
+		DWORD FileCreationDisposition;
+		if (flags & PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS
+			|| flags & PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS)
+			FileCreationDisposition = CREATE_NEW;
+		else
+			FileCreationDisposition = CREATE_ALWAYS;
 
-bool Extract(
+
+		wstring file(L"\\\\?\\");
+		if (!out)
+			out = name;
+
+		if (wcsncmp(out, L"\\\\?\\", 4) == 0
+			|| _wcsnicmp(out, L"\\\\UNC\\", 6) == 0)
+			file = out;
+		else if (wcsncmp(out, L"\\\\", 4) == 0)
+		{
+			file = L"\\\\UNC";
+			file += out + 1;
+		}
+		else
+		{
+			DWORD len = GetFullPathNameW(out, 0, nullptr, nullptr);
+			if (len == 0)
+				return nullptr;
+			file.resize(len + 3);
+			GetFullPathNameW(out, len, const_cast<LPWSTR>(file.c_str() + 4), nullptr);
+		}
+		file.shrink_to_fit();
+
+		if (!CreateDirectoryWhereTheFileLocated(file))
+			return nullptr;
+
+		hFile = CreateFileW(file.c_str(),
+			GENERIC_WRITE,
+			0,
+			nullptr,
+			FileCreationDisposition,
+			0,
+			nullptr);
+
+		if (hFile == INVALID_HANDLE_VALUE)
+			if (GetLastError() == ERROR_FILE_EXISTS)
+			{
+				if (flags & PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS)
+					return nullptr;
+			}
+			else
+				return nullptr;
+	}
+
+	return hFile;
+}
+
+bool Read(
 	HANDLE hPSF,
+	PVOID data,
+	const FileInfo& info,
+	DWORD& Err
+)
+{
+	SetFilePointer(hPSF, info.deltaSource.offset, nullptr, 0);
+	if (ReadFile(hPSF, data, info.deltaSource.length, nullptr, nullptr))
+		return true;
+	else
+		Err = GetLastError();
+
+	return false;
+}
+
+DWORD Write(
+	PVOID Buffer,
 	HANDLE hFile,
 	const FileInfo& info,
 	DWORD flags,
@@ -107,79 +189,68 @@ bool Extract(
 )
 {
 	BOOL Ret;
-	DWORD fsize = info.deltaSource.length;
-	MyUniquePtr<BYTE, void(void*)> Data(new BYTE[fsize], operator delete[]);
+	DWORD size = info.deltaSource.length;
 
-	SetFilePointer(hPSF, info.deltaSource.offset, nullptr, 0);
-	if (ReadFile(hPSF, Data.get(), info.deltaSource.length, nullptr, nullptr))
+	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_VERIFY)
 	{
-		if (flags & PSFEXTHANDLER_EXTRACT_FLAG_VERIFY)
+		if (info.deltaSource.Hash.alg == INVALID_FLAG)
 		{
-			if (info.deltaSource.Hash.alg == INVALID_FLAG)
-			{
-				Err = ERROR_NOT_SUPPORTED;
-				goto BeginWrite;
-			}
-
-			bool good;
-			if (!VerifyData(Data.get(),
-				info.deltaSource.length,
-				info.deltaSource.Hash.alg,
-				info.deltaSource.Hash.value.get(),
-				good))
-			{
-				if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS))
-				{
-					Err = GetLastError();
-					return false;
-				}
-
-				Err = GetLastError();
-				goto BeginWrite;
-			}
-
-			if (!good)
-				Err = ERROR_INVALID_DATA;
-			if (!good && !(flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA))
-				return false;
+			Err = ERROR_NOT_SUPPORTED;
+			goto BeginWrite;
 		}
 
-	BeginWrite:
-		if (info.deltaSource.type != INVALID_FLAG - 1
-			&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT))
+		bool good;
+		if (!VerifyData(reinterpret_cast<PBYTE>(Buffer),
+			info.deltaSource.length,
+			info.deltaSource.Hash.alg,
+			info.deltaSource.Hash.value.get(),
+			good))
 		{
-			DELTA_INPUT ddi;
-			ddi.Editable = FALSE;
-			ddi.lpcStart = Data.get();
-			ddi.uSize = info.deltaSource.length;
-
-			DELTA_OUTPUT DO;
-			Ret = ApplyDeltaB(info.deltaSource.type, {}, ddi, &DO);
-			if (!Ret)
+			if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS))
 			{
 				Err = GetLastError();
-				return false;
+				return 0;
 			}
 
-			Data.Reset(reinterpret_cast<BYTE*>(DO.lpStart),
-				[](void* p)
-				{DeltaFree(p); }
-			);
-
-			fsize = static_cast<DWORD>(DO.uSize);
-		}
-
-		Ret = WriteFile(hFile, Data.get(), fsize, nullptr, nullptr);
-		if (!Ret)
 			Err = GetLastError();
-		else if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME))
-		{
-			SetFileTime(hFile, &info.time, &info.time, &info.time);
-			return true;
+			goto BeginWrite;
 		}
+
+		if (!good)
+			Err = ERROR_INVALID_DATA;
+		if (!good && !(flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_BAD_DATA))
+			return 0;
+	}
+
+BeginWrite:
+	if (info.deltaSource.type != INVALID_FLAG - 1
+		&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT))
+	{
+		DELTA_INPUT ddi;
+		ddi.Editable = FALSE;
+		ddi.lpcStart = Buffer;
+		ddi.uSize = info.deltaSource.length;
+
+		DELTA_OUTPUT DO;
+		Ret = ApplyDeltaB(info.deltaSource.type, {}, ddi, &DO);
+		if (!Ret)
+		{
+			Err = GetLastError();
+			return 0;
+		}
+
+		size = static_cast<DWORD>(DO.uSize);
+		Ret = WriteFile(hFile, DO.lpStart, size, nullptr, nullptr);
+		DeltaFree(DO.lpStart);
 	}
 	else
+		Ret = WriteFile(hFile, Buffer, info.deltaSource.length, nullptr, nullptr);
+	if (!Ret)
 		Err = GetLastError();
-
-	return false;
+	else if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_DO_NOT_SET_FILE_TIME))
+	{
+		SetFileTime(hFile, &info.time, &info.time, &info.time);
+		return size;
+	}
+	return 0;
 }

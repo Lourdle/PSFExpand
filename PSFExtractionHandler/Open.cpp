@@ -314,13 +314,13 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 			SetLastError(ERROR_BAD_FORMAT);
 			throw runtime_error(nullptr);
 		}
-		hPSF->Files.reset(new FileInfo[hPSF->FileCount]);
+		hPSF->Files=new FileInfo[hPSF->FileCount];
 
 		bool except = false;
 
-		FileInfo* pFileInfo = hPSF->Files.get();
+		FileInfo* pFileInfo = hPSF->Files;
 
-		XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files.get())];
+		XmlNode node = list[static_cast<long>(pFileInfo - hPSF->Files)];
 
 		try
 		{
@@ -419,7 +419,7 @@ PSFExtHandler_OpenFile(
 	PCWSTR psf,
 	PCWSTR xml)
 {
-	unique_ptr<PSF, void(*)(HPSF)> hPSF(new PSF,
+	unique_ptr<PSF, void(*)(HPSF)> hPSF(new PSF(),
 		[](HPSF hPSF)
 		{
 			DWORD Err = GetLastError();
@@ -495,7 +495,7 @@ PSFExtHandler_OpenFile(
 
 	auto Length = GetShortPathNameW(Xml.c_str(), nullptr, 0);
 	if (!Length)
-		return FALSE;
+		return nullptr;
 	else
 	{
 		wstring tmp;
@@ -517,9 +517,17 @@ PSFExtHandler_OpenFile(
 	XmlReadingThread.join();
 
 	if (ret)
+	{
+		hPSF->hGlobalEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
+		hPSF->hEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
+		hPSF->hFileEvent = CreateEventW(nullptr, FALSE, TRUE, nullptr);
 		return hPSF.release() - 1;
+	}
 	else
+	{
+		delete[] hPSF->Files;
 		return nullptr;
+	}
 }
 
 VOID
@@ -529,8 +537,28 @@ PSFExtHandler_ClosePSF(
 {
 	CheckHandle(hPSF, return);
 
-	if (hPSF->hPSF)
+	WaitForMultipleObjects(2, &hPSF->hGlobalEvent, TRUE, INFINITE);
+	if (hPSF->GetRefCount() == 1)
+	{
 		CloseHandle(hPSF->hPSF);
+		CloseHandle(hPSF->hFileEvent);
+		CloseHandle(hPSF->hGlobalEvent);
+		delete[] hPSF->Files;
+	}
+	else
+		SetEvent(hPSF->hGlobalEvent);
 
+	CloseHandle(hPSF->hEvent);
 	delete hPSF;
+}
+
+HPSF PSFExtHandler_CopyHandle(HPSF hPSF)
+{
+	CheckHandle(hPSF, return nullptr);
+
+	WaitForSingleObject(hPSF->hGlobalEvent, INFINITE);
+	HPSF hNew = new PSF(*hPSF);
+	SetEvent(hPSF->hGlobalEvent);
+
+	return hNew - 1;
 }
