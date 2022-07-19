@@ -6,6 +6,10 @@
 #include "../PSFExtractionHandler/PSFExtractionHandler.h"
 
 #include <iostream>
+#include <thread>
+#include <mutex>
+
+#include <omp.h>
 
 using namespace std;
 
@@ -235,14 +239,46 @@ struct ReportStruct
 	bool Exit;
 };
 
-DWORD ReportThread(ReportStruct* Data)
+static void ReportThread(ReportStruct* Data)
 {
 	while (!Data->Exit)
 	{
 		WaitForSingleObject(Data->hEvent, INFINITE);
 		printf("\r%d%%", Data->Progress);
 	}
-	return 0UL;
+}
+
+struct CabExpansion
+{
+	ReportStruct* pReportStruct;
+	ULONG start, end, n, & complited;
+	bool& cancel;
+	mutex& Mutex;
+	int progress;
+};
+
+static void CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO info, CabExpansion* Data)
+{
+	if (Data->start > Data->n
+		|| Data->n >= Data->end
+		|| Data->cancel)
+		*info.phFile = INVALID_HANDLE_VALUE;
+	else if (State == State_CloseFile)
+	{
+		Data->Mutex.lock();
+		++Data->complited;
+		Data->Mutex.unlock();
+		Data->progress = static_cast<int>(static_cast<DWORD>(Data->complited * 100) / info.pProgressInfo->wTotalFiles);
+		if (Data->pReportStruct->Progress < Data->progress)
+		{
+			Data->Mutex.lock();
+			Data->pReportStruct->Progress = Data->progress;
+			Data->Mutex.unlock();
+			SetEvent(Data->pReportStruct->hEvent);
+		}
+		return;
+	}
+	++Data->n;
 }
 
 bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE Flags)
@@ -304,8 +340,6 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 	ProcData.Exit = false;
 	ProcData.hEvent = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateEventW(nullptr, FALSE, FALSE, nullptr);
 
-	HANDLE hThread;
-
 	if (pCabFile)
 	{
 		wprintf(GetString(Expanding).get(), L"CAB");
@@ -314,32 +348,67 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		WORD n = PSFExtHandler_util_CabinetGetFileCount(hCab);
 		wprintf(GetString(File_Count).get(), L"CAB", n);
 		SetCurrentDirectoryW(OutDir.c_str());
-		hThread = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateThread(nullptr, 0,
-			reinterpret_cast<LPTHREAD_START_ROUTINE>(ReportThread), &ProcData, 0, nullptr);
-		if (!PSFExtHandler_util_ExpandCabinet(hCab,
-			Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr :
-			[](PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, const PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS* info, PHANDLE, PVOID Data)
-			{
-				if (State == State_CloseFile
-					&& reinterpret_cast<ReportStruct*>(Data)->Progress != static_cast<int>(static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles))
-				{
-					reinterpret_cast<ReportStruct*>(Data)->Progress = static_cast<int>(static_cast<DWORD>(info->wComplitedFiles * 100) / info->wTotalFiles);
-					SetEvent(reinterpret_cast<ReportStruct*>(Data)->hEvent);
-				}
-			}, &ProcData))
+		thread Thread(Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? [](ReportStruct*) {} : ReportThread, &ProcData);
+		if (Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY)
+			Thread.detach();
+		int nThreads = omp_get_num_procs();
+		if (Flags & FLAG_ARG_EXPAND_SINGLETHREAD)
+			nThreads = 1;
+
+
+		DWORD Err = ERROR_SUCCESS;
+		mutex Mutex;
+		bool cancel = false;
+		DWORD complited = 0;
+		omp_set_num_threads(nThreads);
+#pragma omp parallel
 		{
-			DWORD Err = GetLastError();
-			CloseHandle(hCab);
+			HANDLE hCabinet = hCab;
+			if (omp_get_thread_num() != 0)
+				hCabinet = PSFExtHandler_util_CabinetCopyHandle(hCab);
+
+			CabExpansion Data = { &ProcData, 0, 0, 0, complited, cancel,  Mutex, 0 };
+			{
+				ULONG range = n / nThreads;
+				ULONG remainder = n % nThreads;
+				Data.start = range * omp_get_thread_num();
+
+				if (remainder > static_cast<DWORD>(omp_get_thread_num()))
+					++range;
+
+				if (remainder != 0)
+					Data.start += remainder > static_cast<DWORD>(omp_get_thread_num()) ? omp_get_thread_num() : remainder;
+				Data.end = Data.start + range;
+
+				Mutex.lock();
+				++complited;
+				Mutex.unlock();
+			}
+
+			if (!PSFExtHandler_util_ExpandCabinet(hCabinet,
+				reinterpret_cast<PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK>(CabExpansionCallback), &Data))
+				if (Err == ERROR_SUCCESS)
+				{
+					Err = GetLastError();
+					cancel = true;
+				}
+			PSFExtHandler_util_CloseCabinet(hCabinet);
+		}
+		if (Err != ERROR_SUCCESS)
+		{
+			ProcData.Exit = true;
+			SetEvent(ProcData.hEvent);
+			Thread.join();
+			cout << '\n' << endl;
+
 			SetLastError(Err);
 			return false;
 		}
-		PSFExtHandler_util_CloseCabinet(hCab);
 		if (!(Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY))
 		{
 			ProcData.Exit = true;
 			SetEvent(ProcData.hEvent);
-			WaitForSingleObject(hThread, INFINITE);
-			CloseHandle(hThread);
+			Thread.join();
 			cout << '\n' << endl;
 		}
 	}
@@ -375,8 +444,9 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 	ProcData.Exit = false;
 	ProcData.Progress = 0;
-	hThread = Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : CreateThread(nullptr, 0,
-		reinterpret_cast<LPTHREAD_START_ROUTINE>(ReportThread), &ProcData, 0, nullptr);
+	thread Thread(Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? [](ReportStruct*) {} : ReportThread, &ProcData);
+	if (Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY)
+		Thread.detach();
 	BOOL ret = PSFExtHandler_ExpandPSF(hPSF, pOut,
 		PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS
 		| PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD
@@ -399,8 +469,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 	{
 		ProcData.Exit = true;
 		SetEvent(ProcData.hEvent);
-		WaitForSingleObject(hThread, INFINITE);
-		CloseHandle(hThread);
+		Thread.join();
 		CloseHandle(ProcData.hEvent);
 		cout << '\n';
 	}

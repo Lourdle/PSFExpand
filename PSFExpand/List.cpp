@@ -32,13 +32,13 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 		DWORD FileSize;
 		PSFEXTHANDLER_FILE_TYPE type;
 
-		Ret = PSFExtHandler_GetFileInfo(hPSF, i, nullptr, &strSize, &FileSize, nullptr, &type);
+		Ret = PSFExtHandler_GetFileInfo(hPSF, i, nullptr, &strSize, &FileSize, nullptr, &type, nullptr);
 		if (!Ret)
 			break;
 
 		wstring File;
 		File.resize(strSize / 2 - 1);
-		Ret = PSFExtHandler_GetFileInfo(hPSF, i, const_cast<PWSTR>(File.c_str()), &strSize, &FileSize, nullptr, &type);
+		Ret = PSFExtHandler_GetFileInfo(hPSF, i, const_cast<PWSTR>(File.c_str()), &strSize, &FileSize, nullptr, &type, nullptr);
 		if (!Ret)
 			break;
 

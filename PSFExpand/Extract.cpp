@@ -35,12 +35,12 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Ve
 	{
 		DWORD strSize;
 		PSFEXTHANDLER_FILE_TYPE type;
-		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, nullptr, &strSize, nullptr, nullptr, &type))
+		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, nullptr, &strSize, nullptr, nullptr, &type, nullptr))
 			break;
 
 		wstring File;
 		File.resize(strSize / 2 - 1);
-		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, const_cast<PWSTR>(File.c_str()), &strSize, nullptr, nullptr, &type))
+		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, const_cast<PWSTR>(File.c_str()), &strSize, nullptr, nullptr, &type, nullptr))
 			break;
 
 		if (PathMatchSpecW(File.c_str(), pFile))
