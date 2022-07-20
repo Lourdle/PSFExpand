@@ -49,7 +49,7 @@ PSFExtHandler_OpenFileEx(
 
 PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
-DWORD
+SHORT
 PSFExtHandler_GetLongestFileNameLength(
 	_In_		HPSF hPSF
 );
@@ -145,8 +145,8 @@ typedef struct _PSFEXTHANDLER_EXPAND_INFO
 	DWORD		dwCurrentFileSize;
 	DWORD		dwCompletedBytes;
 	DWORD		dwTotalBytes;
-	DWORD		dwCompletedFileCount;
-	DWORD		dwTotalFileCount;
+	ULONG		ulCompletedFileCount;
+	ULONG		ulTotalFileCount;
 }PSFEXTHANDLER_EXPAND_INFO;
 
 typedef BOOL(*PSFEXTHANDLER_PROGRESS_PROC)(const PSFEXTHANDLER_EXPAND_INFO*, PVOID);
@@ -190,17 +190,17 @@ PSFExtHandler_util_CabinetGetFileCount(
 
 typedef enum _PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE
 {
-	State_WriteFile,
-	State_CloseFile
+	PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE,
+	PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE
 }PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE;
 
 typedef struct _PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS
 {
 	HANDLE hFile;
-	WORD wComplitedFiles;
-	WORD wTotalFiles;
+	ULONG ulComplitedFiles;
+	ULONG ulTotalFiles;
 	PCSTR pCurrentFile;
-	WORD wSize;
+	ULONG ulSize;
 	FILETIME FileTime;
 }PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS;
 

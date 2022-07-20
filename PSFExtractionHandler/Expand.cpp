@@ -148,11 +148,11 @@ PSFExtHandler_ExpandPSF(
 	BOOL Ret = TRUE;
 	DWORD Err = ERROR_SUCCESS;
 	DWORD totalbytes = 0;
-	DWORD completed = 0;
+	ULONG completed = 0;
 	if (progress)
 		for (DWORD i = 0; i != hPSF->FileCount; ++i)
 			totalbytes += hPSF->Files[i].deltaSource.length;
-	DWORD completedfiles = 0;
+	ULONG completedfiles = 0;
 	MessageQueue<const PSFEXTHANDLER_EXPAND_INFO*>* queue = nullptr;
 	if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD)
 		&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD))
@@ -235,10 +235,10 @@ PSFExtHandler_ExpandPSF(
 					ei.dwIndex = static_cast<DWORD>(Files - hPSF->Files) + i;
 					ei.pFileName = Files[i].name.c_str();
 					ei.dwCompletedBytes = completed;
-					ei.dwCompletedFileCount = completedfiles;
+					ei.ulCompletedFileCount = completedfiles;
 					ei.dwCurrentFileSize = Files[i].deltaSource.length;
 					ei.dwTotalBytes = totalbytes;
-					ei.dwTotalFileCount = hPSF->FileCount;
+					ei.ulTotalFileCount = hPSF->FileCount;
 
 					if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_ALLOW_CALLING_PROGGRESS_PROC_NOT_ON_THE_MAIN_THREAD)
 						&& !(flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD))

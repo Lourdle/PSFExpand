@@ -3,7 +3,7 @@
 #include "PSFExtHandlerFrame.h"
 
 
-DWORD
+SHORT
 PSFEXTRACTIONHANDLER_API
 PSFExtHandler_GetLongestFileNameLength(HPSF hpsf)
 {

@@ -263,12 +263,12 @@ static void CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSF
 		|| Data->n >= Data->end
 		|| Data->cancel)
 		*info.phFile = INVALID_HANDLE_VALUE;
-	else if (State == State_CloseFile)
+	else if (State == PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE)
 	{
 		Data->Mutex.lock();
 		++Data->complited;
 		Data->Mutex.unlock();
-		Data->progress = static_cast<int>(static_cast<DWORD>(Data->complited * 100) / info.pProgressInfo->wTotalFiles);
+		Data->progress = static_cast<int>(static_cast<DWORD>(Data->complited * 100) / info.pProgressInfo->ulTotalFiles);
 		if (Data->pReportStruct->Progress < Data->progress)
 		{
 			Data->Mutex.lock();

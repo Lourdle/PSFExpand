@@ -204,12 +204,12 @@ static FNFDINOTIFY(fnFDINotify)
 		if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn)
 		{
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.pCurrentFile = pfdin->psz1;
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.wSize = static_cast<WORD>(pfdin->cb);
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.ulSize = static_cast<WORD>(pfdin->cb);
 
 			DosDateTimeToFileTime(pfdin->date, pfdin->time, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = nullptr;
 			if (&hFile->hFile)
-				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_WriteFile, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
 			if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile == INVALID_HANDLE_VALUE)
 			{
 				delete hFile;
@@ -244,9 +244,9 @@ static FNFDINOTIFY(fnFDINotify)
 		if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn)
 		{
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.pCurrentFile = pfdin->psz1;
-			++reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.wComplitedFiles;
+			++reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.ulComplitedFiles;
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle ? reinterpret_cast<HANDLE>(reinterpret_cast<OutFile*>(pfdin->hf)->hFile) : nullptr;
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(State_CloseFile, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
 			if (reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle)
 			{
 				delete reinterpret_cast<OutFile*>(pfdin->hf);
@@ -284,8 +284,8 @@ BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXP
 
 	ExpansionInfo info;
 	info.pfn = pfnProgressCallback;
-	info.info.wTotalFiles = hCabinet->wTotal;
-	info.info.wComplitedFiles = 0;
+	info.info.ulTotalFiles = hCabinet->wTotal;
+	info.info.ulComplitedFiles = 0;
 	info.pv = pvUserData;
 	bool ret = FDICopy(hCabinet->hFDI, hFilesAddr, &null, 0, fnFDINotify, nullptr, &info);
 	if (info.err == ERROR_SUCCESS)
