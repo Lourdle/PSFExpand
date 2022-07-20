@@ -11,10 +11,10 @@ PSFExtHandler_GetLongestFileNameLength(HPSF hpsf)
 		
 	SetLastError(ERROR_SUCCESS);
 
-	DWORD Length = 0;
-	for (LONG i = 0; i != hpsf->FileCount; ++i)
+	SHORT Length = 0;
+	for (DWORD i = 0; i != hpsf->FileCount; ++i)
 	{
-		DWORD len = static_cast<DWORD>(hpsf->Files[i].name.size());
+		auto len = static_cast<SHORT>(hpsf->Files[i].name.size());
 		if (len > Length)
 			Length = len;
 	}
