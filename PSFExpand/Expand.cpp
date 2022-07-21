@@ -257,12 +257,13 @@ struct CabExpansion
 	int progress;
 };
 
-static void CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO info, CabExpansion* Data)
+static BOOL CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO info, CabExpansion* Data)
 {
 	if (Data->start > Data->n
-		|| Data->n >= Data->end
 		|| Data->cancel)
 		*info.phFile = INVALID_HANDLE_VALUE;
+	else if (Data->n >= Data->end)
+		return FALSE;
 	else if (State == PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE)
 	{
 		Data->Mutex.lock();
@@ -276,9 +277,10 @@ static void CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSF
 			Data->Mutex.unlock();
 			SetEvent(Data->pReportStruct->hEvent);
 		}
-		return;
+		return TRUE;
 	}
 	++Data->n;
+	return TRUE;
 }
 
 bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE Flags)
@@ -387,14 +389,15 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 			if (!PSFExtHandler_util_ExpandCabinet(hCabinet,
 				reinterpret_cast<PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK>(CabExpansionCallback), &Data))
-				if (Err == ERROR_SUCCESS)
+				if (Err != ERROR_SUCCESS
+					&& GetLastError() != ERROR_CANCELLED)
 				{
 					Err = GetLastError();
 					cancel = true;
 				}
 			PSFExtHandler_util_CloseCabinet(hCabinet);
 		}
-		if (Err != ERROR_SUCCESS)
+		if (Err != ERROR_SUCCESS && Err != ERROR_CANCELLED)
 		{
 			ProcData.Exit = true;
 			SetEvent(ProcData.hEvent);

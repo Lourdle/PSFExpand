@@ -209,11 +209,15 @@ static FNFDINOTIFY(fnFDINotify)
 			DosDateTimeToFileTime(pfdin->date, pfdin->time, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = nullptr;
 			if (&hFile->hFile)
-				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+				if (!reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv))
+				{
+					delete hFile;
+					reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
+					return -1;
+				}
 			if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile == INVALID_HANDLE_VALUE)
 			{
 				delete hFile;
-				reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
 				return 0;
 			}
 			else if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile)
@@ -241,24 +245,32 @@ static FNFDINOTIFY(fnFDINotify)
 		return reinterpret_cast<INT_PTR>(hFile);
 	}
 	case fdintCLOSE_FILE_INFO:
+	{
+		bool ret = true;
 		if (reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn)
 		{
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.pCurrentFile = pfdin->psz1;
 			++reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.ulComplitedFiles;
 			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.hFile = reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle ? reinterpret_cast<HANDLE>(reinterpret_cast<OutFile*>(pfdin->hf)->hFile) : nullptr;
-			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
+			ret = reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pfn(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE, { &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info }, reinterpret_cast<ExpansionInfo*>(pfdin->pv)->pv);
 			if (reinterpret_cast<OutFile*>(pfdin->hf)->UserHandle)
 			{
 				delete reinterpret_cast<OutFile*>(pfdin->hf);
-				return TRUE;
+				if (!ret)
+					reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
+				return ret;
 			}
 		}
 		SetFileTime(reinterpret_cast<OutFile*>(pfdin->hf)->hFile, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime, &reinterpret_cast<ExpansionInfo*>(pfdin->pv)->info.FileTime);
 		CloseHandle(reinterpret_cast<OutFile*>(pfdin->hf)->hFile);
 		delete reinterpret_cast<OutFile*>(pfdin->hf);
-		return TRUE;
+		if (!ret)
+			reinterpret_cast<ExpansionInfo*>(pfdin->pv)->err = ERROR_CANCELLED;
+		return ret;
 	}
-	return 0;
+	default:
+		return 0;
+	}
 }
 
 PSFEXTRACTIONHANDLER_API
