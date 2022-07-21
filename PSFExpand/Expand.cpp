@@ -259,10 +259,10 @@ struct CabExpansion
 
 static BOOL CabExpansionCallback(PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE State, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO info, CabExpansion* Data)
 {
-	if (Data->start > Data->n
-		|| Data->cancel)
+	if (Data->start > Data->n)
 		*info.phFile = INVALID_HANDLE_VALUE;
-	else if (Data->n >= Data->end)
+	else if (Data->n >= Data->end
+		|| Data->cancel)
 		return FALSE;
 	else if (State == PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE)
 	{
@@ -361,7 +361,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		DWORD Err = ERROR_SUCCESS;
 		mutex Mutex;
 		bool cancel = false;
-		DWORD complited = 0;
+		DWORD complited = nThreads;
 		omp_set_num_threads(nThreads);
 #pragma omp parallel
 		{
@@ -381,14 +381,10 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 				if (remainder != 0)
 					Data.start += remainder > static_cast<DWORD>(omp_get_thread_num()) ? omp_get_thread_num() : remainder;
 				Data.end = Data.start + range;
-
-				Mutex.lock();
-				++complited;
-				Mutex.unlock();
 			}
 
 			if (!PSFExtHandler_util_ExpandCabinet(hCabinet,
-				reinterpret_cast<PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK>(CabExpansionCallback), &Data))
+				Flags & FLAG_ARG_EXPAND_SINGLETHREAD && Flags & FLAG_ARG_EXPAND_NOPROGRESSDISPLAY ? nullptr : reinterpret_cast<PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK>(CabExpansionCallback), &Data))
 				if (Err != ERROR_SUCCESS
 					&& GetLastError() != ERROR_CANCELLED)
 				{
