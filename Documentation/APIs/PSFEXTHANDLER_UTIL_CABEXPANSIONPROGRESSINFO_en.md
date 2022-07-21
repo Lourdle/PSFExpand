@@ -13,5 +13,6 @@ A pointer to progress information.
 ##### phFile
 A pointer to a handle to the file.
 ### Remarks
-The progress information can be obtained according to pProgressInfo, its first member is the file handle, and the file handle can be provided through the second member.  
+Progress information can be obtained according to pProgressInfo, whose first member is the file handle.  
+A file handle can be provided through the second member.  
 For more information on progress messages, see [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS](PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS_en.md).

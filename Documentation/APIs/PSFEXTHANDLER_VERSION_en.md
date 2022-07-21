@@ -11,16 +11,16 @@ Example (Version 1.1.1):
                                                                     | PSFEXTHANDLER_MINOR_VERSION << 12\
                                                                     | PSFEXTHANDLER_PATCH_VERSION << 2)
 ````
->PSFEXTHANDLER_MAJOR_VERSION
+>PSFEXTHANDLER_MAJOR_VERSION  
 >PSF Extraction Handler API major version.
 
->PSFEXTHANDLER_MINOR_VERSION
+>PSFEXTHANDLER_MINOR_VERSION  
 >PSF Extraction Handler API minor version.
 
->PSFEXTHANDLER_PATCH_VERSION
+>PSFEXTHANDLER_PATCH_VERSION  
 >PSF Extraction Handler API patch version.
 
->PSFEXTHANDLER_CURRENT_VERSION
+>PSFEXTHANDLER_CURRENT_VERSION  
 >PSF Extraction Handler API current version. It is a 32-bit number with the first 10 bits containing the major version, the next 10 bits containing the minor version, then the next 10 bits containing the patch version, 2 bits reserved.
 
 ### Remark

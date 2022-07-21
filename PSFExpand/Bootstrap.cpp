@@ -88,11 +88,11 @@ struct PrintHelp
 
 	static void ExtractHelp()
 	{
-		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file> /File:<file_name>\n  /StorageDirectory:<path_to_storage_dir> [/Verify] [/Verbose]\n\n";
+		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file> /File:<file_name>\n  /OutDir:<path_to_storage_dir> [/Verify] [/Verbose]\n\n";
 		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /File\t\t\t%ls\n  /OutDir\t\t%ls\n  /Verify\t\t%ls\n  /Verbose  \t\t%ls\n%ls\n\n",
 			GetString(Extract_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(), GetString(PsfFile_Option).get(),
 			GetString(File_Option).get(), GetString(OutDir_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /File:*.dll\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /StorageDirectory:D:\\Windows10.0-KB0000000-x64\\dlls\n";
+		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /File:*.dll\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\\dlls\n";
 		ExitProcess(0);
 	}
 

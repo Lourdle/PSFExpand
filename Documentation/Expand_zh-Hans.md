@@ -4,7 +4,7 @@
 - CabFile 指定 CAB 文件在文件系统上的路径
 - XmlFile 指定 XML 文件在文件系统上的路径
 - PsfFile 指定 PSF 文件在文件系统上的路径
-- StorageDirectory 指定存储提取出文件的目录
+- OutDir 指定存储提取出文件的目录
 ### 选项
 - Verify 校验文件数据是否完好
 - SingleThread 仅使用单线程扩展文件
@@ -17,8 +17,8 @@
 若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/XmlFile:<文件路径>`。可以不区分大小写。
 ##### PsfFile 选项
 若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/PsfFile:<文件路径>`。可以不区分大小写。
-##### StorageDirectory 选项
-若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/StorageDirectory:<文件夹路径>`。可以不区分大小写。
+##### OutDir 选项
+若未指定 /CabFile 则为必须选项。使用方法为在命令行加入`/OutDir:<文件夹路径>`。可以不区分大小写。
 ##### Verify 选项
 可选选项。加入`/Verify`选项程序在数据将要写入文件前进行哈希校验，若文件数据损坏会给出`数据无效`的错误消息。
 ##### SingleThread 选项
@@ -30,7 +30,7 @@
 若指定的 /CabFile 选项又不指定 /XmlFile 选项，程序在完成 CAB 文件扩展之前不会进行初次检查 XML 文件。
 ### 例如
 - 展开保存文件信息的 XML 为 D:\Windows10.0-KB0000000-x64\express.psf.cix.xml 的 D:\Windows10.0-KB0000000-x64.psf 文件，将文件展开到 D:\Windows10.0-KB0000000-x64，校验文件哈希。
->PSFExpand.exe /Expand /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /Verify /PsfFile:D:\Windows10.0-KB0000000-x64.psf /StorageDirectory:D:\Windows10.0-KB0000000-x64
+>PSFExpand.exe /Expand /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /Verify /PsfFile:D:\Windows10.0-KB0000000-x64.psf /OutDir:D:\Windows10.0-KB0000000-x64
 
 - 展开 D:\Windows10.0-KB0000000-x64_00000000.cab 到 D:\Windows10.0-KB0000000-x64_00000000，并搜索匹配的 PSF 文件，展开到 D:\Windows10.0-KB0000000-x64_00000000。校验文件哈希。安全读取。
 >PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab /Verify /SafeRead

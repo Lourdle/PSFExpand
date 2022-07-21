@@ -46,7 +46,7 @@ First release.
 7. Optimized thread safety.
 8. Other unlisted detail fixes.
 
-Note: Earlier API versions will no longer be supported starting with this release. The behavior of unadapted programs calling some functions of the API after this version is undefined.
+Note: This release will no longer be compatible with earlier API versions. Unadapted programs call some functions of the API after this version, and the behavior is undefined.
 
 - 1.1.1
 1. Canceled file write-through to improve file writing speed.

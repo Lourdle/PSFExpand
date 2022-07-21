@@ -4,7 +4,7 @@ Expand the entire PSF file.
 - CabFile specifies the path of the CAB file on the filesystem
 - XmlFile specifies the path of the XML file on the filesystem
 - PsfFile specifies the path of the PSF file on the filesystem
-- StorageDirectory specifies the directory where the extracted files are stored
+- OutDir specifies the directory where the extracted files are stored
 ### options
 - Verify to verify that the file data is intact
 - SingleThread only uses single thread to expand files
@@ -17,8 +17,8 @@ For example: Windows10.0-KB0000000-x64_00000000.cab file and Windows10.0-KB00000
 Required if /CabFile is not specified. The usage method is to append `/XmlFile:<file path>` to the command line. Can be case insensitive.
 ##### PsfFile Options
 Required if /CabFile is not specified. The usage method is to append `/PsfFile:<file path>` to the command line. Can be case insensitive.
-##### StorageDirectory Options
-Required if /CabFile is not specified. To use it, append `/StorageDirectory:<folder path>` to the command line. Can be case insensitive.
+##### OutDir Options
+Required if /CabFile is not specified. To use it, append `/OutDir:<folder path>` to the command line. Can be case insensitive.
 ##### Verify Options
 Optional option. Appending the `/Verify` option to the program to perform a hash check before the data is written to the file. If the file data is corrupted, it will give a `data invalid` error message.
 ##### SingleThread Options
@@ -30,7 +30,7 @@ The program will first display the relevant file information, and if there is an
 If the /CabFile option is specified and the /XmlFile option is not specified, the program will not perform an initial check of the XML file before completing the CAB file expansion.
 ### Examples
 - Expand the D:\Windows10.0-KB0000000-x64.psf file where the XML that saves the file information is D:\Windows10.0-KB0000000-x64\express.psf.cix.xml, and expand the file to D:\Windows10. 0-KB0000000-x64, check the file hash.
->PSFExpand.exe /Expand /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /Verify /PsfFile:D:\Windows10.0-KB0000000-x64.psf /StorageDirectory:D:\ Windows10.0-KB0000000-x64
+>PSFExpand.exe /Expand /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /Verify /PsfFile:D:\Windows10.0-KB0000000-x64.psf /OutDir:D:\ Windows10.0-KB0000000-x64
 
 - Expand D:\Windows10.0-KB0000000-x64_00000000.cab to D:\Windows10.0-KB0000000-x64_00000000, and search for a matching PSF file, expand to D:\Windows10.0-KB0000000-x64_00000000. Check file hash. Safe read XML file.
 >PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab /Verify /SafeRead
