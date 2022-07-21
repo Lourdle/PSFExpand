@@ -24,10 +24,9 @@ static FNOPEN(fnOpen)
 {
 #if defined(_AMD64_) || defined(_ARM64_)
 #define strhextoptr strtoull
-#else defined(_X86_) || defined(_ARM_)
+#else defined(_X86_)
 #define strhextoptr strtoul
 #endif
-
 	auto hFile = new SharedFile;
 	hFile->File = reinterpret_cast<decltype(SharedFile::File)>(strhextoptr(pszFile, nullptr, 16));
 	hFile->Offset = 0;
