@@ -8,8 +8,8 @@ typedef struct _PSFEXTHANDLER_EXPAND_INFO
     DWORD       dwCurrentFileSize;
     DWORD       dwCompletedBytes;
     DWORD       dwTotalBytes;
-    DWORD       dwCompletedFileCount;
-    DWORD       dwTotalFileCount;
+    ULONG       ulCompletedFileCount;
+    ULONG       ulTotalFileCount;
 }PSFEXTHANDLER_EXPAND_INFO;
 ````
 ### Members
@@ -23,7 +23,7 @@ The size of the file contained in the PSF file (if the format is not RAW, the ac
 Completed data bytes.
 ##### dwTotalBytes
 The total bytes of the file contained within the PSF.
-##### dwCompletedFileCount
+##### ulCompletedFileCount
 The number of files completed.
-##### dwTotalFileCount
+##### ulTotalFileCount
 Total number of files.

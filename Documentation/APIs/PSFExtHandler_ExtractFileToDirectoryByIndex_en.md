@@ -14,7 +14,7 @@ PSFExtHandler_ExtractFileToDirectoryByIndex(
 ````
 ### Parameters
 `[in] hPSF`  
-A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md) or [PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_en.md).
+A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md) or [PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_en.md) or [PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_en.md).
 
 `[in] pTargetFileName`  
 The target file index. The order of the file indexes is the same as the order of the files within the XML file. The index starts with `0` and has a maximum of `number of files -1`. To get the number of files, see [PSFExtHandler_GetFileCount](PSFExtHandler_GetFileCount_en.md).

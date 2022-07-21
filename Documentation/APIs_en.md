@@ -16,6 +16,7 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 ### PSF Extraction Handler Reference
 ##### PSF Extraction Handler Functions
 - [PSFExtHandler_ClosePSF](APIs/PSFExtHandler_ClosePSF_en.md)
+- [PSFExtHandler_CopyHandle_zh-Hans](PSFExtHandler_CopyHandle_en.md)
 - [PSFExtHandler_Expand](APIs/PSFExtHandler_Expand_en.md)
 - [PSFExtHandler_ExtractFile](APIs/PSFExtHandler_ExtractFile_en.md)
 - [PSFExtHandler_ExtractFileByIndex](APIs/PSFExtHandler_ExtractFileByIndex_en.md)
@@ -30,14 +31,17 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
 - [PSFExtHandler_util_CloseCabinet](APIs/PSFExtHandler_util_CloseCabinet_en.md)
+- [PSFExtHandler_util_CabinetCopyHandle](PSFExtHandler_util_CabinetCopyHandle_en.md)
 - [PSFExtHandler_util_ExpandCabinet](APIs/PSFExtHandler_util_ExpandCabinet_en.md)
 - [PSFExtHandler_util_OpenCabinet](APIs/PSFExtHandler_util_OpenCabinet_en.md)
 ##### PSF Extraction Handler Enumeration
 - [PSFEXTHANDLER_FILE_TYPE](APIs/PSFEXTHANDLER_FILE_TYPE_en.md)
 - [PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_en.md)
-##### PSF Extraction Handler Structure
+##### PSF Extraction Handler Structures
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_en.md)
 - [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS_en.md)
+##### PSF Extraction Handler Union
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO_en.md)
 ##### PSF Extraction Handler Constants
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_en.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_en.md)

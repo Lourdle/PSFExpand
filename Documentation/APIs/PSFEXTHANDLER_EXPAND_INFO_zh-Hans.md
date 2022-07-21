@@ -8,8 +8,8 @@ typedef struct _PSFEXTHANDLER_EXPAND_INFO
     DWORD       dwCurrentFileSize;
     DWORD       dwCompletedBytes;
     DWORD       dwTotalBytes;
-    DWORD       dwCompletedFileCount;
-    DWORD       dwTotalFileCount;
+    ULONG       ulCompletedFileCount;
+    ULONG       ulTotalFileCount;
 }PSFEXTHANDLER_EXPAND_INFO;
 ````
 ### 成员
@@ -23,7 +23,7 @@ typedef struct _PSFEXTHANDLER_EXPAND_INFO
 已完成的数据字节。
 ##### dwTotalBytes
 PSF 内包含文件的总字节。
-##### dwCompletedFileCount
+##### ulCompletedFileCount
 已完成的文件数。
-##### dwTotalFileCount
+##### ulTotalFileCount
 总文件数。

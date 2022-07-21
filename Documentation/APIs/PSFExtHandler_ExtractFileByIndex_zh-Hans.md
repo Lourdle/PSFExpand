@@ -13,7 +13,7 @@ PSFExtHandler_ExtractFileByIndex(
 ````
 ### 参数
 `[in] hPSF`  
-一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)的返回值。
+一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)或[PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_zh-Hans.md)的返回值。
 
 `[in] dwIndex`  
 目标文件索引。文件索引的顺序与 XML 文件内文件的顺序一致。索引以`0`开始，最大为`文件数 -1`。要获取文件数，参阅[PSFExtHandler_GetFileCount](PSFExtHandler_GetFileCount_zh-Hans.md)。

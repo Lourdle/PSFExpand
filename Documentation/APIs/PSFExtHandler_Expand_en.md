@@ -14,7 +14,7 @@ PSFExtHandler_ExpandPSF(
 ````
 ### Parameters
 `[in] hPSF`  
-A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md) or [PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_en.md).
+A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md) or [PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_en.md) or [PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_en.md).
 
 `[in, optional] pOutDir`  
 Optional. Relative or absolute path to the folder where the output files are stored. If it is NULL, the expansion file will be stored in the current processing directory of the program.

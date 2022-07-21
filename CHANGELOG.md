@@ -8,7 +8,7 @@
 4. Optimized the progress reporting mechanism to improve the speed.
 5. Deprecated the "SafeRead" option.
 6. Uses Shlwapi to match file wildcards.
-7. Added the function of detecting whether the API version is supported at startup.
+7. Added the function of checking whether the API version is compatible at startup.
 8. Other unlisted detail fixes.
 
 - 1.1.1.0
@@ -42,7 +42,9 @@ First release.
 3. Deprecated multi-threaded reading of XML.
 4. Added support for file time setting.
 5. Functions that accept unsupported flags are automatically ignored instead of failing.
-6. Other unlisted detail fixes.
+6. Multi-threaded concurrent processing object support.
+7. Optimized thread safety.
+8. Other unlisted detail fixes.
 
 Note: Earlier API versions will no longer be supported starting with this release. The behavior of unadapted programs calling some functions of the API after this version is undefined.
 

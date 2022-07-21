@@ -14,7 +14,7 @@ PSFExtHandler_ExpandPSF(
 ````
 ### 参数
 `[in] hPSF`  
-一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)的返回值。
+一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)或[PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_zh-Hans.md)的返回值。
 
 `[in, optional] pOutDir`  
 可选。输出文件存储的文件夹的相对路径或绝对路径。如果为 NULL，将展开文件存放到程序当前的处理目录下。

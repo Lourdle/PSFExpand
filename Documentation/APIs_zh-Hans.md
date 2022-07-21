@@ -16,6 +16,7 @@
 ### PSF Extraction Handler 参考
 ##### PSF Extraction Handler 函数
 - [PSFExtHandler_ClosePSF](APIs/PSFExtHandler_ClosePSF_zh-Hans.md)
+- [PSFExtHandler_CopyHandle](APIs/PSFExtHandler_CopyHandle_zh-Hans.md)
 - [PSFExtHandler_Expand](APIs/PSFExtHandler_Expand_zh-Hans.md)
 - [PSFExtHandler_ExtractFile](APIs/PSFExtHandler_ExtractFile_zh-Hans.md)
 - [PSFExtHandler_ExtractFileByIndex](APIs/PSFExtHandler_ExtractFileByIndex_zh-Hans.md)
@@ -29,6 +30,7 @@
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_zh-Hans.md)
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_zh-Hans.md)
 - [PSFExtHandler_util_CloseCabinet](APIs/PSFExtHandler_util_CloseCabinet_zh-Hans.md)
+- [PSFExtHandler_util_CabinetCopyHandle](APIs/PSFExtHandler_util_CabinetCopyHandle_zh-Hans.md)
 - [PSFExtHandler_util_ExpandCabinet](APIs/PSFExtHandler_util_ExpandCabinet_zh-Hans.md)
 - [PSFExtHandler_util_OpenCabinet](APIs/PSFExtHandler_util_OpenCabinet_zh-Hans.md)
 ##### PSF Extraction Handler 枚举
@@ -37,6 +39,8 @@
 ##### PSF Extraction Handler 结构
 - [PSFEXTHANDLER_EXPAND_INFO](APIs/PSFEXTHANDLER_EXPAND_INFO_zh-Hans.md)
 - [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS_zh-Hans.md)
+##### PSF Extraction Handler 联合
+- [PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO](APIs/PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO_zh-Hans.md)
 ##### PSF Extraction Handler 常量
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md)

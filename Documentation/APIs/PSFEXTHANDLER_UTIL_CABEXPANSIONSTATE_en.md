@@ -1,16 +1,14 @@
 # PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE
 The CAB file expansion state.
 ````c
-typedef enum _PSFEXTHANDLER_FILE_TYPE
+typedef enum _PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE
 {
-    PSFEXTHANDLER_FILE_TYPE_RAW,
-    PSFEXTHANDLER_FILE_TYPE_PA19,
-    PSFEXTHANDLER_FILE_TYPE_PA30,
-    PSFEXTHANDLER_FILE_TYPE_UNKNOWN
-}PSFEXTHANDLER_FILE_TYPE;
+    PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE,
+    PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE
+}PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE;
 ````
 ### Constants
-|Constant        |Value |Description                                |
-|----------------|------|-------------------------------------------|
-|State_WriteFile |0     |File to be written                         |
-|State_CloseFile |1     |Completed file writing, will close handle  |
+|Constant                                                    |Value |Description                                |
+|------------------------------------------------------------|------|-------------------------------------------|
+|PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_WRITEFILE        |0     |File to be written                         |
+|PSFEXTHANDLER_UTIL_CABEXPANSIONSTATE_STATE_CLOSEFILE        |1     |Completed file writing, will close handle  |

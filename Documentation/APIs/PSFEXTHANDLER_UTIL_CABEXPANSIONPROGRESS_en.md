@@ -1,23 +1,26 @@
 # PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS
-The CAB file expansion progress function provides file information.
+CAB file expansion progress information.
 ````c
 typedef struct _PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS
 {
-	WORD wComplitedFiles;
-	WORD wTotalFiles;
-	PCSTR pCurrentFile;
-	WORD wCurrentFileWrittenSize;
-	FILETIME FileTime;
+    HANDLE hFile
+    ULONG ulComplitedFiles;
+    ULONG ulTotalFiles;
+    PCSTR pCurrentFile;
+    ULONG ulSize;
+    FILETIME FileTime;
 }PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESS;
 ````
 ### Members
-##### wComplitedFiles
+##### hFile
+A handle to the file.
+##### ulComplitedFiles
 The number of files completed.
-##### wTotalFiles
+##### ulTotalFiles
 Total number of files.
 ##### pCurrentFile
 The current filename.
-##### wCurrentFileWrittenSize
-The size of the current file that has been written.
+##### ulCurrentFileWrittenSize
+The size of the current file.
 ##### FileTime
 The file time.

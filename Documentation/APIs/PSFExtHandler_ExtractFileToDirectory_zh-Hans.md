@@ -14,7 +14,7 @@ PSFExtHandler_ExtractFileToDirectory(
 ````
 ### 参数
 `[in] hPSF`  
-一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)的返回值。
+一个有效的 PSF 句柄。句柄必须为[PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_zh-Hans.md)或[PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_zh-Hans.md)或[PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_zh-Hans.md)的返回值。
 
 `[in] pTargetFileName`  
 目标文件名。提供一个在 PSF 文件内欲提取的完整文件名。不区分大小写。

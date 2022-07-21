@@ -2,7 +2,7 @@
 Get the longest filename length.
 ````c
 PSFEXTRACTIONHANDLER_API
-DWORD
+SHORT
 PSFExtHandler_GetLongestFileNameLength(
     _In_        HPSF hPSF
 );
