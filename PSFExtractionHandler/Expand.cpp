@@ -182,12 +182,15 @@ PSFExtHandler_ExpandPSF(
 				HANDLE hFile = AutoCreateFile(Files[i].name.c_str(), nullptr, flags);
 				if (!hFile)
 				{
+					Mutex.lock();
+					Err = GetLastError();
+					Mutex.unlock();
 					cancel = true;
 					break;
 				}
 
 				PVOID Buffer = new BYTE[Files[i].deltaSource.length];
-				DWORD err, size;
+				DWORD err = ERROR_SUCCESS, size;
 				WaitForSingleObject(hPSF->hFileEvent, INFINITE);
 				BOOL ret = Read(hPSF->hPSF, Buffer, Files[i], err);
 				SetEvent(hPSF->hFileEvent);
@@ -198,30 +201,26 @@ PSFExtHandler_ExpandPSF(
 				}
 
 				size = Write(Buffer, hFile, Files[i], flags, err);
-				delete[] Buffer;
-				CloseHandle(hFile);
 				if (size == 0)
 					ret = FALSE;
+				delete[] Buffer;
 
 			AfterWriting:
-				Mutex.lock();
-				Ret &= ret;
-				Mutex.unlock();
+				if (!ret)
+					Ret = FALSE;
 
-				err = GetLastError();
-				if (err != ERROR_SUCCESS)
+				if (err != ERROR_SUCCESS
+					&& Err == ERROR_SUCCESS)
 				{
 					Mutex.lock();
 					Err = err;
 					Mutex.unlock();
 				}
 				if (!Ret && flags & PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS)
-				{
-					Mutex.lock();
 					cancel = true;
-					Mutex.unlock();
+				CloseHandle(hFile);
+				if (cancel)
 					break;
-				}
 
 				if (progress && ret)
 				{
