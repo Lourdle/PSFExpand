@@ -68,7 +68,7 @@ EndCalc:
 }
 
 inline
-static bool CreateDirectoryWhereTheFileLocated(wstring file)
+static bool AutoCreateDirectory(wstring& file)
 {
 	for (auto& i : file)
 		if (i == '/')
@@ -128,7 +128,7 @@ HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 		else if (wcsncmp(out, L"\\\\", 4) == 0)
 		{
 			file = L"\\\\UNC";
-			file += out + 1;
+			file += out;
 		}
 		else
 		{
@@ -137,10 +137,12 @@ HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 				return nullptr;
 			file.resize(len + 3);
 			GetFullPathNameW(out, len, const_cast<LPWSTR>(file.c_str() + 4), nullptr);
+			file += '\\';
+			file += name;
 		}
 		file.shrink_to_fit();
 
-		if (!CreateDirectoryWhereTheFileLocated(file))
+		if (!AutoCreateDirectory(file))
 			return nullptr;
 
 		hFile = CreateFileW(file.c_str(),

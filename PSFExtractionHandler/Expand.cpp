@@ -179,7 +179,7 @@ PSFExtHandler_ExpandPSF(
 
 			for (DWORD i = 0; i != FileCount && !cancel; ++i)
 			{
-				HANDLE hFile = AutoCreateFile(Files[i].name.c_str(), nullptr, flags);
+				HANDLE hFile = AutoCreateFile(Files[i].name.c_str(), outdir, flags);
 				if (!hFile)
 				{
 					Mutex.lock();
