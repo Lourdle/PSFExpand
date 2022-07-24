@@ -123,5 +123,23 @@ DWORD AssignThreadTask(DWORD dwTaskCount, DWORD dwCurrentThread, DWORD& dwRange)
 	return start;
 }
 
+class Event
+{
+	HANDLE hEvent;
+public:
+	Event() = delete;
+	Event(const Event&&) = delete;
+	Event(Event&&) = delete;
+	Event(HANDLE hEvent) : hEvent(hEvent)
+	{
+		WaitForSingleObject(hEvent, INFINITE);
+	}
+	~Event()
+	{
+		DWORD dwError = GetLastError();
+		SetEvent(hEvent);
+		SetLastError(dwError);
+	}
+};
 
 #endif // !PSFEXTHANDLERFRAM_H

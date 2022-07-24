@@ -128,7 +128,7 @@ PSFExtHandler_ExpandPSF(
 		return FALSE;
 	}
 
-	WaitForSingleObject(hPSF->hEvent, INFINITE);
+	Event Event = hPSF->hEvent;
 	bool cancel = false;
 	int n = omp_get_num_procs();
 	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_SINGLE_THREAD)
@@ -294,7 +294,6 @@ PSFExtHandler_ExpandPSF(
 	delete msgMutex;
 	delete queue;
 
-	SetEvent(hPSF->hEvent);
 	SetLastError(Err);
 	return Ret & !cancel;
 }

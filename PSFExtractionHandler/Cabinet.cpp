@@ -276,7 +276,7 @@ PSFEXTRACTIONHANDLER_API
 BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSCALLBACK pfnProgressCallback, PVOID pvUserData)
 {
 	CHAR null = '\0';
-	WaitForSingleObject(hCabinet->hEvent,INFINITE);
+	Event Event = hCabinet->hEvent;
 
 	CHAR hFilesAddr[sizeof(void*) * 2 + 1];
 	{
@@ -302,7 +302,6 @@ BOOL PSFExtHandler_util_ExpandCabinet(HANDLE hCabinet, PSFEXTHANDLER_UTIL_CABEXP
 	if (info.err == ERROR_SUCCESS)
 		info.err = FDIErrToWindowsError(hCabinet);
 
-	SetEvent(hCabinet->hEvent);
 	SetLastError(info.err);
 	return ret;
 }

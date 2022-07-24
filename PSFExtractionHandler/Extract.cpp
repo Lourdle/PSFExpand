@@ -38,7 +38,7 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 )
 {
 	CheckHandle(hPSF, return FALSE);
-	WaitForSingleObject(hPSF->hEvent, INFINITE);
+	Event Event = hPSF->hEvent;
 
 	if (!hPSF->hPSF)
 	{
@@ -60,7 +60,7 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 	const auto& File = hPSF->Files[index];
 	DWORD BaseError = ERROR_SUCCESS;
 	
-	HANDLE hFile = AutoCreateFile(File.name.c_str(), out, flags);
+	HANDLE hFile = AutoCreateFile(File.name.c_str(), nullptr, flags);
 	if (!hFile)
 		return FALSE;
 
@@ -80,7 +80,6 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 	if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE))
 		CloseHandle(hFile);
 
-	SetEvent(hPSF->hEvent);
 	SetLastError(BaseError);
 	if (!ret)
 		return FALSE;
