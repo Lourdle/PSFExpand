@@ -53,18 +53,6 @@ static bool IsAnEmptyDirectory(wstring Dir)
 	return !ret;
 }
 
-inline
-static bool IsUNCName(PCWSTR pPathName)
-{
-	if (wcslen(pPathName) >= 2)
-		if (pPathName[0] == '\\' && pPathName[1] == '\\')
-			return true;
-		else
-			return false;
-	else
-		return false;
-}
-
 static wstring FullPathName(PCWSTR pPathName)
 {
 	DWORD Length = GetFullPathNameW(pPathName, 0, nullptr, nullptr);
@@ -93,7 +81,7 @@ static wstring ShortPathName(PCWSTR pPathName)
 
 	if (wcsncmp(pPathName, L"\\\\?\\", 4))
 	{
-		if (IsUNCName(pPathName))
+		if (PathIsUNCW(pPathName))
 		{
 			Name += L"UNC\\";
 			Name += pPathName;
@@ -126,7 +114,7 @@ static wstring LongPathName(PCWSTR pPathName)
 	else if (wcsncmp(FullName.c_str(), L"\\\\?\\", 4))
 	{
 		wstring tmp = L"\\\\?\\";
-		if (IsUNCName(pPathName))
+		if (PathIsUNCW(pPathName))
 		{
 			tmp += L"UNC\\";
 			unc = true;
@@ -321,7 +309,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 	if (pCabFile)
 	{
-		auto Out = wstring(L"\\\\?\\") + (IsUNCName(pOut) ? L"UNC\\" : L"");
+		auto Out = wstring(L"\\\\?\\") + (PathIsUNCW(pOut) ? L"UNC\\" : L"");
 		Out += pOut;
 
 		if (!SetCurrentDirectoryW(Out.c_str()))

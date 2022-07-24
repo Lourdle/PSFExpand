@@ -78,21 +78,21 @@ struct PrintHelp
 
 	static void ListHelp()
 	{
-		wcout << L"/List /XmlFile:<path_to_xml_file> [/DisplayDetail] [/Screen {criterias}]\n\n";
-		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /DisplayDetail\t%ls\t\t\n  /Screen {criterias}\t%ls\n%ls\n\n",
+		wcout << L"/List /XmlFile:<path_to_xml_file> [/DisplayDetail] [Filename]\n\n";
+		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /DisplayDetail\t%ls\n%ls\n\n",
 			GetString(List_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(),
-			GetString(DisplayDetail_Option).get(), GetString(Screen_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /List /DisplayDetail /XmlFile:D:\\express.psf.cix.xml\n\n  PSFExpand.exe /List /XmlFile:D:\\express.psf.cix.xml /Screen *.dll\n";
+			GetString(DisplayDetail_Option).get(), GetString(Examples).get());
+		wcout << L"  PSFExpand.exe /List /DisplayDetail /XmlFile:D:\\express.psf.cix.xml\n\n  PSFExpand.exe /List /XmlFile:D:\\express.psf.cix.xml *.dll\n";
 		ExitProcess(0);
 	}
 
 	static void ExtractHelp()
 	{
-		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file> /File:<file_name>\n  /OutDir:<path_to_storage_dir> [/Verify] [/Verbose]\n\n";
-		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /File\t\t\t%ls\n  /OutDir\t\t%ls\n  /Verify\t\t%ls\n  /Verbose  \t\t%ls\n%ls\n\n",
+		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file>  /OutDir:<path_to_out_dir>\n {Filename} [/Verify] [/Verbose]\n\n";
+		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /OutDir\t\t%ls\n  /Verify\t\t%ls\n  /Verbose  \t\t%ls\n%ls\n\n",
 			GetString(Extract_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(), GetString(PsfFile_Option).get(),
-			GetString(File_Option).get(), GetString(OutDir_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /File:historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /File:*.dll\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\\dlls\n";
+			GetString(OutDir_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(Examples).get());
+		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml \n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\\dlls *.dll\n";
 		ExitProcess(0);
 	}
 
@@ -144,11 +144,11 @@ static void ShowErrorMessage()
 
 	FormatMessageW(
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-		NULL,
+		nullptr,
 		dwError,
 		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 		reinterpret_cast<LPWSTR>(&lpErrMsg),
-		0, NULL);
+		0, nullptr);
 
 	wcerr << lpErrMsg;
 	LocalFree(lpErrMsg);
@@ -158,34 +158,29 @@ static void ShowErrorMessage()
 
 static int ListArg(int argc, wchar_t** argv)
 {
-	PWSTR* Screeners = nullptr;
-	int ScreenerCount = 0;
+	vector<PWSTR> v;
 	for (int i = 1; i != argc; ++i)
 	{
 		if (argv[i][0] != '/')
-			Error::InvalidCmdline(argv[i]);
-
-		bool ret = GetFiles(argv[i] + 1);
+		{
+			v.push_back(argv[i]);
+			continue;
+		}
 
 		switch (CompareStrings(argv[i] + 1,
 			{
+				L"XmlFile",
 				L"DisplayDetail",
-				L"Screen",
 				L"Help",
 				L"H",
 				L"?"
-			}))
+			}, { 0 }))
 		{
 		case 0:
-			g_Flags |= FLAG_ARG_LIST_DETAIL;
+			GetFiles(argv[i] + 1);
 			break;
 		case 1:
-			if (i == argc - 1)
-				Error::MissingArg(argv[i] + 1);
-
-			Screeners = argv + i + 1;
-			ScreenerCount = argc - i - 1;
-			i = argc - 1;
+			g_Flags |= FLAG_ARG_LIST_DETAIL;
 			break;
 		case 2:case 3:case 4:
 			if (i == argc - 1)
@@ -194,11 +189,6 @@ static int ListArg(int argc, wchar_t** argv)
 				Error::InvalidHelpArg();
 			break;
 		default:
-			if (ret
-				&& g_pXmlFile
-				&& !g_pPsfFile)
-				continue;
-
 			Error::InvalidArg(argv[i] + 1);
 		}
 	}
@@ -206,10 +196,10 @@ static int ListArg(int argc, wchar_t** argv)
 	if (!g_pXmlFile)
 		Error::MissingOption(L"XmlFile");
 
-	if (!List(g_pXmlFile, g_Flags & FLAG_ARG_LIST_DETAIL, Screeners, ScreenerCount))
+	if (!List(g_pXmlFile, g_Flags & FLAG_ARG_LIST_DETAIL, v))
 		ShowErrorMessage();
 
-	if (ScreenerCount == 0)
+	if (v.empty())
 		wcout << GetString(Done);
 
 	return 0;
@@ -217,13 +207,16 @@ static int ListArg(int argc, wchar_t** argv)
 
 static int ExtractArg(int argc, wchar_t** argv)
 {
-	PWSTR pFile = nullptr;
+	vector<PWSTR> v;
 	PCWSTR pOut = nullptr;
 
 	for (int i = 1; i != argc; ++i)
 	{
 		if (argv[i][0] != '/')
-			Error::InvalidCmdline(argv[i]);
+		{
+			v.push_back(argv[i]);
+			continue;
+		}
 
 		if (GetFiles(argv[i] + 1))
 			continue;
@@ -233,7 +226,6 @@ static int ExtractArg(int argc, wchar_t** argv)
 				L"Help",
 				L"H",
 				L"?",
-				L"File",
 				L"OutDir",
 				L"Verify",
 				L"Verbose"
@@ -246,23 +238,16 @@ static int ExtractArg(int argc, wchar_t** argv)
 			else
 				Error::InvalidHelpArg();
 		case 3:
-			pFile = GetSubstringFromArgString(argv[i] + 1, 4);
-			if (!pFile)
-				Error::InvalidArg(argv[i] + 1);
-			else if (pFile == reinterpret_cast<PCWSTR>(-1))
-				Error::MissingArg(argv[i] + 1);
-			break;
-		case 4:
 			pOut = GetSubstringFromArgString(argv[i] + 1, 6);
 			if (!pOut)
 				Error::InvalidArg(argv[i] + 1);
 			else if (pOut == reinterpret_cast<PCWSTR>(-1))
 				Error::MissingArg(argv[i] + 1);
 			break;
-		case 5:
+		case 4:
 			g_Flags |= FLAG_ARG_EXTRACT_VERIFY;
 			break;
-		case 6:
+		case 5:
 			g_Flags |= FLAG_ARG_EXTRACT_VERBOSE;
 			break;
 		default:
@@ -274,12 +259,12 @@ static int ExtractArg(int argc, wchar_t** argv)
 		Error::MissingOption(L"PsfFile");
 	if (!g_pXmlFile)
 		Error::MissingOption(L"XmlFile");
-	if (!pFile)
-		Error::MissingOption(L"File");
+	if (v.empty())
+		Error::MissingOption(L"\bFilename");
 	if (!pOut)
 		Error::MissingOption(L"OutDir");
 
-	if (!Extract(g_pXmlFile, g_pPsfFile, pFile, pOut, g_Flags & FLAG_ARG_EXTRACT_VERIFY, g_Flags & FLAG_ARG_EXTRACT_VERBOSE))
+	if (!Extract(g_pXmlFile, g_pPsfFile, v, pOut, g_Flags & FLAG_ARG_EXTRACT_VERIFY, g_Flags & FLAG_ARG_EXTRACT_VERBOSE))
 		ShowErrorMessage();
 	wcout << GetString(Done);
 

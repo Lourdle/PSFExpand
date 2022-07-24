@@ -135,7 +135,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -157,7 +157,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -174,7 +174,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -191,7 +191,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -213,7 +213,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
@@ -235,7 +235,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>cabinet.lib;comsuppw.lib;msxml2.lib;msdelta.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

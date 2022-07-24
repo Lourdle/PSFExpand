@@ -11,9 +11,9 @@ using namespace std;
 
 #include <Shlwapi.h>
 
-bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Verify, bool Verbose)
+bool Extract(PCWSTR pXml, PCWSTR pPsf, vector<PWSTR>& Files, PCWSTR pDestination, bool Verify, bool Verbose)
 {
-	PreProcessScreeners(&pFile, 1);
+	PreProcessFileStrings(Files);
 
 	unique_ptr<PSF, void(*)(HPSF)> hPSF(PSFExtHandler_OpenFile(wcsncmp(pPsf, L"\\\\", 2) == 0 ? pPsf : (wstring(L"\\\\?\\") + pPsf).c_str(), pXml),
 		[](HPSF hPSF)
@@ -43,17 +43,21 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, PWSTR pFile, PCWSTR pDestination, bool Ve
 		if (!PSFExtHandler_GetFileInfo(hPSF.get(), i, const_cast<PWSTR>(File.c_str()), &strSize, nullptr, nullptr, &type, nullptr))
 			break;
 
-		if (PathMatchSpecW(File.c_str(), pFile))
-			if (!PSFExtHandler_ExtractFileToDirectoryByIndex(hPSF.get(),
-				i,
-				pDestination, nullptr,
-				PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS | (Verify ? PSFEXTHANDLER_EXTRACT_FLAG_VERIFY : 0)))
-				return false;
-			else
+		for (const auto& j : Files)
+			if (PathMatchSpecW(File.c_str(), j))
 			{
-				if (Verbose)
-					wcout << File << '\n';
-				++n;
+				if (!PSFExtHandler_ExtractFileToDirectoryByIndex(hPSF.get(),
+					i,
+					pDestination, nullptr,
+					PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS | (Verify ? PSFEXTHANDLER_EXTRACT_FLAG_VERIFY : 0)))
+					return false;
+				else
+				{
+					if (Verbose)
+						wcout << File << '\n';
+					++n;
+				}
+				break;
 			}
 	}
 

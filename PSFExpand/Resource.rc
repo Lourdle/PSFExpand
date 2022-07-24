@@ -50,14 +50,13 @@ BEGIN
     Expand_Description      "将 PSF 扩展到文件系统上的指定目录。\n"
     XmlFile_Option          "指定与 PSF 文件对应的 XML 文件。"
     PsfFile_Option          "指定要操作的 PSF 文件。"
-    Screen_Option           "筛选出符合指定条件的文件（文件名或带有通配符[*,?]）。\n\t\t\t要使用此选项，必须将其放在其它所有选项之后，因为\n\t\t\t此选项之后的选项会成为筛选器。"
     DisplayDetail_Option    "显示每个文件的详细信息（包括文件大小、类型）。"
+    OutDir_Option           "指定存储输出文件的目录。"
     File_Option             "指定 PSF 中要提取的文件（支持文件通配符 [*,?]）。"
 END
 
 STRINGTABLE
 BEGIN
-    OutDir_Option           "指定存储输出文件的目录。"
     Verify_Option           "验证文件数据是否完整。"
     Verbose_Option          "显示每个提取的文件。"
     NoProgressDisplay_Option "文件扩展期间不显示进度。"
@@ -66,7 +65,7 @@ BEGIN
     File_Count              "%ls 文件包含 %lu 个文件。\n\n"
     File_Size               "文件大小："
     File_Type               "文件类型："
-    Satified_File_Count     "有 %lu 个文件满足筛选器要求。\n"
+    Satified_File_Count     "共有 %lu 个文件。\n"
     Extracted_File_Count    "已提取 %lu 个文件。\n"
     Extracting              "正在提取文件……\n\n"
     Expanding               "正在展开 %ls 文件……\n"
@@ -183,14 +182,13 @@ BEGIN
     Expand_Description      "Expands PSF to a specified directory on filesystem.\n"
     XmlFile_Option          "Specifies the XML file corresponding to the PSF file."
     PsfFile_Option          "Specifies the PSF file to operate on."
-    Screen_Option           "Screen out files that meet specified criteria (file name or with\n\t\t\twildcards [*,?]). To use this option,it must be placed after all\n\t\t\tother options, because options after this option become screeners."
     DisplayDetail_Option    "Displays the detail (included file size, type) of each files."
+    OutDir_Option           "Specifies the output directory."
     File_Option             "Specifies the file(s) in the PSF to extract (file wildcards [*,?] are supported)."
 END
 
 STRINGTABLE
 BEGIN
-    OutDir_Option           "Specifies the output directory."
     Verify_Option           "Verifies that the file data is intact."
     Verbose_Option          "Displays each extracted file."
     NoProgressDisplay_Option "No progress is shown during file expansion."
@@ -199,7 +197,7 @@ BEGIN
     File_Count              "The %ls file contains %lu files.\n\n"
     File_Size               "File size: "
     File_Type               "File type: "
-    Satified_File_Count     "There is/are %lu file(s) that satisfy the screener(s).\n"
+    Satified_File_Count     "There is/are %lu file(s) in total.\n"
     Extracted_File_Count    "There was/were %lu file(s) extracted.\n"
     Extracting              "Extracting file(s)...\n\n"
     Expanding               "Expanding %ls file...\n"

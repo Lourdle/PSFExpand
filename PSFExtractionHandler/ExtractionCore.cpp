@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "PSFExtHandlerFrame.h"
 
+#include <Shlwapi.h>
+
 using namespace std;
 
 static
@@ -94,9 +96,17 @@ static bool AutoCreateDirectory(wstring& file)
 			continue;
 
 		file[pos] = 0;
-		if (!CreateDirectoryW(file.c_str(), nullptr))
-			if (GetLastError() != ERROR_ALREADY_EXISTS)
+		if (!PathIsDirectoryW(file.c_str()))
+			if (GetLastError() == ERROR_FILE_NOT_FOUND)
+			{
+				if (!CreateDirectoryW(file.c_str(), nullptr))
+					return false;
+			}
+			else if (GetLastError() == ERROR_SUCCESS)
+			{
+				SetLastError(ERROR_ALREADY_EXISTS);
 				return false;
+			}
 
 		file[pos] = '\\';
 	}
@@ -105,11 +115,12 @@ static bool AutoCreateDirectory(wstring& file)
 
 HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 {
-	HANDLE hFile;
 	if (flags & PSFEXTHANDLER_EXTRACT_FLAG_WRITE_DATA_TO_HANDLE)
-		hFile = const_cast<PWSTR>(out);
+		return const_cast<PWSTR>(out);
 	else
 	{
+		HANDLE hFile;
+
 		DWORD FileCreationDisposition;
 		if (flags & PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS
 			|| flags & PSFEXTHANDLER_EXTRACT_FLAG_SKIP_EXISTS)
@@ -161,9 +172,9 @@ HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 			}
 			else
 				return nullptr;
-	}
 
-	return hFile;
+		return hFile;
+	}
 }
 
 bool Read(
@@ -244,6 +255,11 @@ BeginWrite:
 		size = static_cast<DWORD>(DO.uSize);
 		Ret = WriteFile(hFile, DO.lpStart, size, nullptr, nullptr);
 		DeltaFree(DO.lpStart);
+	}
+	else if (info.deltaSource.type == INVALID_FLAG && !(flags & PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT))
+	{
+		Ret = FALSE;
+		SetLastError(ERROR_NOT_SUPPORTED);
 	}
 	else
 		Ret = WriteFile(hFile, Buffer, info.deltaSource.length, nullptr, nullptr);

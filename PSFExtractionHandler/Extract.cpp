@@ -59,23 +59,6 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 
 	const auto& File = hPSF->Files[index];
 	DWORD BaseError = ERROR_SUCCESS;
-
-	if (File.deltaSource.type == INVALID_FLAG)
-	{
-		BaseError = ERROR_NOT_SUPPORTED;
-		if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_KEEP_ORIGINAL_FORMAT))
-		{
-			SetLastError(BaseError);
-			return FALSE;
-		}
-	}
-
-	if (!(flags & PSFEXTHANDLER_EXTRACT_FLAG_CONTINUE_EVEN_IF_OPERATION_FAILS)
-		&& File.deltaSource.Hash.alg == INVALID_FLAG)
-	{
-		SetLastError(ERROR_NOT_SUPPORTED);
-		return FALSE;
-	}
 	
 	HANDLE hFile = AutoCreateFile(File.name.c_str(), out, flags);
 	if (!hFile)

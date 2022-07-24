@@ -11,19 +11,18 @@ using namespace std;
 
 #include <Shlwapi.h>
 
-bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreenerCount)
+bool List(PCWSTR pXml, bool DisplayDetail, vector<PWSTR>& Files)
 {
-	PreProcessScreeners(Screeners, nScreenerCount);
+	PreProcessFileStrings(Files);
 
 	HPSF hPSF = PSFExtHandler_OpenFile(nullptr, pXml);
 	if (!hPSF)
 		return false;
 
 	DWORD nFileCount = PSFExtHandler_GetFileCount(hPSF);
-	wprintf(GetString(File_Count).get(), nFileCount);
+	wprintf(GetString(File_Count).get(), L"PSF", nFileCount);
 
 	BOOL Ret = 0;
-
 	DWORD n = 0;
 
 	for (DWORD i = 0; i != nFileCount; ++i)
@@ -42,22 +41,16 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 		if (!Ret)
 			break;
 
-		if (Screeners)
+		if (!Files.empty())
 		{
-			bool ret = true;
-			for (int j = 0; j != nScreenerCount; ++j)
-				if (PathMatchSpecW(File.c_str(), Screeners[j]))
-					ret = true;
-				else
-				{
-					ret = false;
-					break;
-				}
-			if (!ret)
-				continue;
+			for (const auto j : Files)
+				if (PathMatchSpecW(File.c_str(), j))
+					goto PrintFileInfo;
+			continue;
 		}
-		++n;
 
+	PrintFileInfo:
+		++n;
 		wcout << File << '\n';
 		if (DisplayDetail)
 			wcout << GetString(File_Size) << FileSize << ' ' << 'B' << '\n' <<
@@ -72,7 +65,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, const PWSTR* Screeners, int nScreener
 	PSFExtHandler_ClosePSF(hPSF);
 	SetLastError(Err);
 
-	if (Screeners && Ret)
+	if (!Files.empty() && Ret)
 	{
 		cout << '\n';
 		wprintf(GetString(Satified_File_Count).get(), n);

@@ -22,24 +22,23 @@
 #define Expand_Description              1018
 #define XmlFile_Option                  1019
 #define PsfFile_Option                  1020
-#define Screen_Option                   1021
-#define DisplayDetail_Option            1022
+#define DisplayDetail_Option            1021
+#define OutDir_Option                   1022
 #define File_Option                     1023
-#define OutDir_Option                   1024
-#define Verify_Option                   1025
-#define Verbose_Option                  1026
-#define NoProgressDisplay_Option        1027
-#define SingleThread_Option             1028
-#define CabFile_Option                  1029
-#define File_Count                      1030
-#define File_Size                       1031
-#define File_Type                       1032
-#define Satified_File_Count             1033
-#define Extracted_File_Count            1034
-#define Extracting                      1035
-#define Expanding                       1036
-#define Done                            1037
-#define FilePath                        1038
+#define Verify_Option                   1024
+#define Verbose_Option                  1025
+#define NoProgressDisplay_Option        1026
+#define SingleThread_Option             1027
+#define CabFile_Option                  1028
+#define File_Count                      1029
+#define File_Size                       1030
+#define File_Type                       1031
+#define Satified_File_Count             1032
+#define Extracted_File_Count            1033
+#define Extracting                      1034
+#define Expanding                       1035
+#define Done                            1036
+#define FilePath                        1037
 
 // Next default values for new objects
 // 
