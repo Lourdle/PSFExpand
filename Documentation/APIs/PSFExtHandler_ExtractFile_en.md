@@ -16,7 +16,7 @@ PSFExtHandler_ExtractFile(
 A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md) or [PSFExtHandler_OpenFileEx](PSFExtHandler_OpenFileEx_en.md) or [PSFExtHandler_CopyHandle](PSFExtHandler_CopyHandle_en.md).
 
 `[in] pTargetFileName`  
-Target filename. Provide a full filename within the PSF file to extract. not case sensitive.
+Target filename. Provide a full filename within the PSF file to extract. Not case sensitive.
 
 `[in, optional] pOutFile`  
 Optional. Relative or absolute path to the output file name. If NULL, keep the original name of the file and store it in the current processing directory of the program.

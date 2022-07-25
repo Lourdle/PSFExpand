@@ -18,5 +18,5 @@ Optional. A PSF filename string. If NULL, the returned PSF handle can only be us
 A string for the XML filename.
 ### Return Value
 Returns the PSF handle on success, NULL on failure.
-### Remarks
+### Remark
 If an error occurs, you can query LastError.

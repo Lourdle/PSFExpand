@@ -25,4 +25,5 @@ Optional. User-defined custom data provided to progress reporting functions.
 ### Return Value
 Returns TRUE on success, FALSE on failure.
 ### Remarks
+The function defaults to outputting the expanded file to the current directory of the program.  
 If an error occurs, you can query LastError.

@@ -9,7 +9,7 @@ typedef union _PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO
 ````
 ### 成员
 ##### pProgressInfo
-指向进度信息的指针。
+指向进度信息结构的指针。
 ##### phFile
 指向文件句柄的指针。
 ### 备注

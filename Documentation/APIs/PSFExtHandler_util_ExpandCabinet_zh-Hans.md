@@ -25,4 +25,5 @@ BOOL PSFExtHandler_util_ExpandCabinet(
 ### 返回值
 成功返回 TRUE，失败返回 FALSE。
 ### 备注
+函数默认会将展开文件输出到程序的当前目录。  
 出现错误可查询 LastError。

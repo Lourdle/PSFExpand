@@ -13,5 +13,5 @@ HANDLE PSFExtHandler_util_OpenCabinet(
 A string for the CAB filename.
 ### Return Value
 Returns the Cabinet handle on success, NULL on failure.
-### Remarks
+### Remark
 If an error occurs, you can query LastError.

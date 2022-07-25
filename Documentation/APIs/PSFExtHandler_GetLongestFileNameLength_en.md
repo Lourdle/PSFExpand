@@ -7,7 +7,7 @@ PSFExtHandler_GetLongestFileNameLength(
     _In_        HPSF hPSF
 );
 ````
-### Parameters
+### Parameter
 `[in] hPSF`  
 A valid PSF handle. The handle must be the return value of [PSFExtHandler_OpenFile](PSFExtHandler_OpenFile_en.md).  
 ### Return Value  

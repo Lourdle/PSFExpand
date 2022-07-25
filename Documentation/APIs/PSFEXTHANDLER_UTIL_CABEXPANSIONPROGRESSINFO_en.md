@@ -9,7 +9,7 @@ typedef union _PSFEXTHANDLER_UTIL_CABEXPANSIONPROGRESSINFO
 ````
 ### Members
 ##### pProgressInfo
-A pointer to progress information.
+A pointer to progress information structu.
 ##### phFile
 A pointer to a handle to the file.
 ### Remarks

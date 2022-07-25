@@ -16,7 +16,7 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 ### PSF Extraction Handler Reference
 ##### PSF Extraction Handler Functions
 - [PSFExtHandler_ClosePSF](APIs/PSFExtHandler_ClosePSF_en.md)
-- [PSFExtHandler_CopyHandle_zh-Hans](PSFExtHandler_CopyHandle_en.md)
+- [PSFExtHandler_CopyHandle](APIs/PSFExtHandler_CopyHandle_en.md)
 - [PSFExtHandler_Expand](APIs/PSFExtHandler_Expand_en.md)
 - [PSFExtHandler_ExtractFile](APIs/PSFExtHandler_ExtractFile_en.md)
 - [PSFExtHandler_ExtractFileByIndex](APIs/PSFExtHandler_ExtractFileByIndex_en.md)
@@ -24,14 +24,13 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFExtHandler_ExtractFileToDirectoryByIndex](APIs/PSFExtHandler_ExtractFileToDirectoryByIndex_en.md)
 - [PSFExtHandler_GetFileCount](APIs/PSFExtHandler_GetFileCount_en.md)
 - [PSFExtHandler_GetFileInfo](APIs/PSFExtHandler_GetFileInfo_en.md)
-- [PSFExtHandler_GetLongestNameLength](APIs/PSFExtHandler_GetLongestNameLength_en.md)
+- [PSFExtHandler_GetLongestFileNameLength](APIs/PSFExtHandler_GetLongestFileNameLength_en.md)
 - [PSFExtHandler_GetVersion](APIs/PSFExtHandler_GetVersion_en.md)
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_en.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_en.md)
 - [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
-- [PSFExtHandler_OpenFileEx](APIs/PSFExtHandler_OpenFileEx_en.md)
 - [PSFExtHandler_util_CloseCabinet](APIs/PSFExtHandler_util_CloseCabinet_en.md)
-- [PSFExtHandler_util_CabinetCopyHandle](PSFExtHandler_util_CabinetCopyHandle_en.md)
+- [PSFExtHandler_util_CabinetCopyHandle](APIs/PSFExtHandler_util_CabinetCopyHandle_en.md)
 - [PSFExtHandler_util_ExpandCabinet](APIs/PSFExtHandler_util_ExpandCabinet_en.md)
 - [PSFExtHandler_util_OpenCabinet](APIs/PSFExtHandler_util_OpenCabinet_en.md)
 ##### PSF Extraction Handler Enumeration
@@ -47,6 +46,6 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_en.md)
 - [PSFEXTHANDLER_VERSION](APIs/PSFEXTHANDLER_VERSION_en.md)
 ### PSF Extraction Handler Thread Safety
-Whether it is a PSF object or a Cabinet object, there are global activity events, file activity events and handle activity events inside.  
+Whether it is a PSF object or a Cabinet object, there is a global activity event, a file activity event and a handle activity event inside.  
 When the one of related functions for querying file information is called, the operation will be directly performed and return. If the file one of extraction functions is called, the active event is to be used so that other threads calling such functions and using the same handle will wait for it to complete. The file activity event is used to read files asynchronously with multiple threads. The global active event is used internally to access the same resource when copying handles or closing handles.  
 If the program is going to be multithreaded using the extract function using the same object, any handle to the object can be copied first, then call the extraction function and use the handle returned by the copy function. In this way, the corresponding object can be operated safely. After that, the handles should be closed in time.

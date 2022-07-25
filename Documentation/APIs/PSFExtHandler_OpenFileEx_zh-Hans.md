@@ -8,7 +8,7 @@ HPSF
 PSFExtHandler_OpenFileEx(
 	_In_opt_    PCWSTR pPSFFile,
 	_In_        PCWSTR pXmlFile,
-	_Reserved_  PDWORD Reserved,
+	_Reserved_  PVOID Reserved,
 	_In_        DWORD dwFlags
 );
 ````

@@ -5,10 +5,10 @@ PSFEXTRACTIONHANDLER_API
 _Must_inspect_result_
 _Ret_maybenull_
 HPSF
-PSFExtHandler_OpenFile(
+PSFExtHandler_OpenFileEx(
     _In_opt_    PCWSTR pPSFFile,
     _In_        PCWSTR pXmlFile,
-    _Reserved_  PDWORD Reserved,
+    _Reserved_  PVOID Reserved,
     _In_        DWORD dwFlags
 );
 ````
@@ -26,5 +26,5 @@ This parameter is reserved, must be NULL.
 File open flags, deprecated.
 ### Return Value
 Returns the PSF handle on success, NULL on failure.
-### Remarks
+### Remark
 If an error occurs, you can query LastError.

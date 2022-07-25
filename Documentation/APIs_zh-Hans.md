@@ -24,7 +24,7 @@
 - [PSFExtHandler_ExtractFileToDirectoryByIndex](APIs/PSFExtHandler_ExtractFileToDirectoryByIndex_zh-Hans.md)
 - [PSFExtHandler_GetFileCount](APIs/PSFExtHandler_GetFileCount_zh-Hans.md)
 - [PSFExtHandler_GetFileInfo](APIs/PSFExtHandler_GetFileInfo_zh-Hans.md)
-- [PSFExtHandler_GetLongestNameLength](APIs/PSFExtHandler_GetLongestNameLength_zh-Hans.md)
+- [PSFExtHandler_GetLongestFileNameLength](APIs/PSFExtHandler_GetLongestFileNameLength_zh-Hans.md)
 - [PSFExtHandler_GetVersion](APIs/PSFExtHandler_GetVersion_zh-Hans.md)
 - [PSFExtHandler_GetVersionString](APIs/PSFExtHandler_GetVersionString_zh-Hans.md)
 - [PSFExtHandler_OpenFile](APIs/PSFExtHandler_OpenFile_zh-Hans.md)
