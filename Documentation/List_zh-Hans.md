@@ -9,7 +9,7 @@
 ##### DisplayDetail 选项
 可选选项。在命令行中加入`/DisplayDetail`即可启用。
 ##### Filename 选项
-可选选项。在命令行中直接加入文件名（不带斜杠“/”），可指定多个文件。程序会将所有匹配的文件全部列出。不区分大小写。
+可选选项。在命令行中直接加入文件名（不带斜杠“/”）。可指定多个文件，不区分大小写。程序会将所有匹配的文件全部列出。
 ### 例如：
 - 显示 PSF 中所有文件的详细信息，其 XML 位于 D:\express.psf.cix.xml
 >PSFExpand.exe /List /DisplayDetail /XmlFile:D:\express.psf.cix.xml

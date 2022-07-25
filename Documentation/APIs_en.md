@@ -1,5 +1,5 @@
 # PSF Extraction Handler API
-This is the documentation for the PSF Extraction Handler API. If there is an application that developers want to do PSF file extension and do not want to do the PSF extraction function themselves, then they can consider using PSF Extraction Handler, although the implementation of these APIs is not particularly complicated, there will also be developers complaining about PSF Extraction Handler code writing bad. After all, the author is not a professional C++ programmer, and the programming habits are relatively casual.
+This is the documentation for the PSF Extraction Handler API. The implementation of these APIs is not particularly complicated, and the code may not be well written. After all, the author is not a professional C++ programmer, and the programming habits are relatively casual.
 ### Using the PSF Extraction Handler API
 - Use the SDK directly without compiling the code. You can download the SDK directly from the [Releases page](https://github.com/Lourdle/PSFExpand/releases).
 - Compile the source code. Clone or download the source code of PSFExpand, since PSFExpand and PSFExtractionHandler are in the same solution, you can propose that the PSFExtractionHandler project be generated separately or add to the desired solution.
@@ -46,3 +46,7 @@ If you don't want the program to depend on a DLL, you can choose to compile the 
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_en.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_en.md)
 - [PSFEXTHANDLER_VERSION](APIs/PSFEXTHANDLER_VERSION_en.md)
+### PSF Extraction Handler Thread Safety
+Whether it is a PSF object or a Cabinet object, there are global activity events, file activity events and handle activity events inside.  
+When the one of related functions for querying file information is called, the operation will be directly performed and return. If the file one of extraction functions is called, the active event is to be used so that other threads calling such functions and using the same handle will wait for it to complete. The file activity event is used to read files asynchronously with multiple threads. The global active event is used internally to access the same resource when copying handles or closing handles.  
+If the program is going to be multithreaded using the extract function using the same object, any handle to the object can be copied first, then call the extraction function and use the handle returned by the copy function. In this way, the corresponding object can be operated safely. After that, the handles should be closed in time.
