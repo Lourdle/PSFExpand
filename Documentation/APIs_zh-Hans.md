@@ -1,5 +1,5 @@
 # PSF Extraction Handler API 中文文档
-这是 PSF Extraction Handler API 的中文文档。如果有开发人员想做 PSF 文件扩展的应用程序又不想自己做 PSF 提取函数，那么可以考虑使用 PSF Extraction Handler，尽管这些 APIs 的实现不算特别复杂，还会有开发者吐槽 PSF Extraction Handler 的代码写的不好。毕竟作者不是专业的 C++ 程序员，而且编程习惯比较随便。
+这是 PSF Extraction Handler API 的中文文档。这些 APIs 的实现不算特别复杂，可能代码还写的不好。毕竟作者不是专业的 C++ 程序员，编程习惯比较随便。
 ### 使用 PSF Extraction Handler API
 - 直接使用 SDK 而不编译代码。可以在 [Releases 页面](https://github.com/Lourdle/PSFExpand/releases) 直接下载 SDK。
 - 编译源代码。克隆或下载 PSFExpand 源代码，由于 PSFExpand 与 PSFExtractionHandler 在同一解决方案，可以提出 PSFExtractionHandler 项目单独生成或添加到所需解决方案中。
@@ -45,3 +45,6 @@
 - [PSFEXTHANDLER_EXTRACT_FLAG](APIs/PSFEXTHANDLER_EXTRACT_FLAG_zh-Hans.md)
 - [PSFEXTHANDLER_OPEN_FLAG](APIs/PSFEXTHANDLER_OPEN_FLAG_zh-Hans.md)
 - [PSFEXTHANDLER_VERSION](APIs/PSFEXTHANDLER_VERSION_zh-Hans.md)
+### PSF Extraction Handler 线程安全
+不管是 PSF 对象还是 Cabinet 对象，内部都有全局活动事件，文件活动事件和句柄活动事件。当调用查询文件信息的相关函数时，会直接进行相关操作并返回。若执行文件提取的函数，会设置句柄活动事件使得别的线程调用这类函数且使用同一句柄时会等待其完成。文件活动事件用于多线程异步读取文件。全局活动事件在内部拷贝句柄或关闭句柄时访问同一资源使用。  
+若程序要使用提取函数操作多线程使用同一对象，可先拷贝该对象的任意句柄，然后调用相关的函数并使用拷贝函数返回的句柄。这样就能安全地操作相应的对象，不用的句柄应及时关闭。

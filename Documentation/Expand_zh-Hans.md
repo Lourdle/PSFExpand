@@ -32,5 +32,5 @@
 - 展开保存文件信息的 XML 为 D:\Windows10.0-KB0000000-x64\express.psf.cix.xml 的 D:\Windows10.0-KB0000000-x64.psf 文件，将文件展开到 D:\Windows10.0-KB0000000-x64，校验文件哈希。
 >PSFExpand.exe /Expand /XmlFile:D:\Windows10.0-KB0000000-x64\express.psf.cix.xml /Verify /PsfFile:D:\Windows10.0-KB0000000-x64.psf /OutDir:D:\Windows10.0-KB0000000-x64
 
-- 展开 D:\Windows10.0-KB0000000-x64_00000000.cab 到 D:\Windows10.0-KB0000000-x64_00000000，并搜索匹配的 PSF 文件，展开到 D:\Windows10.0-KB0000000-x64_00000000。校验文件哈希。安全读取。
->PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab /Verify /SafeRead
+- 展开 D:\Windows10.0-KB0000000-x64_00000000.cab 到 D:\Windows10.0-KB0000000-x64_00000000，并搜索匹配的 PSF 文件，展开到 D:\Windows10.0-KB0000000-x64_00000000。校验文件哈希。
+>PSFExpand.exe /Expand /CabFile:D:\Windows10.0-KB0000000-x64_00000000.cab /Verify
