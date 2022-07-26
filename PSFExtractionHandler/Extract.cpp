@@ -57,10 +57,9 @@ BOOL PSFExtHandler_ExtractFileByIndex(
 		return FALSE;
 	}
 
-	const auto& File = hPSF->Files[index];
 	DWORD BaseError = ERROR_SUCCESS;
-	
-	HANDLE hFile = AutoCreateFile(File.name.c_str(), nullptr, flags);
+
+	HANDLE hFile = AutoCreateFile(out ? out : hPSF->Files[index].name.c_str(), nullptr, flags);
 	if (!hFile)
 		return FALSE;
 

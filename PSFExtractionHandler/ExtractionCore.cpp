@@ -107,6 +107,8 @@ static bool AutoCreateDirectory(wstring& file)
 				SetLastError(ERROR_ALREADY_EXISTS);
 				return false;
 			}
+			else
+				return false;
 
 		file[pos] = '\\';
 	}
@@ -168,13 +170,7 @@ HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 			nullptr);
 
 		if (hFile == INVALID_HANDLE_VALUE)
-			if (GetLastError() == ERROR_FILE_EXISTS)
-			{
-				if (flags & PSFEXTHANDLER_EXTRACT_FLAG_FAIL_IF_EXISTS)
-					return nullptr;
-			}
-			else
-				return nullptr;
+			return nullptr;
 
 		return hFile;
 	}
