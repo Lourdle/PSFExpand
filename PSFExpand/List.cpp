@@ -53,7 +53,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, vector<PWSTR>& Files)
 		++n;
 		wcout << File << '\n';
 		if (DisplayDetail)
-			wcout << GetString(File_Size) << FileSize << ' ' << 'B' << '\n' <<
+			out << GetString(File_Size) << FileSize << ' ' << 'B' << '\n' <<
 			GetString(File_Type) <<
 			(type == PSFEXTHANDLER_FILE_TYPE_PA30 ? L"PA30" :
 				type == PSFEXTHANDLER_FILE_TYPE_PA19 ? L"PA19" :

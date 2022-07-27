@@ -201,16 +201,16 @@ static bool PrintFileInfo(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCW
 		Psf = MakePsfPathString(pCabFile);
 		pPsfFile = Psf.c_str();
 	}
-	wcout << L"PSF" << ' ' << GetString(FilePath) << '\n' << LongPathName(pPsfFile) << '\n';
+	out << L"PSF" << ' ' << GetString(FilePath) << '\n' << LongPathName(pPsfFile) << '\n';
 	if (!AccessFile(pPsfFile))
 		return false;
 
-	wcout << L"XML" << ' ' << GetString(FilePath) << '\n';
+	out << L"XML" << ' ' << GetString(FilePath) << '\n';
 	if (!pXmlFile)
-		wcout << LongPathName(pOutDir) << L"\\express.psf.cix.xml" << '\n';
+		out << LongPathName(pOutDir) << L"\\express.psf.cix.xml" << '\n';
 	else
 	{
-		wcout << pXmlFile << '\n';
+		out << pXmlFile << '\n';
 		if (!AccessFile(pXmlFile))
 			return false;
 	}

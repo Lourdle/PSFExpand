@@ -54,7 +54,7 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, vector<PWSTR>& Files, PCWSTR pDestination
 				else
 				{
 					if (Verbose)
-						wcout << File << '\n';
+						out << File << '\n';
 					++n;
 				}
 				break;
