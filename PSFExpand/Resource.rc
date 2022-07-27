@@ -52,7 +52,6 @@ BEGIN
     PsfFile_Option          "指定要操作的 PSF 文件。"
     DisplayDetail_Option    "显示每个文件的详细信息（包括文件大小、类型）。"
     OutDir_Option           "指定存储输出文件的目录。"
-    File_Option             "指定 PSF 中要提取的文件（支持文件通配符 [*,?]）。"
 END
 
 STRINGTABLE
@@ -184,7 +183,6 @@ BEGIN
     PsfFile_Option          "Specifies the PSF file to operate on."
     DisplayDetail_Option    "Displays the detail (included file size, type) of each files."
     OutDir_Option           "Specifies the output directory."
-    File_Option             "Specifies the file(s) in the PSF to extract (file wildcards [*,?] are supported)."
 END
 
 STRINGTABLE

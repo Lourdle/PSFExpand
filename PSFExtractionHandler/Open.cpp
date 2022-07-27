@@ -4,6 +4,8 @@
 #include <MsXml2.h>
 #include <comutil.h>
 
+#include <Shlwapi.h>
+
 #include <stdexcept>
 #include <thread>
 
@@ -328,7 +330,6 @@ void ReadXml(HPSF hPSF, PCWSTR pXml, BOOL& Ret)
 			{
 				if (except)
 					break;
-
 				if (i)
 					++node;
 
@@ -430,41 +431,41 @@ PSFExtHandler_OpenFile(
 
 	if (psf)
 	{
-		DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
-		if (length == 0)
-			return nullptr;
-
-		wstring PSF;
-		PSF.resize(length - 1);
-		if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(PSF.c_str()), nullptr) == 0)
-			return nullptr;
-
-		wstring Psf;
-		length = GetLongPathNameW(PSF.c_str(), nullptr, 0);
-		if (length == 0)
+		hPSF->hPSF = CreateFileW(psf, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
 		{
-			Psf = L"\\\\?\\";
-			if (PSF[0] == '\\' && PSF[1] == '\\')
-				Psf += L"UNC\\";
-			Psf += PSF;
-			length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
+			DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
 			if (length == 0)
 				return nullptr;
-			else
-				psf = Psf.c_str();
+
+			wstring PSF;
+			PSF.resize(length - 1);
+			if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(PSF.c_str()), nullptr) == 0)
+				return nullptr;
+
+			wstring Psf;
+			length = GetLongPathNameW(PSF.c_str(), nullptr, 0);
+			if (length == 0)
+			{
+				Psf = L"\\\\?\\";
+				if (PathIsUNCW(PSF.c_str()))
+					Psf += L"UNC\\";
+				Psf += PSF;
+				length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
+				if (length == 0)
+					return nullptr;
+			}
+
+			wstring tmp;
+			tmp.resize(length - 1);
+			if (!GetLongPathNameW(PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
+				return nullptr;
+			PSF = move(tmp);
+
+			hPSF->hPSF = CreateFileW(PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+			if (hPSF->hPSF == INVALID_HANDLE_VALUE)
+				return nullptr;
 		}
-		PSF.resize(length - 1);
-
-		wstring tmp;
-		tmp.resize(length - 1);
-		if (!GetLongPathNameW(PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
-			return nullptr;
-		PSF = move(tmp);
-
-		hPSF->hPSF = CreateFileW(PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
-			return nullptr;
-
 		BYTE HOF[16];
 		if (!ReadFile(hPSF->hPSF, HOF, 16, nullptr, nullptr))
 			return nullptr;
@@ -476,44 +477,49 @@ PSFExtHandler_OpenFile(
 		}
 	}
 
-	wstring Xml = L"\\\\?\\";
+	wstring Xml;
 	{
 		HANDLE hXml = CreateFileW(xml, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hXml == INVALID_HANDLE_VALUE)
 		{
-			Xml += xml;
-			if (xml[0] == '\\' && xml[1] == '\\')
-				Xml += L"UNC\\";
+			DWORD length = GetFullPathNameW(xml, 0, nullptr, nullptr);
+			if (length == 0)
+				return nullptr;
+
+			wstring XML;
+			XML.resize(length - 1);
+			if (GetFullPathNameW(xml, length, const_cast<LPWSTR>(XML.c_str()), nullptr) == 0)
+				return nullptr;
+
+			length = GetShortPathNameW(XML.c_str(), nullptr, 0);
+			if (length == 0)
+			{
+				Xml = L"\\\\?\\";
+				if (PathIsUNCW(XML.c_str()))
+					Xml += L"UNC\\";
+				Xml += XML;
+				length = GetShortPathNameW(Xml.c_str(), nullptr, 0);
+				if (length == 0)
+					return nullptr;
+			}
+
+			wstring tmp;
+			tmp.resize(length - 1);
+			if (!GetLongPathNameW(XML.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
+				return nullptr;
+			Xml = move(XML);
+
 			hXml = CreateFileW(Xml.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 			if (hXml == INVALID_HANDLE_VALUE)
 				return nullptr;
+			else
+				xml = Xml.c_str();
 		}
-		else
-			Xml = xml;
 		CloseHandle(hXml);
 	}
 
-	auto Length = GetShortPathNameW(Xml.c_str(), nullptr, 0);
-	if (!Length)
-		return nullptr;
-	else
-	{
-		wstring tmp;
-		tmp.resize(Length - 1);
-		GetShortPathNameW(Xml.c_str(), const_cast<LPWSTR>(tmp.c_str()), Length);
-		tmp.swap(Xml);
-	}
-	if (!wcsncmp(Xml.c_str(), L"\\\\?\\", 4))
-		if (!wcsncmp(Xml.c_str() + 4, L"UNC\\", 4))
-			Xml.erase(Xml.cbegin(), Xml.cbegin() + 4);
-		else
-			Xml.erase(Xml.cbegin(), Xml.cbegin() + 8);
-
-	Xml.shrink_to_fit();
-
-
 	BOOL ret;
-	thread XmlReadingThread(ReadXml, hPSF.get(), Xml.c_str(), ref(ret));
+	thread XmlReadingThread(ReadXml, hPSF.get(), xml, ref(ret));
 	XmlReadingThread.join();
 
 	if (ret)

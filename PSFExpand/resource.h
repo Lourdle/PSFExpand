@@ -24,21 +24,20 @@
 #define PsfFile_Option                  1020
 #define DisplayDetail_Option            1021
 #define OutDir_Option                   1022
-#define File_Option                     1023
-#define Verify_Option                   1024
-#define Verbose_Option                  1025
-#define NoProgressDisplay_Option        1026
-#define SingleThread_Option             1027
-#define CabFile_Option                  1028
-#define File_Count                      1029
-#define File_Size                       1030
-#define File_Type                       1031
-#define Satified_File_Count             1032
-#define Extracted_File_Count            1033
-#define Extracting                      1034
-#define Expanding                       1035
-#define Done                            1036
-#define FilePath                        1037
+#define Verify_Option                   1023
+#define Verbose_Option                  1024
+#define NoProgressDisplay_Option        1025
+#define SingleThread_Option             1026
+#define CabFile_Option                  1027
+#define File_Count                      1028
+#define File_Size                       1029
+#define File_Type                       1030
+#define Satified_File_Count             1031
+#define Extracted_File_Count            1032
+#define Extracting                      1033
+#define Expanding                       1034
+#define Done                            1035
+#define FilePath                        1036
 
 // Next default values for new objects
 // 
