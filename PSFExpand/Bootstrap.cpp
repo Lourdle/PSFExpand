@@ -184,7 +184,7 @@ static int ListArg(int argc, wchar_t** argv)
 			g_Flags |= FLAG_ARG_LIST_DETAIL;
 			break;
 		case 2:case 3:case 4:
-			if (i == argc - 1)
+			if (i == argc - 1 && i == 1)
 				PrintHelp::ListHelp();
 			else
 				Error::InvalidHelpArg();
@@ -234,7 +234,7 @@ static int ExtractArg(int argc, wchar_t** argv)
 			{ 3,4 }))
 		{
 		case 0:case 1:case 2:
-			if (i == argc - 1)
+			if (i == argc - 1 && i == 1)
 				PrintHelp::ExtractHelp();
 			else
 				Error::InvalidHelpArg();
@@ -299,7 +299,10 @@ int ExpandArg(int argc, wchar_t** argv)
 			{ 3,7 }))
 		{
 		case 0:case 1:case 2:
-			PrintHelp::ExpandHelp();
+			if (i == argc - 1 && i == 1)
+				PrintHelp::ExpandHelp();
+			else
+				Error::InvalidHelpArg();
 		case 3:
 			pOut = GetSubstringFromArgString(argv[i] + 1, 6);
 			if (!pOut)
@@ -391,7 +394,7 @@ int wmain(int argc, wchar_t** argv)
 	}
 
 	if (argv[Start][0] != '/')
-		Error::InvalidCmdline(argv[1]);
+		Error::InvalidCmdline(argv[Start]);
 
 	int (*ArgProc)(int argc, wchar_t** argv) = nullptr;
 	switch (CompareStrings(argv[Start] + 1,
