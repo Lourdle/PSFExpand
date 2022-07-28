@@ -5,7 +5,6 @@
 
 #include <Windows.h>
 
-#include <memory>
 #include <initializer_list>
 #include <string>
 #include <vector>
@@ -18,7 +17,6 @@ constexpr BYTE FLAG_ARG_EXPAND_VERIFY = 0x0001;
 constexpr BYTE FLAG_ARG_EXPAND_SINGLETHREAD = 0x0002;
 constexpr BYTE FLAG_ARG_EXPAND_NOPROGRESSDISPLAY = 0x0004;
 
-::std::unique_ptr<WCHAR[]> GetString(UINT);
 
 PWSTR GetSubstringFromArgString(PWSTR pString, UINT ArgLen);
 
@@ -40,11 +38,32 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, ::std::vector<PWSTR>& Files, PCWSTR pDest
 bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOutDir, BYTE Flags);
 
 
+struct _out;
+
+class String
+{
+	friend String GetString(UINT);
+	friend struct _out;
+public:
+	String(String&&);
+	String() = default;
+	String(const String&) = default;
+	~String();
+
+	PCWSTR get();
+private:
+	PCWSTR pString;
+	ULONG Length;
+	bool bNeedToFree;
+};
+
+String GetString(UINT);
+
 static struct _out
 {
-	_out& operator<<(const ::std::wstring& String)
+	_out& operator<<(const ::std::wstring& StdString)
 	{
-		WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), String.c_str(), static_cast<DWORD>(String.size()), nullptr, nullptr);
+		WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), StdString.c_str(), static_cast<DWORD>(StdString.size()), nullptr, nullptr);
 		return *this;
 	}
 
@@ -56,7 +75,8 @@ static struct _out
 
 	_out& operator<<(CHAR Char)
 	{
-		return *this << static_cast<WCHAR>(Char);
+		WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), &Char, 1, nullptr, nullptr);
+		return *this;
 	}
 
 	_out& operator<<(PCWSTR pString)
@@ -65,10 +85,22 @@ static struct _out
 		return *this;
 	}
 
+	_out& operator<<(PCSTR pString)
+	{
+		WriteConsoleA(GetStdHandle(STD_OUTPUT_HANDLE), pString, static_cast<DWORD>(strlen(pString)), nullptr, nullptr);
+		return *this;
+	}
+
+	_out& operator<<(const String& Str)
+	{
+		WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), Str.pString, Str.Length, nullptr, nullptr);
+		return *this;
+	}
+
 	template<typename T>
 	_out& operator<<(T Value)
 	{
-		::std::wcout << Value;
+		::std::cout << Value << ::std::flush;
 		return *this;
 	}
 }out;

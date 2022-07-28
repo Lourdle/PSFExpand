@@ -51,7 +51,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, vector<PWSTR>& Files)
 
 	PrintFileInfo:
 		++n;
-		wcout << File << '\n';
+		out << File << '\n';
 		if (DisplayDetail)
 			out << GetString(File_Size) << FileSize << ' ' << 'B' << '\n' <<
 			GetString(File_Type) <<
@@ -67,7 +67,7 @@ bool List(PCWSTR pXml, bool DisplayDetail, vector<PWSTR>& Files)
 
 	if (!Files.empty() && Ret)
 	{
-		cout << '\n';
+		out << '\n';
 		wprintf(GetString(Satified_File_Count).get(), n);
 	}
 

@@ -14,12 +14,12 @@ static PCWSTR	g_pPsfFile;
 static PCWSTR	g_pXmlFile;
 static BYTE		g_Flags;
 
-struct Error
+namespace Error
 {
 	static void InvalidArg(PCWSTR pString)
 	{
 		fwprintf(stderr, GetString(Unknown_Option).get(), pString);
-		wcerr << GetString(Tip);
+		wcerr << GetString(Tip).get();
 		ExitProcess(ERROR_INVALID_PARAMETER);
 	}
 
@@ -33,76 +33,77 @@ struct Error
 	static void MissingArg(PCWSTR pString)
 	{
 		fwprintf(stderr, GetString(Option_Needs_an_Arg).get(), pString);
-		wcerr << GetString(Tip);
+		wcerr << GetString(Tip).get();
 		ExitProcess(ERROR_INVALID_PARAMETER);
 	}
 
 	static void InvalidHelpArg()
 	{
-		wcerr << GetString(Invalid_Help_Option);
+		wcerr << GetString(Invalid_Help_Option).get();
 		ExitProcess(ERROR_INVALID_PARAMETER);
 	}
 
 	static void MissingOption(PCWSTR pString)
 	{
 		fwprintf(stderr, GetString(Missing_Option).get(), pString);
-		wcerr << GetString(Tip);
+		wcerr << GetString(Tip).get();
 		ExitProcess(ERROR_INVALID_PARAMETER);
 	}
 
 	static void MissingRequiredArg(UINT ID, bool Plural)
 	{
-		auto pArgString = GetString(ID);
-		auto len = wcslen(pArgString.get());
+		auto ArgString = GetString(ID);
+		auto pArgString = const_cast<PWSTR>(ArgString.get());
+		auto len = wcslen(pArgString);
 		pArgString[len - 1] = 0;
 		if (!Plural)
 			if (pArgString[len - 2] == 'S')
 				pArgString[len - 2] = 0;
 
-		fwprintf_s(stderr, GetString(No_Required_Arguments).get(), pArgString.get());
+		fwprintf_s(stderr, GetString(No_Required_Arguments).get(), pArgString);
 		ExitProcess(ERROR_INVALID_PARAMETER);
 	}
-};
+}
 
 struct PrintHelp
 {
 	static void ProgramHelp()
 	{
-		wcout << L"PSFExpand.exe [/Lang:<lang>] {operation_command} [<operation_arguments>]\n\n";
-		wcout << GetString(Program_Description);
+		out << L"PSFExpand.exe [/Lang:<lang>] {operation_command} [<operation_arguments>]\n\n";
+		out << GetString(Program_Description);
 		wprintf(L"\n\n  /Lang\t\t%ls\t\ten\t- English\n\t\tzh-Hans\t- ¼òÌåÖÐÎÄ\n\n\n%ls\n\n  /List\t\t%ls  /Extract\t%ls  /Expand\t%ls",
 			GetString(Lang_Description).get(), GetString(Operation_Commands).get(), GetString(List_Description).get(), GetString(Extract_Description).get(), GetString(Expand_Description).get());
-		wcout << '\n' << GetString(Tip);
+		out << '\n' << GetString(Tip);
 		ExitProcess(0);
 	}
 
 	static void ListHelp()
 	{
-		wcout << L"/List /XmlFile:<path_to_xml_file> [/DisplayDetail] [Filename]\n\n";
+		out << L"/List /XmlFile:<path_to_xml_file> [/DisplayDetail] [Filename]\n\n";
 		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /DisplayDetail\t%ls\n%ls\n\n",
 			GetString(List_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(),
 			GetString(DisplayDetail_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /List /DisplayDetail /XmlFile:D:\\express.psf.cix.xml\n\n  PSFExpand.exe /List /XmlFile:D:\\express.psf.cix.xml *.dll\n";
+		out << L"  PSFExpand.exe /List /DisplayDetail /XmlFile:D:\\express.psf.cix.xml\n\n  PSFExpand.exe /List /XmlFile:D:\\express.psf.cix.xml *.dll\n";
 		ExitProcess(0);
 	}
 
 	static void ExtractHelp()
 	{
-		wcout << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file>  /OutDir:<path_to_out_dir>\n {Filename} [/Verify] [/Verbose]\n\n";
+		out << L"/Extract /XmlFile:<path_to_xml_file> /PsfFile:<path_to_psf_file>  /OutDir:<path_to_out_dir>\n {Filename} [/Verify] [/Verbose]\n\n";
 		wprintf(L"%ls\n%ls\n\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /OutDir\t\t%ls\n  /Verify\t\t%ls\n  /Verbose  \t\t%ls\n%ls\n\n",
 			GetString(Extract_Description).get(), GetString(Options).get(), GetString(XmlFile_Option).get(), GetString(PsfFile_Option).get(),
 			GetString(OutDir_Option).get(), GetString(Verify_Option).get(), GetString(Verbose_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml \n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\\dlls *.dll\n";
+		out << L"  PSFExpand.exe /Extract /PsfFile:D:\\Windows10.0-KB0000000-x64.psf historycix.cab /Verify\n    /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Extract /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml \n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\\dlls *.dll\n";
 		ExitProcess(0);
 	}
 
 	static void ExpandHelp()
 	{
-		wcout << L"/Expand {file_info_options} [/Verify]\n  [/SingleThread] [/NoProgressDisplay]\n\n";
+		out << L"/Expand {file_info_options} [/Verify]\n  [/SingleThread] [/NoProgressDisplay]\n\n";
 		wprintf(L"%ls\n%ls\n\n  /CabFile\t\t%ls\n  /XmlFile\t\t%ls\n  /PsfFile\t\t%ls\n  /OutDir\t\t%ls\n\n%ls\n\n  /Verify\t\t%ls\n  /SingleThread\t\t%ls\n  /NoProgressDisplay\t%ls\n%ls\n\n",
 			GetString(Expand_Description).get(), GetString(File_Info_Options).get(), GetString(CabFile_Option).get(), GetString(XmlFile_Option).get(), GetString(PsfFile_Option).get(), GetString(OutDir_Option).get(), GetString(Options).get(),
 			GetString(Verify_Option).get(), GetString(SingleThread_Option).get(), GetString(NoProgressDisplay_Option).get(), GetString(Examples).get());
-		wcout << L"  PSFExpand.exe /Expand /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /Verify\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Expand /CabFile:D:\\Windows10.0-KB0000000-x64_00000000.cab /Verify\n";
+		out << L"  PSFExpand.exe /Expand /XmlFile:D:\\Windows10.0-KB0000000-x64\\express.psf.cix.xml /Verify\n    /PsfFile:D:\\Windows10.0-KB0000000-x64.psf /OutDir:D:\\Windows10.0-KB0000000-x64\n\n  PSFExpand.exe /Expand /CabFile:D:\\Windows10.0-KB0000000-x64_00000000.cab /Verify\n";
 		ExitProcess(0);
 	}
 };
@@ -200,7 +201,7 @@ static int ListArg(int argc, wchar_t** argv)
 		ShowErrorMessage();
 
 	if (v.empty())
-		wcout << GetString(Done);
+		out << GetString(Done);
 
 	return 0;
 }
@@ -266,7 +267,7 @@ static int ExtractArg(int argc, wchar_t** argv)
 
 	if (!Extract(g_pXmlFile, g_pPsfFile, v, pOut, g_Flags & FLAG_ARG_EXTRACT_VERIFY, g_Flags & FLAG_ARG_EXTRACT_VERBOSE))
 		ShowErrorMessage();
-	wcout << GetString(Done);
+	out << GetString(Done);
 
 	return 0;
 }
@@ -342,7 +343,7 @@ int ExpandArg(int argc, wchar_t** argv)
 		Error::MissingRequiredArg(File_Info_Options, true);
 
 	if (Expand(pCabFile, g_pPsfFile, g_pXmlFile, pOut, g_Flags))
-		wcout << '\n' << GetString(Done);
+		out << '\n' << GetString(Done);
 	else
 		ShowErrorMessage();
 
@@ -381,7 +382,7 @@ int wmain(int argc, wchar_t** argv)
 		}
 	}
 
-	wcout << '\n' << GetString(Program) << '\n' << "PSF Extraction Handler API " << GetString(Version) << L": " << PSFExtHandler_GetVersionString() << '\n' << '\n';
+	out << '\n' << GetString(Program) << '\n' << "PSF Extraction Handler API " << GetString(Version) << L": " << PSFExtHandler_GetVersionString() << '\n' << '\n';
 
 	if (argc == 1 || Start == 2 && argc == 2)
 	{

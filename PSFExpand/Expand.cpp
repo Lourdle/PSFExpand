@@ -214,7 +214,7 @@ static bool PrintFileInfo(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCW
 		if (!AccessFile(pXmlFile))
 			return false;
 	}
-	cout << '\n';
+	out << '\n';
 
 	return true;
 }
@@ -290,7 +290,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 			return false;
 		pCabFile = CabFile.c_str();
 
-		wcout << L"CAB" << ' ' << GetString(FilePath) << '\n' << LongPathName(pCabFile) << '\n';
+		out << L"CAB" << ' ' << GetString(FilePath) << '\n' << LongPathName(pCabFile) << '\n';
 	}
 
 	wstring OutDir;
@@ -386,7 +386,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 			ProcData.Exit = true;
 			SetEvent(ProcData.hEvent);
 			Thread.join();
-			cout << '\n' << endl;
+			out << '\n' << '\n';
 
 			SetLastError(Err);
 			return false;
@@ -396,7 +396,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 			ProcData.Exit = true;
 			SetEvent(ProcData.hEvent);
 			Thread.join();
-			cout << '\n' << endl;
+			out << '\n' << '\n';
 		}
 	}
 
@@ -458,7 +458,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		SetEvent(ProcData.hEvent);
 		Thread.join();
 		CloseHandle(ProcData.hEvent);
-		cout << '\n';
+		out << '\n';
 	}
 
 	PSFExtHandler_ClosePSF(hPSF);

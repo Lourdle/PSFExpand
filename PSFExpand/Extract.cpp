@@ -28,7 +28,7 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, vector<PWSTR>& Files, PCWSTR pDestination
 
 	DWORD nFileCount = PSFExtHandler_GetFileCount(hPSF.get());
 
-	wcout << GetString(Extracting);
+	out << GetString(Extracting);
 
 	DWORD n = 0;
 	for (DWORD i = 0; i != nFileCount; ++i)
@@ -61,7 +61,7 @@ bool Extract(PCWSTR pXml, PCWSTR pPsf, vector<PWSTR>& Files, PCWSTR pDestination
 			}
 	}
 
-	cout << '\n';
+	out << '\n';
 	wprintf(GetString(Extracted_File_Count).get(), n);
 	return true;
 }

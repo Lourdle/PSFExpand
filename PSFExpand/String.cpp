@@ -4,14 +4,37 @@
 
 using namespace std;
 
-unique_ptr<WCHAR[]> GetString(UINT id)
-{
-	PCWSTR str;
-	auto len = LoadStringW(nullptr, id, reinterpret_cast<LPWSTR>(&str), 0);
 
-	PWSTR String = new WCHAR[len + 1];
-	wcsncpy_s(String, len + 1, str, len);
-	return unique_ptr<WCHAR[]>(String);
+String GetString(UINT id)
+{
+	String str;
+	str.Length = LoadStringW(nullptr, id, reinterpret_cast<LPWSTR>(&str.pString), 0);
+
+	return str;
+}
+
+String::String(String&& right) : pString(right.pString), Length(right.Length), bNeedToFree(right.bNeedToFree)
+{
+	right.bNeedToFree = false;
+}
+
+String::~String()
+{
+	if (bNeedToFree)
+		delete[] pString;
+}
+
+PCWSTR String::get()
+{
+	if (bNeedToFree)
+		return pString;
+
+	PWSTR str = new WCHAR[Length + 1];
+	str[Length] = 0;
+	memcpy(str, pString, Length * sizeof(WCHAR));
+	bNeedToFree = true;
+	pString = str;
+	return str;
 }
 
 PWSTR GetSubstringFromArgString(PWSTR pString, UINT ArgLen)
