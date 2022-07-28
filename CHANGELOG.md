@@ -9,7 +9,8 @@
 5. Deprecated the "SafeRead" option.
 6. Uses Shlwapi to match file wildcards.
 7. Added the function of checking whether the API version is compatible at startup.
-8. Other unlisted detail fixes.
+8. Improve the speed of writing text to the console.
+9. Other unlisted detail fixes.
 
 - 1.1.1.0
 1. Upgraded the default API version to 1.1.1.
