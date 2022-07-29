@@ -52,11 +52,11 @@ BEGIN
     PsfFile_Option          "指定要操作的 PSF 文件。"
     DisplayDetail_Option    "显示每个文件的详细信息（包括文件大小、类型）。"
     OutDir_Option           "指定存储输出文件的目录。"
+    Verify_Option           "验证文件数据是否完整。"
 END
 
 STRINGTABLE
 BEGIN
-    Verify_Option           "验证文件数据是否完整。"
     Verbose_Option          "显示每个提取的文件。"
     NoProgressDisplay_Option "文件扩展期间不显示进度。"
     SingleThread_Option     "仅使用单个线程来扩展文件。"
@@ -89,8 +89,8 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,1,0
- PRODUCTVERSION 2,0,1,0
+ FILEVERSION 2,0,1,22729
+ PRODUCTVERSION 2,0,1,22729
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -183,11 +183,11 @@ BEGIN
     PsfFile_Option          "Specifies the PSF file to operate on."
     DisplayDetail_Option    "Displays the detail (included file size, type) of each files."
     OutDir_Option           "Specifies the output directory."
+    Verify_Option           "Verifies that the file data is intact."
 END
 
 STRINGTABLE
 BEGIN
-    Verify_Option           "Verifies that the file data is intact."
     Verbose_Option          "Displays each extracted file."
     NoProgressDisplay_Option "No progress is shown during file expansion."
     SingleThread_Option     "Only uses a single thread to expand the files."
