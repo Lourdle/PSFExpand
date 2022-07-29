@@ -433,39 +433,7 @@ PSFExtHandler_OpenFile(
 	{
 		hPSF->hPSF = CreateFileW(psf, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hPSF->hPSF == INVALID_HANDLE_VALUE)
-		{
-			DWORD length = GetFullPathNameW(psf, 0, nullptr, nullptr);
-			if (length == 0)
-				return nullptr;
-
-			wstring PSF;
-			PSF.resize(length - 1);
-			if (GetFullPathNameW(psf, length, const_cast<LPWSTR>(PSF.c_str()), nullptr) == 0)
-				return nullptr;
-
-			wstring Psf;
-			length = GetLongPathNameW(PSF.c_str(), nullptr, 0);
-			if (length == 0)
-			{
-				Psf = L"\\\\?\\";
-				if (PathIsUNCW(PSF.c_str()))
-					Psf += L"UNC\\";
-				Psf += PSF;
-				length = GetLongPathNameW(Psf.c_str(), nullptr, 0);
-				if (length == 0)
-					return nullptr;
-			}
-
-			wstring tmp;
-			tmp.resize(length - 1);
-			if (!GetLongPathNameW(PSF.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
-				return nullptr;
-			PSF = move(tmp);
-
-			hPSF->hPSF = CreateFileW(PSF.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-			if (hPSF->hPSF == INVALID_HANDLE_VALUE)
-				return nullptr;
-		}
+			return nullptr;
 		BYTE HOF[16];
 		if (!ReadFile(hPSF->hPSF, HOF, 16, nullptr, nullptr))
 			return nullptr;
@@ -477,44 +445,10 @@ PSFExtHandler_OpenFile(
 		}
 	}
 
-	wstring Xml;
 	{
 		HANDLE hXml = CreateFileW(xml, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
 		if (hXml == INVALID_HANDLE_VALUE)
-		{
-			DWORD length = GetFullPathNameW(xml, 0, nullptr, nullptr);
-			if (length == 0)
-				return nullptr;
-
-			wstring XML;
-			XML.resize(length - 1);
-			if (GetFullPathNameW(xml, length, const_cast<LPWSTR>(XML.c_str()), nullptr) == 0)
-				return nullptr;
-
-			length = GetShortPathNameW(XML.c_str(), nullptr, 0);
-			if (length == 0)
-			{
-				Xml = L"\\\\?\\";
-				if (PathIsUNCW(XML.c_str()))
-					Xml += L"UNC\\";
-				Xml += XML;
-				length = GetShortPathNameW(Xml.c_str(), nullptr, 0);
-				if (length == 0)
-					return nullptr;
-			}
-
-			wstring tmp;
-			tmp.resize(length - 1);
-			if (!GetLongPathNameW(XML.c_str(), const_cast<LPWSTR>(tmp.c_str()), length))
-				return nullptr;
-			Xml = move(XML);
-
-			hXml = CreateFileW(Xml.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
-			if (hXml == INVALID_HANDLE_VALUE)
-				return nullptr;
-			else
-				xml = Xml.c_str();
-		}
+			return nullptr;
 		CloseHandle(hXml);
 	}
 

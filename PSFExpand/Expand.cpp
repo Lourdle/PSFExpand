@@ -77,15 +77,14 @@ static wstring ShortPathName(PCWSTR pPathName)
 	wstring Name = L"\\\\?\\";
 	DWORD Length;
 	PCWSTR pLongName;
-	bool unc = false;
 
-	if (wcsncmp(pPathName, L"\\\\?\\", 4))
+	if (wcsncmp(pPathName, L"\\\\?\\", 4) != 0)
 	{
 		if (PathIsUNCW(pPathName))
 		{
-			Name += L"UNC\\";
-			Name += pPathName;
-			unc = true;
+			Name += L"UNC";
+			Name += pPathName + 1;
+			return Name;
 		}
 		else
 			Name += pPathName;
@@ -94,6 +93,9 @@ static wstring ShortPathName(PCWSTR pPathName)
 	}
 	else
 		pLongName = pPathName;
+	if (PathIsUNCW(pLongName))
+		return pLongName;
+
 
 	wstring ShortName;
 	Length = GetShortPathNameW(pLongName, nullptr, 0);
@@ -101,28 +103,30 @@ static wstring ShortPathName(PCWSTR pPathName)
 		return L"";
 	ShortName.resize(Length - 1);
 	GetShortPathNameW(pLongName, const_cast<LPWSTR>(ShortName.c_str()), Length);
-	ShortName.erase(ShortName.cbegin(), ShortName.cbegin() + (unc ? 8 : 4));
+	ShortName.erase(ShortName.cbegin(), ShortName.cbegin() + 4);
 	return ShortName;
 }
 
 static wstring LongPathName(PCWSTR pPathName)
 {
 	wstring FullName = FullPathName(pPathName);
-	bool unc = false;
 	if (FullName == L"")
 		return L"";
-	else if (wcsncmp(FullName.c_str(), L"\\\\?\\", 4))
+	if (wcsncmp(FullName.c_str(), L"\\\\?\\", 4) != 0)
 	{
 		wstring tmp = L"\\\\?\\";
 		if (PathIsUNCW(pPathName))
 		{
-			tmp += L"UNC\\";
-			unc = true;
+			tmp += L"UNC";
+			tmp += FullName.c_str() + 1;
+			return tmp;
 		}
-
 		tmp.swap(FullName);
 		FullName += tmp;
 	}
+	else if (PathIsUNCW(FullName.c_str()))
+		return FullName;
+
 	pPathName = FullName.c_str();
 	DWORD Length;
 	Length = GetLongPathNameW(pPathName, nullptr, 0);
@@ -133,7 +137,7 @@ static wstring LongPathName(PCWSTR pPathName)
 	Name.resize(Length - 1);
 
 	GetLongPathNameW(pPathName, const_cast<LPWSTR>(Name.c_str()), Length);
-	Name.erase(Name.cbegin(), Name.cbegin() + (unc ? 8 : 4));
+	Name.erase(Name.cbegin(), Name.cbegin() + 4);
 	return Name;
 }
 
@@ -279,24 +283,18 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 		if (!AccessFile(pCabFile))
 			return false;
 
-		if (_wcsicmp(pCabFile + wcslen(pCabFile) - 4, L".cab"))
-		{
-			SetLastError(ERROR_BAD_FORMAT);
-			return false;
-		}
-
-		CabFile = ShortPathName(pCabFile);
+		CabFile = LongPathName(pCabFile);
 		if (CabFile == L"")
 			return false;
 		pCabFile = CabFile.c_str();
 
-		out << L"CAB" << ' ' << GetString(FilePath) << '\n' << LongPathName(pCabFile) << '\n';
+		out << L"CAB" << ' ' << GetString(FilePath) << '\n' << pCabFile << '\n';
 	}
 
 	wstring OutDir;
 	if (!pOut)
 	{
-		OutDir = LongPathName(CabFile.c_str());
+		OutDir = CabFile;
 		OutDir.erase(OutDir.cend() - 4, OutDir.cend());
 	}
 	else
@@ -309,8 +307,7 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 
 	if (pCabFile)
 	{
-		auto Out = wstring(L"\\\\?\\") + (PathIsUNCW(pOut) ? L"UNC\\" : L"");
-		Out += pOut;
+		wstring Out = pOut;
 
 		if (!SetCurrentDirectoryW(Out.c_str()))
 			if (!CreateDirectoryW(
@@ -404,10 +401,12 @@ bool Expand(PCWSTR pCabFile, PCWSTR pPsfFile, PCWSTR pXmlFile, PCWSTR pOut, BYTE
 	wstring XmlFile;
 	if (!pXmlFile)
 	{
-		XmlFile = LongPathName(pOut);
-		if (XmlFile == L"")
-			return false;
+		XmlFile = pOut;
 		XmlFile += L"\\express.psf.cix.xml";
+		if (!PathIsUNCW(XmlFile.c_str()))
+			XmlFile = ShortPathName(XmlFile.c_str());
+		else
+			XmlFile.erase(2, 7);
 		pXmlFile = XmlFile.c_str();
 	}
 	if (!pPsfFile)

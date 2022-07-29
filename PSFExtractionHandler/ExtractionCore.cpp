@@ -81,15 +81,11 @@ static bool AutoCreateDirectory(wstring& file)
 
 	size_t StartingPos = file.find(L"\\\\") == 0 ? 2 : 0;
 	if (StartingPos == 2)
-	{
-		StartingPos = file.find('\\', 2);
-		StartingPos = file.find('\\', 4);
-		if (StartingPos == wstring::npos)
-		{
-			SetLastError(ERROR_INVALID_PARAMETER);
-			return false;
-		}
-	}
+		if (file.find(L"\\\\?\\") == 0)
+			if (file.find(L"UNC\\") == 4)
+				StartingPos = 8;
+			else
+				StartingPos = 4;
 	for (auto pos = file.find('\\', StartingPos); pos != wstring::npos; pos = file.find('\\', pos + 1))
 	{
 		if (pos == 0 || file[pos - 1] == ':')
@@ -136,10 +132,10 @@ HANDLE AutoCreateFile(PCWSTR name, PCWSTR out, DWORD flags)
 			out = name;
 
 		if (wcsncmp(out, L"\\\\?\\", 4) == 0
-			|| _wcsnicmp(out, L"\\\\UNC\\", 6) == 0)
+			|| _wcsnicmp(out, L"\\\\?\\UNC\\", 6) == 0)
 			file = out;
-		else if (wcsncmp(out, L"\\\\", 4) == 0)
-		{
+		else if (PathIsUNCW(out))
+		{			
 			file = L"\\\\UNC";
 			file += out;
 		}
