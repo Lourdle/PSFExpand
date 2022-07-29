@@ -1,7 +1,7 @@
 # PSFExpand 与 PSFExtractionHandler 更新日志
 
 ## PSFExpand
-- 2.0.1.0
+- 2.0.1.22729 Beta.1
 1. 适配 API 版本 2.0.1，支持设置文件时间。
 2. 弃用通过调用 Expand.exe 展开 CAB 文件，转用 PSF Extraction Handler Cabinet 实用函数，提升速度。
 3. 修正将文件展开到根目录会出错的问题。

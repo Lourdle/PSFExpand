@@ -1,7 +1,7 @@
 # PSFExpand & PSFExtractionHandler Changelog
 
 ## PSFExpand
-- 2.0.1.0
+- 2.0.1.22729 Beta.1
 1. Adapt to API version 2.0.1, support setting file time.
 2. Deprecated expanding the CAB file by calling Expand.exe and use the PSF Extraction Handler Cabinet utility function to improve the speed.
 3. Fixed the problem that an error occurs when the file is expanded to the root directory.
