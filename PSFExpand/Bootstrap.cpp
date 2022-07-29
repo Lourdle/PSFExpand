@@ -147,7 +147,7 @@ static void ShowErrorMessage()
 		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
 		nullptr,
 		dwError,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		GetThreadUILanguage(),
 		reinterpret_cast<LPWSTR>(&lpErrMsg),
 		0, nullptr);
 
@@ -377,10 +377,12 @@ int wmain(int argc, wchar_t** argv)
 		switch (CompareStrings(pLang, { L"zh-Hans",L"en" }, {}))
 		{
 		case 0:
-			SetThreadUILanguage(MAKELANGID(LANG_CHINESE_SIMPLIFIED, SUBLANG_NEUTRAL));
+			if (GetThreadUILanguage() >> 10 != LANG_CHINESE_SIMPLIFIED)
+				SetThreadUILanguage(MAKELANGID(LANG_CHINESE_SIMPLIFIED, SUBLANG_CHINESE_SIMPLIFIED));
 			break;
 		default:
-			SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_NEUTRAL));
+			if (GetThreadUILanguage() >> 10 != LANG_ENGLISH)
+				SetThreadUILanguage(MAKELANGID(LANG_ENGLISH, SUBLANG_ENGLISH_US));
 			break;
 		}
 	}

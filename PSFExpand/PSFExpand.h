@@ -47,7 +47,7 @@ class String
 public:
 	String(String&&);
 	String() = default;
-	String(const String&) = default;
+	String(const String&) = delete;
 	~String();
 
 	PCWSTR get();
